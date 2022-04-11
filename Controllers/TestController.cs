@@ -5,19 +5,31 @@ using WAP_PIS.Database;
 
 namespace WAP_PIS.Controllers;
 
-public class HomeController : Controller
+public class TestController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly ApplicationDbContext appDbContext;
 
-    public HomeController(ILogger<HomeController> logger)
+    public TestController(ILogger<HomeController> logger,ApplicationDbContext applicationDbContext)
     {
         _logger = logger;
+        appDbContext = applicationDbContext;
     }
 
-    public void Index()
+    public string Index()
     {
-        Response.Redirect("webclient/html/index.html");
+        var date = new DateTime(1999,1,5);
+        var newAcc = new Account(){
+            Login = "user",
+            Password = "user",
+            Name = "UserName",
+            Surname = "UserSur",
+            Date_Of_Birth = date};
+
+        appDbContext.Account.Add(newAcc);
+        appDbContext.SaveChanges();
+
+        return "API Test Index call finished";
     }
 
     public IActionResult Privacy()
