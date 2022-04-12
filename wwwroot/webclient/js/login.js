@@ -1,32 +1,31 @@
 var customLoginJson = {
-    "Login": "LOGIN",
-    "Password": "Password",
-    "Successful_Authentication": null
+    "Login": "user",
+    "Password": "password",
+    "Successful_Authentication": null,
+    "IsCEO": null
 };
 
 
 
-async function CustomLogin()
+async function Login()
 {
-    document.getElementById("result").innerHTML += JSON.stringify((await Login()))+"<br>";
+    document.getElementById("result").innerHTML += JSON.stringify((await postLogin()))+"<br>";
 }
 
 async function CheckLogin()
 {
-    var response = await fetch("https://localhost:7223/Authentication/CheckLogin");
+    var response = await fetch("/Authentication/CheckLogin");
     document.getElementById("result").innerHTML += await response.text()+"<br>";
 }
 
 async function Logout()
 {
-    var response = await fetch("https://localhost:7223/Authentication/Logout",{method:'POST'});
+    var response = await fetch("/Authentication/Logout",{method:'POST'});
     document.getElementById("result").innerHTML += await response.text() +"<br>";
 }
 
 
-
-
-async function Login(url = "https://localhost:7223/Authentication/Login", data = customLoginJson) {
+async function postLogin(url = "/Authentication/Login", data = customLoginJson) {
     // Default options are marked with *
     const response = await fetch(url, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
