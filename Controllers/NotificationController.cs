@@ -22,7 +22,8 @@ public class NotificationController : Controller
     {
         var userId = 0; //Todo: Get user id from identity framework
         var relevantNotifications = appDbContext.Notification
-            .Where(notification => notification.Recipient.ID != userId)
+            .Include(notification => notification.Meeting)
+            .Where(notification => notification.Recipient.ID == userId)
             .Select(notification => notification.ToViewModel())
             .ToList();
 
