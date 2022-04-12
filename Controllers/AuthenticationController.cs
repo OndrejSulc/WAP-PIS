@@ -5,19 +5,20 @@ using WAP_PIS.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Linq;
 
 namespace WAP_PIS.Controllers;
 
 public class AuthenticationController : Controller
 {
     private readonly ApplicationDbContext _db;
-    private readonly UserManager<IdentityUser> _um;
+    private readonly UserManager<Account> _um;
     private IWebHostEnvironment _he;
-    private SignInManager<IdentityUser> _sm;
+    private SignInManager<Account> _sm;
     public AuthenticationController(ApplicationDbContext applicationDbContext,
-                         UserManager<IdentityUser> userManager,
+                         UserManager<Account> userManager,
                          IWebHostEnvironment webHostEnv,
-                         SignInManager<IdentityUser> signInManager)
+                         SignInManager<Account> signInManager)
     {
         _db = applicationDbContext;
         _um = userManager;
@@ -57,7 +58,19 @@ public class AuthenticationController : Controller
         {
             lwm.Successful_Authentication = false;
         }
-            return lwm;
+
+        
+        var managers = _db.Manager.Where( m => m.Account == user);
+        if(managers.Count() != 0)
+        {
+            var manager = managers.First();
+            lwm.IsCEO = manager.IsCEO;
+        }
+        else
+        {
+            lwm.IsCEO = false;
+        }
+        return lwm;
     }
 
     [HttpPost]

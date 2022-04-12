@@ -11,13 +11,13 @@ namespace WAP_PIS.Controllers;
 public class TestController : Controller
 {
     private readonly ApplicationDbContext _db;
-    private readonly UserManager<IdentityUser> _um;
+    private readonly UserManager<Account> _um;
     private IWebHostEnvironment _he;
-    private SignInManager<IdentityUser> _sm;
+    private SignInManager<Account> _sm;
     public TestController(ApplicationDbContext applicationDbContext,
-                         UserManager<IdentityUser> userManager,
+                         UserManager<Account> userManager,
                          IWebHostEnvironment webHostEnv,
-                         SignInManager<IdentityUser> signInManager)
+                         SignInManager<Account> signInManager)
     {
         _db = applicationDbContext;
         _um = userManager;
