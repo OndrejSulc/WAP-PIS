@@ -2,22 +2,38 @@
 using Microsoft.AspNetCore.Mvc;
 using WAP_PIS.Models;
 using WAP_PIS.Database;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace WAP_PIS.Controllers;
 
 public class TestController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly ApplicationDbContext appDbContext;
+    private readonly ApplicationDbContext _db;
+    private readonly UserManager<IdentityUser> _um;
+    private IWebHostEnvironment _he;
 
-    public TestController(ILogger<HomeController> logger,ApplicationDbContext applicationDbContext)
+    public TestController(ApplicationDbContext applicationDbContext,
+                         UserManager<IdentityUser> userManager,
+                         IWebHostEnvironment webHostEnv)
     {
-        _logger = logger;
-        appDbContext = applicationDbContext;
+        _db = applicationDbContext;
+        _um = userManager;
+        _he = webHostEnv;
     }
 
     public string Index()
     {
+        Console.WriteLine("*--------");
+        Console.WriteLine(User);
+        Console.WriteLine("--------*");
+
+        if (!User.Identity.IsAuthenticated)
+        {
+            return "user not authetnticated";
+        }
+       
         var date = new DateTime(1999,1,5);
         var newAcc = new Account(){
             Login = "user",
@@ -26,10 +42,10 @@ public class TestController : Controller
             Surname = "UserSur",
             Date_Of_Birth = date};
 
-        appDbContext.Account.Add(newAcc);
-        appDbContext.SaveChanges();
+        _db.Account.Add(newAcc);
+        _db.SaveChanges();
 
-        return "API Test Index call finished";
+        return "User Autheticated API Test Index call finished";
     }
 
     public IActionResult Privacy()
