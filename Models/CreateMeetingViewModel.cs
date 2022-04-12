@@ -11,5 +11,5 @@ public class CreateMeetingViewModel
     public DateTime From { get; set; }
     [Required]
     public DateTime Until { get; set; }
-    public int[] Attendees { get; set; } = Array.Empty<int>();
+    public string[] Attendees { get; set; } = Array.Empty<string>();
 }

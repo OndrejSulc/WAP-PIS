@@ -13,7 +13,7 @@ public class MeetingViewModel
     // },
     
     public int ID { get; set; }
-    public int Owner { get; set; }
+    public string Owner { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
     public DateTime From { get; set; }

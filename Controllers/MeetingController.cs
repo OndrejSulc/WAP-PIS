@@ -1,30 +1,38 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
+using System.Security.Claims;
+using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using WAP_PIS.Models;
 using WAP_PIS.Database;
 using WAP_PIS.Extensions;
+using WAP_PIS.SignalRHubs;
 
 namespace WAP_PIS.Controllers;
 
 /// <summary>
 /// Controller for managing meetings
 /// </summary>
+[Authorize]
 public class MeetingController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly ILogger<MeetingController> _logger;
     private readonly ApplicationDbContext appDbContext;
+    private readonly IHubContext<NotificationHub> notificationHub;
 
-    public MeetingController(ILogger<HomeController> logger, ApplicationDbContext applicationDbContext)
+    public MeetingController(ILogger<MeetingController> logger, ApplicationDbContext applicationDbContext, IHubContext<NotificationHub> notificationHub)
     {
         _logger = logger;
         appDbContext = applicationDbContext;
+        this.notificationHub = notificationHub;
     }
 
     [HttpDelete]
-    public IActionResult DeleteMeeting(int meetingId)
+    public async Task<IActionResult> DeleteMeeting(int meetingId)
     {
-        var userId = 0; //Todo: Get logged in user from identity framework
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var meeting = appDbContext.Meeting
             .Include(meeting => meeting.Attendees)
             .SingleOrDefault(meeting => meeting.ID == meetingId);
@@ -40,19 +48,20 @@ public class MeetingController : Controller
 
         foreach (var attendee in meeting.Attendees)
         {
-            NotifyUser(attendee, "Meeting cancelled", "Meeting, which you attend was cancelled", meeting);
+            await NotifyUser(attendee, "Meeting cancelled", "Meeting, which you attend was cancelled", meeting);
         }
 
         //Todo: Notification is deleted when deleting meeting. This is probably wrong
         appDbContext.Meeting.Remove(meeting);
-        appDbContext.SaveChanges();
+        await appDbContext.SaveChangesAsync();
         return Ok();
     }
 
     [HttpPatch]
-    public ActionResult<MeetingViewModel> UpdateMeeting(int meetingId, [FromBody] UpdateMeetingViewModel updateMeeting)
+    public async Task<ActionResult<MeetingViewModel>> UpdateMeeting(int meetingId, [FromBody] UpdateMeetingViewModel updateMeeting)
     {
-        var userId = 0; //Todo: Get logged in user from identity framework
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var meeting = appDbContext.Meeting
             .Include(meeting => meeting.Attendees)
             .SingleOrDefault(meeting => meeting.ID == meetingId);
@@ -69,7 +78,7 @@ public class MeetingController : Controller
 
         foreach (var attendee in meeting.Attendees)
         {
-            NotifyUser(attendee, "Meeting changed", "Meeting, which you attend was changed", meeting);
+            await NotifyUser(attendee, "Meeting changed", "Meeting, which you attend was changed", meeting);
         }
 
         meeting.Title = updateMeeting.Title ?? meeting.Title;
@@ -78,7 +87,7 @@ public class MeetingController : Controller
         meeting.Until = updateMeeting.Until ?? meeting.Until;
 
         appDbContext.Update(meeting);
-        appDbContext.SaveChanges();
+        await appDbContext.SaveChangesAsync();
         return meeting.ToViewModel();
     }
 
@@ -89,7 +98,7 @@ public class MeetingController : Controller
     [HttpGet]
     public GetMeetingViewModel GetMeetings()
     {
-        var user = 0; //Todo: Get user from identity framework
+        var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var relevantMeetings = appDbContext.Meeting
             .Where(meeting => meeting.Owner == user)
             .Select(meeting => meeting.ToViewModel())
@@ -106,11 +115,11 @@ public class MeetingController : Controller
     /// <param name="meeting">New meeting description</param>
     /// <returns>Created meeting</returns>
     [HttpPost]
-    public MeetingViewModel CreateMeeting([FromBody] CreateMeetingViewModel meeting)
+    public async Task<MeetingViewModel> CreateMeeting([FromBody] CreateMeetingViewModel meeting)
     {
-        var userId = 0; //Todo: Add owner id from identity framework
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        var attendees = appDbContext.Account.Where(account => meeting.Attendees.Contains(account.ID)).ToList();
+        var attendees = appDbContext.Account.Where(account => meeting.Attendees.Contains(account.Id)).ToList();
 
         //Todo: Check for attendees and create notification if not empty (Send SignalR message if connected)
         var meetingDb = new Meeting
@@ -125,11 +134,11 @@ public class MeetingController : Controller
 
         foreach (var attendee in attendees)
         {
-            NotifyUser(attendee, "Meeting created", "You were added to meeting.", meetingDb);
+            await NotifyUser(attendee, "Meeting created", "You were added to meeting.", meetingDb);
         }
 
         var dbEntry = appDbContext.Meeting.Add(meetingDb);
-        appDbContext.SaveChanges();
+        await appDbContext.SaveChangesAsync();
         return dbEntry.Entity.ToViewModel();
     }
 
@@ -141,7 +150,7 @@ public class MeetingController : Controller
 
 
 
-    private void NotifyUser(Account user, string title, string text, Meeting meeting)
+    private async Task NotifyUser(Account user, string title, string text, Meeting meeting)
     {
         //Todo: Notify connected user with signalR
         var notification = new Notification
@@ -152,6 +161,14 @@ public class MeetingController : Controller
             Text = text,
             Title = title,
         };
+
+
+        if (NotificationHub.ConnectedUsers.TryGetValue(user.Id, out var signalRConnectionId))
+        {
+            await notificationHub.Clients.Client(signalRConnectionId)
+                .SendAsync("NotificationAdded", JsonSerializer.Serialize(notification.ToViewModel()));
+        }
+
         appDbContext.Notification.Add(notification);
     }
 }
