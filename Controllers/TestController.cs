@@ -13,49 +13,32 @@ public class TestController : Controller
     private readonly ApplicationDbContext _db;
     private readonly UserManager<IdentityUser> _um;
     private IWebHostEnvironment _he;
-
+    private SignInManager<IdentityUser> _sm;
     public TestController(ApplicationDbContext applicationDbContext,
                          UserManager<IdentityUser> userManager,
-                         IWebHostEnvironment webHostEnv)
+                         IWebHostEnvironment webHostEnv,
+                         SignInManager<IdentityUser> signInManager)
     {
         _db = applicationDbContext;
         _um = userManager;
         _he = webHostEnv;
+        _sm = signInManager;
     }
 
-    public string Index()
+    [HttpGet]
+    public async Task<string> CreateNewUser()
     {
-        Console.WriteLine("*--------");
-        Console.WriteLine(User);
-        Console.WriteLine("--------*");
+        var user = new Account(){UserName = "user", Email = "user@email.cz"};
+        var result = await _um.CreateAsync(user, "password");
 
-        if (!User.Identity.IsAuthenticated)
+        if(result.Succeeded)
         {
-            return "user not authetnticated";
-        }
-       
-        var date = new DateTime(1999,1,5);
-        var newAcc = new Account(){
-            Login = "user",
-            Password = "user",
-            Name = "UserName",
-            Surname = "UserSur",
-            Date_Of_Birth = date};
+            await _sm.SignInAsync(user,false);
+            return "New USER CREATED";
 
-        _db.Account.Add(newAcc);
-        _db.SaveChanges();
+        }  
+        return "FAILED to create new user";
 
-        return "User Autheticated API Test Index call finished";
     }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
 }
