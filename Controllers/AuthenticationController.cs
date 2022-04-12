@@ -59,9 +59,11 @@ public class AuthenticationController : Controller
             lwm.Successful_Authentication = false;
         }
 
-        var manager = _db.Manager.Where( m => m.Account == user).First();
-        if(manager != null)
+        
+        var managers = _db.Manager.Where( m => m.Account == user);
+        if(managers.Count() != 0)
         {
+            var manager = managers.First();
             lwm.IsCEO = manager.IsCEO;
         }
         else
