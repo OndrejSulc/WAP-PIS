@@ -23,4 +23,6 @@ public class Account
     public string Surname { get; set; }
 
     public DateTime? Date_Of_Birth { get; set; }
+    
+    public ICollection<Meeting> Meetings { get; set; }
 }

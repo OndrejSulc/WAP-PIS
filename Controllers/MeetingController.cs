@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WAP_PIS.Models;
 using WAP_PIS.Database;
+using WAP_PIS.Extensions;
 
 namespace WAP_PIS.Controllers;
 
@@ -23,7 +25,9 @@ public class MeetingController : Controller
     public IActionResult DeleteMeeting(int meetingId)
     {
         var userId = 0; //Todo: Get logged in user from identity framework
-        var meeting = appDbContext.Meeting.SingleOrDefault(meeting => meeting.ID == meetingId);
+        var meeting = appDbContext.Meeting
+            .Include(meeting => meeting.Attendees)
+            .SingleOrDefault(meeting => meeting.ID == meetingId);
         if (meeting == null)
         {
             return NotFound("Meeting with id: " + meetingId + " was not found.");
@@ -33,6 +37,13 @@ public class MeetingController : Controller
         {
             return Unauthorized("You do not have permissions for this action.");
         }
+
+        foreach (var attendee in meeting.Attendees)
+        {
+            NotifyUser(attendee, "Meeting cancelled", "Meeting, which you attend was cancelled", meeting);
+        }
+
+        //Todo: Notification is deleted when deleting meeting. This is probably wrong
         appDbContext.Meeting.Remove(meeting);
         appDbContext.SaveChanges();
         return Ok();
@@ -42,7 +53,10 @@ public class MeetingController : Controller
     public ActionResult<MeetingViewModel> UpdateMeeting(int meetingId, [FromBody] UpdateMeetingViewModel updateMeeting)
     {
         var userId = 0; //Todo: Get logged in user from identity framework
-        var meeting = appDbContext.Meeting.SingleOrDefault(meeting => meeting.ID == meetingId);
+        var meeting = appDbContext.Meeting
+            .Include(meeting => meeting.Attendees)
+            .SingleOrDefault(meeting => meeting.ID == meetingId);
+
         if (meeting == null)
         {
             return NotFound("Meeting with id: " + meetingId + " was not found.");
@@ -53,21 +67,19 @@ public class MeetingController : Controller
             return Unauthorized("You do not have permissions for this action.");
         }
 
+        foreach (var attendee in meeting.Attendees)
+        {
+            NotifyUser(attendee, "Meeting changed", "Meeting, which you attend was changed", meeting);
+        }
+
         meeting.Title = updateMeeting.Title ?? meeting.Title;
         meeting.Description = updateMeeting.Description ?? meeting.Description;
         meeting.From = updateMeeting.From ?? meeting.From;
         meeting.Until = updateMeeting.Until ?? meeting.Until;
+
         appDbContext.Update(meeting);
         appDbContext.SaveChanges();
-        return new MeetingViewModel
-        {
-            Title = meeting.Title,
-            Description = meeting.Description,
-            From = meeting.From,
-            Until = meeting.Until,
-            Owner = meeting.Owner,
-            ID = meeting.ID
-        };
+        return meeting.ToViewModel();
     }
 
     /// <summary>
@@ -80,15 +92,7 @@ public class MeetingController : Controller
         var user = 0; //Todo: Get user from identity framework
         var relevantMeetings = appDbContext.Meeting
             .Where(meeting => meeting.Owner == user)
-            .Select(meeting => new MeetingViewModel
-            {
-                ID = meeting.ID,
-                Title = meeting.Title,
-                Description = meeting.Description,
-                From = meeting.From,
-                Until = meeting.Until,
-                Owner = meeting.Owner
-            })
+            .Select(meeting => meeting.ToViewModel())
             .ToArray(); //Todo: Add meetings where user is attendee
         return new GetMeetingViewModel
         {
@@ -102,8 +106,12 @@ public class MeetingController : Controller
     /// <param name="meeting">New meeting description</param>
     /// <returns>Created meeting</returns>
     [HttpPost]
-    public Meeting CreateMeeting([FromBody] CreateMeetingViewModel meeting)
+    public MeetingViewModel CreateMeeting([FromBody] CreateMeetingViewModel meeting)
     {
+        var userId = 0; //Todo: Add owner id from identity framework
+
+        var attendees = appDbContext.Account.Where(account => meeting.Attendees.Contains(account.ID)).ToList();
+
         //Todo: Check for attendees and create notification if not empty (Send SignalR message if connected)
         var meetingDb = new Meeting
         {
@@ -111,16 +119,39 @@ public class MeetingController : Controller
             Description = meeting.Description,
             From = meeting.From,
             Until = meeting.Until,
-            Owner = 0 //Todo: Add owner id from identity framework
+            Owner = userId,
+            Attendees = attendees
         };
+
+        foreach (var attendee in attendees)
+        {
+            NotifyUser(attendee, "Meeting created", "You were added to meeting.", meetingDb);
+        }
+
         var dbEntry = appDbContext.Meeting.Add(meetingDb);
         appDbContext.SaveChanges();
-        return dbEntry.Entity;
+        return dbEntry.Entity.ToViewModel();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+
+
+    private void NotifyUser(Account user, string title, string text, Meeting meeting)
+    {
+        //Todo: Notify connected user with signalR
+        var notification = new Notification
+        {
+            Date = DateTime.Now,
+            Meeting = meeting,
+            Recipient = user,
+            Text = text,
+            Title = title,
+        };
+        appDbContext.Notification.Add(notification);
     }
 }

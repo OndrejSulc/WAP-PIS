@@ -15,4 +15,5 @@ public class Meeting
     public string Description { get; set; }
     public DateTime From { get; set; }
     public DateTime Until { get; set; }
+    public ICollection<Account> Attendees { get; set; }
 }
