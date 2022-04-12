@@ -5,6 +5,7 @@
 >Příkaz pro instalaci dockeru: (Debian)
 >``` 
 >sudo apt install docker
+>sudo apt install docker-compose
 >```
 >
 >Příkaz pro spuštění databáze v dockeru:
