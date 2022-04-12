@@ -8,6 +8,5 @@ namespace WAP_PIS.Database;
 public class Account : IdentityUser
 {
     [Required]
-    public bool IsCEO { get; set; }
-    
+    public DateTime Date_Of_Birth { get; set; }
 }

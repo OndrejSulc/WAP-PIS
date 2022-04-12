@@ -5,6 +5,7 @@ using WAP_PIS.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Linq;
 
 namespace WAP_PIS.Controllers;
 
@@ -58,7 +59,15 @@ public class AuthenticationController : Controller
             lwm.Successful_Authentication = false;
         }
 
-        lwm.IsCEO = user.IsCEO;
+        var manager = _db.Manager.Where( m => m.Account == user).First();
+        if(manager != null)
+        {
+            lwm.IsCEO = manager.IsCEO;
+        }
+        else
+        {
+            lwm.IsCEO = false;
+        }
         return lwm;
     }
 

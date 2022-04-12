@@ -1,15 +1,19 @@
-var customLoginJson = {
-    "Login": "user",
-    "Password": "password",
+function createLoginJSON(login, pw){
+    return {
+    "Login": login,
+    "Password": pw,
     "Successful_Authentication": null,
     "IsCEO": null
+    }
 };
-
-
 
 async function Login()
 {
-    document.getElementById("result").innerHTML += JSON.stringify((await postLogin()))+"<br>";
+    var login = document.getElementById("login_login").value;
+    var pw = document.getElementById("login_pw").value;
+    var json = createLoginJSON(login,pw);
+
+    document.getElementById("result").innerHTML += JSON.stringify((await postLogin(data = json)))+"<br>";
 }
 
 async function CheckLogin()
@@ -24,8 +28,7 @@ async function Logout()
     document.getElementById("result").innerHTML += await response.text() +"<br>";
 }
 
-
-async function postLogin(url = "/Authentication/Login", data = customLoginJson) {
+async function postLogin(url = "/Authentication/Login", data ) {
     // Default options are marked with *
     const response = await fetch(url, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -41,4 +44,4 @@ async function postLogin(url = "/Authentication/Login", data = customLoginJson) 
       body: JSON.stringify(data) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
-  }
+}
