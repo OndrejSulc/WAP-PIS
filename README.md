@@ -2,6 +2,11 @@
 
 
 >## Databáze
+>Příkaz pro instalaci dockeru: (Debian)
+>``` 
+>sudo apt install docker
+>```
+>
 >Příkaz pro spuštění databáze v dockeru:
 >``` 
 >sudo docker-compose up
