@@ -2,44 +2,43 @@
 using Microsoft.AspNetCore.Mvc;
 using WAP_PIS.Models;
 using WAP_PIS.Database;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace WAP_PIS.Controllers;
 
 public class TestController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly ApplicationDbContext appDbContext;
-
-    public TestController(ILogger<HomeController> logger,ApplicationDbContext applicationDbContext)
+    private readonly ApplicationDbContext _db;
+    private readonly UserManager<IdentityUser> _um;
+    private IWebHostEnvironment _he;
+    private SignInManager<IdentityUser> _sm;
+    public TestController(ApplicationDbContext applicationDbContext,
+                         UserManager<IdentityUser> userManager,
+                         IWebHostEnvironment webHostEnv,
+                         SignInManager<IdentityUser> signInManager)
     {
-        _logger = logger;
-        appDbContext = applicationDbContext;
+        _db = applicationDbContext;
+        _um = userManager;
+        _he = webHostEnv;
+        _sm = signInManager;
     }
 
-    public string Index()
+    [HttpGet]
+    public async Task<string> CreateNewUser()
     {
-        var date = new DateTime(1999,1,5);
-        var newAcc = new Account(){
-            Login = "user",
-            Password = "user",
-            Name = "UserName",
-            Surname = "UserSur",
-            Date_Of_Birth = date};
+        var user = new Account(){UserName = "user", Email = "user@email.cz"};
+        var result = await _um.CreateAsync(user, "password");
 
-        appDbContext.Account.Add(newAcc);
-        appDbContext.SaveChanges();
+        if(result.Succeeded)
+        {
+            await _sm.SignInAsync(user,false);
+            return "New USER CREATED";
 
-        return "API Test Index call finished";
+        }  
+        return "FAILED to create new user";
+
     }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
 }
