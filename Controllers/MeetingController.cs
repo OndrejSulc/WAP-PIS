@@ -38,6 +38,7 @@ public class MeetingController : Controller
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var meeting = appDbContext.Meeting
             .Include(meeting => meeting.Attendees)
+            .Include(meeting => meeting.Owner)
             .SingleOrDefault(meeting => meeting.ID == meetingId);
         if (meeting == null)
         {
