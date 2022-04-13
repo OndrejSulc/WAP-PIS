@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using WAP_PIS.Models;
 using System.Security.Claims;
@@ -32,7 +32,7 @@ public class UserManagementController : ControllerBase
     }
 
     [HttpDelete]
-    public async Task<UserManagementViewModel> DeleteUser([FromBody] UserManagementViewModel umvm)
+    public async Task<UserManagementDeleteViewModel> DeleteUser([FromBody] UserManagementDeleteViewModel umvm)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = await _um.FindByIdAsync(userId);

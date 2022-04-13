@@ -2,7 +2,7 @@ using WAP_PIS.Database;
 namespace WAP_PIS.Models;
 
 
-public class UserManagementViewModelCreate
+public class UserManagementCreateViewModel
 {
      public string Username { get; set; }
     public string Password { get; set; }

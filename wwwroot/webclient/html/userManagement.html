@@ -22,14 +22,40 @@
 <br/>
 <input id="um_manager_id" value="" placeholder="Manger for secretary ID" type="string">
 
-<button onclick="CreateUser()"> CreateUser</button>
+<button onclick="um_createUser()"> CreateUser</button>
+
+<script>
+    async function um_createUser()
+    {
+        var login = document.getElementById("um_login").value;
+        var pw = document.getElementById("um_pw").value;
+        var name = document.getElementById("um_name").value;
+        var surname = document.getElementById("um_surname").value;
+        var dateOfBirth = document.getElementById("um_date_of_birth").value;
+        var issecretary = document.getElementById("um_issecretary").checked;
+        var managerID = document.getElementById("um_manager_id").value;
+
+        var response = await createUser(login, pw, name, surname, dateOfBirth, issecretary, managerID);
+        document.getElementById("result").innerHTML += JSON.stringify(response)+"<br>";
+    }
+</script>
 
 
 <h3>Delete User</h3>
 
-<input id="um_login" placeholder="userID" type="text">
+<input id="um_delete_id" placeholder="userID" type="text">
 
-<button onclick="DeleteUser()"> Delete</button>
+<button onclick="um_deleteUser()"> Delete</button>
+
+<script>
+    async function um_deleteUser()
+    {
+        var deleteId = document.getElementById("um_delete_id").value;
+
+        var response = await deleteUser(deleteId);
+        document.getElementById("result").innerHTML += JSON.stringify(response)+"<br>";
+    }
+</script>
 
 
 <div id="result">Server Response:<br/></div>
