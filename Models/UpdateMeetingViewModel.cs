@@ -6,5 +6,4 @@ public class UpdateMeetingViewModel
     public string? Description { get; set; } = null;
     public DateTime? From { get; set; } = null;
     public DateTime? Until { get; set; } = null;
-    public int[]? Attendees { get; set; } = null;
 }

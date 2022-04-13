@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Security.Claims;
 using System.Text.Json;
+using System.Xml.Schema;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -87,11 +88,6 @@ public class MeetingController : ControllerBase
             return Unauthorized("You do not have permissions for this action.");
         }
 
-        foreach (var attendee in meeting.Attendees)
-        {
-            await NotifyUser(attendee, "Meeting changed", "Meeting, which you attend was changed", meeting);
-        }
-
         meeting.Title = updateMeeting.Title ?? meeting.Title;
         meeting.Description = updateMeeting.Description ?? meeting.Description;
         meeting.From = updateMeeting.From ?? meeting.From;
@@ -112,17 +108,15 @@ public class MeetingController : ControllerBase
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = userManager.Users.SingleOrDefault(u => u.Id == userId);
 
-        //If user is secretary get meetings for manager
-        if (user is Secretary)
-        {
-            var secretary = appDbContext.Secretary.Include(s => s.Manager).Single(s => s.Id == user.Id);
-            user = secretary.Manager;
-        }
+        var manager = (user is Secretary s ? s.Manager : user as Manager)!;
 
         var relevantMeetings = appDbContext.Meeting
-            .Where(meeting => meeting.Owner == user)
+            .Include(m => m.Attendees)
+            .Where(meeting => meeting.Owner == manager || meeting.Attendees.Contains(manager))
+            .ToList() //Do not remove. Causes sql connection to be used multiple times asynchronously which causes error
             .Select(meeting => meeting.ToViewModel())
-            .ToArray(); //Todo: Add meetings where user is attendee
+            .ToArray();
+
         return new GetMeetingViewModel
         {
             Meetings = relevantMeetings
@@ -154,8 +148,6 @@ public class MeetingController : ControllerBase
                 return Unauthorized("You do not have permissions for this action");
         }
 
-        var attendees = appDbContext.Manager.Where(a => meeting.Attendees.Contains(a.Id)).ToList();
-
         var meetingDb = new Meeting
         {
             Title = meeting.Title,
@@ -163,13 +155,7 @@ public class MeetingController : ControllerBase
             From = meeting.From,
             Until = meeting.Until,
             Owner = owner,
-            Attendees = attendees
         };
-
-        foreach (var manager in attendees)
-        {
-            await NotifyUser(manager, "Meeting created", "You were added to meeting.", meetingDb);
-        }
 
         if (user is Secretary s)
         {
@@ -180,6 +166,110 @@ public class MeetingController : ControllerBase
         await appDbContext.SaveChangesAsync();
         return dbEntry.Entity.ToViewModel();
     }
+
+    /// <summary>
+    /// Creates new group meeting
+    /// </summary>
+    /// <param name="meeting">New group meeting description</param>
+    /// <returns>Created meeting</returns>
+    [HttpPost]
+    [Authorize("CEO")]
+    public async Task<ActionResult<MeetingViewModel>> CreateGroupMeeting([FromBody] CreateGroupMeetingViewModel meeting)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var attendees = userManager.Users.Where(u => meeting.Attendees.Contains(u.Id)).OfType<Manager>().ToList();
+        var user = userManager.Users.SingleOrDefault(u => u.Id == userId);
+
+
+        Manager owner;
+        switch (user)
+        {
+            case Secretary secretary:
+                owner = secretary.Manager;
+                break;
+            case Manager manager:
+                owner = manager;
+                break;
+            default:
+                return Unauthorized("You do not have permissions for this action");
+        }
+
+        var meetingDb = new Meeting
+        {
+            Title = meeting.Title,
+            Description = meeting.Description,
+            From = meeting.From,
+            Until = meeting.Until,
+            Owner = owner,
+            Attendees = attendees.ToList()
+        };
+
+        if (user is Secretary s)
+        {
+            await NotifyUser(s.Manager, "Meeting created", "Meeting was created for you by your secretary", meetingDb);
+        }
+
+        foreach (var manager in attendees)
+        {
+            await NotifyUser(manager, "Meeting created", "You were added to group meeting", meetingDb);
+        }
+
+
+        var dbEntry = appDbContext.Meeting.Add(meetingDb);
+        await appDbContext.SaveChangesAsync();
+        return dbEntry.Entity.ToViewModel();
+    }
+
+    [HttpPatch]
+    [Authorize("CEO")]
+    public async Task<ActionResult<MeetingViewModel>> UpdateGroupMeeting(int meetingId, [FromBody] UpdateGroupMeetingViewModel updateMeeting)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = userManager.Users.SingleOrDefault(u => u.Id == userId);
+
+        List<Manager> attendees;
+        if (updateMeeting.Attendees is { Length: > 0 })
+        {
+            attendees = appDbContext.Manager.Where(m => updateMeeting.Attendees.Contains(m.Id)).ToList();
+        }
+        else
+        {
+            attendees = new List<Manager>();
+        }
+
+        var meeting = appDbContext.Meeting
+            .Include(meeting => meeting.Owner)
+            .Include(meeting => meeting.Attendees)
+            .SingleOrDefault(meeting => meeting.ID == meetingId);
+
+        if (meeting == null)
+        {
+            return NotFound("Meeting with id: " + meetingId + " was not found.");
+        }
+
+
+
+        meeting.Title = updateMeeting.Title ?? meeting.Title;
+        meeting.Description = updateMeeting.Description ?? meeting.Description;
+        meeting.From = updateMeeting.From ?? meeting.From;
+        meeting.Until = updateMeeting.Until ?? meeting.Until;
+
+        foreach (var manager in meeting.Attendees)
+        {
+            await NotifyUser(manager, "Updated meeting", "Meeting you participate in has been updated.", meeting);
+        }
+
+        foreach (var manager in attendees.Except(meeting.Attendees))
+        {
+            await NotifyUser(manager, "New meeting", "You were added to meeting", meeting);
+        }
+        meeting.Attendees = updateMeeting.Attendees == null ? meeting.Attendees : attendees;
+
+        appDbContext.Update(meeting);
+        await appDbContext.SaveChangesAsync();
+        return meeting.ToViewModel();
+    }
+
 
     private async Task NotifyUser(Account user, string title, string text, Meeting meeting)
     {

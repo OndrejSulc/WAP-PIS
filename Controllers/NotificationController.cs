@@ -31,9 +31,8 @@ public class NotificationController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var relevantNotifications = appDbContext.Notification
-            .Include(n=> n.Meeting.Owner)
-            .Include(notification => notification.Meeting)
             .Where(notification => notification.Recipient.Id == userId)
+            .ToList()
             .Select(notification => notification.ToViewModel())
             .ToList();
 
@@ -64,6 +63,7 @@ public class NotificationController : ControllerBase
         }
 
         appDbContext.Notification.Remove(notification);
+        appDbContext.SaveChanges();
 
         return Ok();
     }

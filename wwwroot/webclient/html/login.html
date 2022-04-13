@@ -23,9 +23,9 @@
 <script>
     async function l_login()
     {
-        var login = document.getElementById("login_login").value;
+        var username = document.getElementById("login_login").value;
         var pw = document.getElementById("login_pw").value;
-        var response = await login(login,pw);
+        var response = await login(username,pw);
         document.getElementById("result").innerHTML += JSON.stringify(response)+"<br>";
     }
 </script>

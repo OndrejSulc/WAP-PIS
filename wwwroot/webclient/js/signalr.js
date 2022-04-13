@@ -12,6 +12,5 @@ async function startSignalR(onNotification) {
         console.log("SignalR Connected");
     } catch (err) {
         console.log(err);
-        setTimeout(start, 5000);
     }
 }

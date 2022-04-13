@@ -23,6 +23,28 @@ async function updateMeeting(meetingId, newTitle = null, newDescription = null, 
     )
 }
 
+async function updateGroupMeeting(meetingId, newTitle = null, newDescription = null, newFrom = null, newUntil = null, attendees = null) {
+    let body = {
+        "title": newTitle,
+        "description": newDescription,
+        "from": newFrom,
+        "until": newUntil,
+        "attendees": attendees
+    };
+
+    return fetch("/Meeting/UpdateGroupMeeting?" + new URLSearchParams({
+        meetingId: meetingId
+    }),
+        {
+            method: 'PATCH',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    )
+}
+
 async function removeMeeting(meetingId) {
     return fetch("/Meeting/DeleteMeeting?" + new URLSearchParams({
         meetingId: meetingId
@@ -33,13 +55,31 @@ async function removeMeeting(meetingId) {
     );
 }
 
-async function createMeeting(title, description, from, until, attendees) {
+async function createGroupMeeting(title, description, from, until, attendees) {
     let body = {
         "title": title,
         "description": description,
         "from": from,
         "until": until,
         "attendees": attendees
+    };
+    return await fetch("/Meeting/CreateGroupMeeting",
+        {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    );
+}
+
+async function createMeeting(title, description, from, until) {
+    let body = {
+        "title": title,
+        "description": description,
+        "from": from,
+        "until": until,
     };
     return await fetch("/Meeting/CreateMeeting",
         {

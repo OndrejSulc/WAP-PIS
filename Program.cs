@@ -1,7 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using WAP_PIS.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using WAP_PIS.ClaimsFactory;
+using WAP_PIS.Authorization;
 using WAP_PIS.SignalRHubs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,11 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 
-builder.Services.AddScoped<IUserClaimsPrincipalFactory<Account>, RoleClaimPrincipalFactory>();
+builder.Services.AddScoped<IAuthorizationHandler, CeoAuthorizeHandler>();
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("CEO", policy =>
-        policy.RequireClaim("Role", "CEO")
+        {
+            policy.Requirements.Add(new CeoAuthorizeHandler.CeoRequirement());
+        }
     );
 });
 

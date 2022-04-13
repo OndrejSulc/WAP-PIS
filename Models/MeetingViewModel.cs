@@ -8,4 +8,5 @@ public class MeetingViewModel
     public string Description { get; set; }
     public DateTime From { get; set; }
     public DateTime Until { get; set; }
+    public string[] Attendees { get; set; }
 }
