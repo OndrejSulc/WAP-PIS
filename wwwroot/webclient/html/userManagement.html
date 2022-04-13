@@ -58,6 +58,17 @@
 </script>
 
 
+<h3>GetAllUsers</h3>
+<button onclick="um_getAllUsers()">GetAllUsers</button>
+
+<script>
+    async function um_getAllUsers()
+    {
+        var response = await getAllUsers();
+        document.getElementById("result").innerHTML += JSON.stringify(response)+"<br>";
+    }
+</script>
+
 <div id="result">Server Response:<br/></div>
 
 </body>
