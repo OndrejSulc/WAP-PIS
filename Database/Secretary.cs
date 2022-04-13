@@ -5,5 +5,6 @@ namespace WAP_PIS.Database;
 [Table("Secretary")]
 public class Secretary : Account
 {
-    public Manager Manager { get; set; }
+    [ForeignKey("Manager.Id")]
+    public virtual Manager Manager { get; set; }
 }

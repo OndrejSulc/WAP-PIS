@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Page</title>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.7/signalr.min.js"></script>
+
+    <script src="/webclient/js/meeting.js"></script>
+    <script src="/webclient/js/notification.js"></script>
+    <script src="/webclient/js/userAvailability.js"></script>
+    <script src="/webclient/js/signalr.js"></script>
+    <script src="/webclient/js/login.js"></script>
+</head>
+<body>
+<h1>Login</h1>
+
+<input id="login_login" placeholder="login" type="text">
+<br/>
+<input id="login_pw" placeholder="password" type="password">
+
+<br/>
+
+<button onclick="Login()"> Login</button>
+
+<button onclick="Logout()"> Logout</button>
+
+<button onclick="CheckLogin()"> Check login</button>
+
+<div id="result">Server Response:<br/></div>
+
+<div id="meetings">
+</div>
+<br>
+<label>
+    Meeting name:
+    <input type="text" id="meetingName"/>
+</label>
+<br>
+<label>
+    Meeting description:
+    <input type="text" id="meetingDescription"/>
+</label>
+<br>
+<label>
+    Attendees:
+    <input type="text" id="attendees"/>
+</label>
+<br>
+<label>
+    From:
+    <input type="datetime-local" id="meetingFrom"/>
+</label>
+<br>
+<label>
+    Until:
+    <input type="datetime-local" id="meetingTo"/>
+</label>
+<pre id="createMeetingResponse"></pre>
+<button onclick="createMeetingClick()">Create meeting</button>
+
+<pre id="getMeetingsResponse"></pre>
+<button onclick="getMeetingsClick()">Get meetings</button>
+
+<pre id="signalrNotifications"></pre>
+<button onclick="startSignalRClick()">Start signalR</button>
+<br>
+
+<pre id="deleteMeetingResponse"></pre>
+<label>
+    Meeting Id:
+    <input type="number" id="deleteMeetingId"/>
+</label>
+<button onclick="deleteMeetingClick()">Delete meeting</button>
+
+<br>
+<label>
+    Update Meeting Id:
+    <input type="number" id="updateMeetingId"/>
+</label>
+<button onclick="updateMeetingClick()">Update meeting</button>
+<br>
+<pre id="getNotificationResult"></pre>
+<button onclick="getNotificationsClick()">Get notifications</button>
+
+<br>
+
+<label>
+    From:
+    <input type="datetime-local" id="userAvailabilityFrom"/>
+</label>
+<br>
+<label>
+    Until:
+    <input type="datetime-local" id="userAvailabilityTo"/>
+</label>
+<pre id="ceoAvailabilityResponse"></pre>
+<button onclick="ceoAvailabilityClick()">Check CEO availability</button>
+<pre id="userAvailabilityResponse"></pre>
+<label>
+    User ID:
+    <input type="text" id="userAvailabilityId"/>
+</label>
+<button onclick="userAvailableClick()">Check user availability</button>
+<script>
+    function getMeetingsClick() {
+        // Calls getMeeting endpoint on server
+        let meetings = getMeetings()
+        meetings
+            .then(response => response.json())
+            .then(data => {
+                $("#getMeetingsResponse").text(JSON.stringify(data, undefined, 2));
+            })
+    }
+
+    function createMeetingClick() {
+        let name = $("#meetingName").val()
+        let description = $("#meetingDescription").val()
+        let attendees = $("#attendees").val().split(",")
+        let from = $("#meetingFrom").val()
+        let until = $("#meetingUntil").val()
+        // Calls create meeting endpoint on server
+        createMeeting(name, description, from, until, attendees).then(response => response.json())
+            .then(data => {
+                $("#createMeetingResponse").text(JSON.stringify(data, null, 2));
+            })
+    }
+
+    function startSignalRClick() {
+        let notificationElement = $("#signalrNotifications");
+
+        //Function called when signalR receives net notification
+        function onNotification(notification) {
+            console.log(JSON.stringify(notification, null, 2))
+            notificationElement.append("\n" + JSON.stringify(notification, null, 2) + "\n");
+        }
+
+        //Starts signalR receiver with callback for new notification
+        startSignalR(onNotification)
+        notificationElement.text("SignalR started");
+    }
+
+    function deleteMeetingClick() {
+        let meetingId = $("#deleteMeetingId").val();
+        //Calls remove meeting endpoint
+        removeMeeting(meetingId).then(result => {
+            $("#deleteMeetingResponse").text("Meeting removed")
+        });
+    }
+
+    function updateMeetingClick() {
+        let name = $("#meetingName").val()
+        //Null if no change should be made
+        name = name ? name : null
+        let description = $("#meetingDescription").val()
+        description = description ? description : null
+        let attendees = $("#attendees").val().split(",")
+        let from = $("#meetingFrom").val()
+        from = from ? from : null
+        let until = $("#meetingUntil").val()
+        until = until ? until : null
+        let meetingId = $("#updateMeetingId").val()
+        // Calls create meeting endpoint on server
+        updateMeeting(meetingId, name, description, from, until, attendees).then(response => response.json())
+            .then(data => {
+                $("#createMeetingResponse").text(JSON.stringify(data, null, 2));
+            })
+    }
+
+    function getNotificationsClick() {
+        getNotifications().then(response => response.json()).then(data => {
+                $("#getNotificationResult").text(JSON.stringify(data, null, 2));
+            }
+        )
+    }
+    
+    function ceoAvailabilityClick() {
+        let from = $("#userAvailabilityFrom").val()
+        let until = $("#userAvailabilityTo").val()
+        isCeoAvailable(from, until).then(response => response.json()).then(data => {
+            $("#ceoAvailabilityResponse").text(JSON.stringify(data, null, 2));
+        })
+    }
+    
+    function userAvailableClick() {
+        let from = $("#userAvailabilityFrom").val()
+        let until = $("#userAvailabilityTo").val()
+        let userId = $("#userAvailabilityId").val()
+        console.log(until);
+        isUserAvailable(userId, from, until).then(response => response.json()).then(data => {
+            $("#ceoAvailabilityResponse").text(JSON.stringify(data, null, 2));
+        })
+    }
+</script>
+</body>
+</html>
