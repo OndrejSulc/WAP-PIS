@@ -38,61 +38,65 @@ public class MeetingController : ControllerBase
     public async Task<IActionResult> DeleteMeeting(int meetingId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = userManager.Users.SingleOrDefault(u => u.Id == userId);
+
         var meeting = appDbContext.Meeting
             .Include(meeting => meeting.Attendees)
             .Include(meeting => meeting.Owner)
             .SingleOrDefault(meeting => meeting.ID == meetingId);
+
         if (meeting == null)
         {
             return NotFound("Meeting with id: " + meetingId + " was not found.");
         }
-        //Todo: Check for update permissions. Secretary can remove managers meetings. CEO can edit everything
-        if (meeting.Owner.Id != userId) //Todo: More sophisticated permission checking needed
+
+        if (!CheckModificationPermission(user, meeting))
         {
             return Unauthorized("You do not have permissions for this action.");
         }
-    
+
         foreach (var manager in meeting.Attendees)
         {
             await NotifyUser(manager, "Meeting cancelled", "Meeting, which you attend was cancelled", meeting);
         }
-    
+
         //Todo: Notification is deleted when deleting meeting. This is probably wrong
         appDbContext.Meeting.Remove(meeting);
         await appDbContext.SaveChangesAsync();
         return Ok();
     }
-    
+
     [HttpPatch]
     public async Task<ActionResult<MeetingViewModel>> UpdateMeeting(int meetingId, [FromBody] UpdateMeetingViewModel updateMeeting)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
+        var user = userManager.Users.SingleOrDefault(u => u.Id == userId);
+
         var meeting = appDbContext.Meeting
             .Include(meeting => meeting.Owner)
             .Include(meeting => meeting.Attendees)
             .SingleOrDefault(meeting => meeting.ID == meetingId);
-    
+
         if (meeting == null)
         {
             return NotFound("Meeting with id: " + meetingId + " was not found.");
         }
-        //Todo: Check for update permissions. Secretary can edit managers meetings. CEO can edit everything
-        if (meeting.Owner.Id != userId) //Todo: More sophisticated permission checking needed
+
+        if (!CheckModificationPermission(user, meeting))
         {
             return Unauthorized("You do not have permissions for this action.");
         }
-    
+
         foreach (var attendee in meeting.Attendees)
         {
             await NotifyUser(attendee, "Meeting changed", "Meeting, which you attend was changed", meeting);
         }
-    
+
         meeting.Title = updateMeeting.Title ?? meeting.Title;
         meeting.Description = updateMeeting.Description ?? meeting.Description;
         meeting.From = updateMeeting.From ?? meeting.From;
         meeting.Until = updateMeeting.Until ?? meeting.Until;
-    
+
         appDbContext.Update(meeting);
         await appDbContext.SaveChangesAsync();
         return meeting.ToViewModel();
@@ -106,7 +110,15 @@ public class MeetingController : ControllerBase
     public GetMeetingViewModel GetMeetings()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = appDbContext.Account.SingleOrDefault(u => u.Id == userId);
+        var user = userManager.Users.SingleOrDefault(u => u.Id == userId);
+
+        //If user is secretary get meetings for manager
+        if (user is Secretary)
+        {
+            var secretary = appDbContext.Secretary.Include(s => s.Manager).Single(s => s.Id == user.Id);
+            user = secretary.Manager;
+        }
+
         var relevantMeetings = appDbContext.Meeting
             .Where(meeting => meeting.Owner == user)
             .Select(meeting => meeting.ToViewModel())
@@ -128,7 +140,7 @@ public class MeetingController : ControllerBase
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         // var user = appDbContext.Account.SingleOrDefault(u => u.Id == userId);
         var user = userManager.Users.SingleOrDefault(u => u.Id == userId);
-    
+
         Manager owner;
         switch (user)
         {
@@ -141,10 +153,9 @@ public class MeetingController : ControllerBase
             default:
                 return Unauthorized("You do not have permissions for this action");
         }
-    
+
         var attendees = appDbContext.Manager.Where(a => meeting.Attendees.Contains(a.Id)).ToList();
-    
-        //Todo: Check for attendees and create notification if not empty (Send SignalR message if connected)
+
         var meetingDb = new Meeting
         {
             Title = meeting.Title,
@@ -154,12 +165,17 @@ public class MeetingController : ControllerBase
             Owner = owner,
             Attendees = attendees
         };
-    
+
         foreach (var manager in attendees)
         {
             await NotifyUser(manager, "Meeting created", "You were added to meeting.", meetingDb);
         }
-    
+
+        if (user is Secretary s)
+        {
+            await NotifyUser(s.Manager, "Meeting created", "Meeting was created for you by your secretary", meetingDb);
+        }
+
         var dbEntry = appDbContext.Meeting.Add(meetingDb);
         await appDbContext.SaveChangesAsync();
         return dbEntry.Entity.ToViewModel();
@@ -186,5 +202,19 @@ public class MeetingController : ControllerBase
         }
 
         appDbContext.Notification.Add(notification);
+    }
+
+    private bool CheckModificationPermission(Account? user, Meeting meeting)
+    {
+        switch (user)
+        {
+            case Secretary secretary:
+                return meeting.Owner == secretary.Manager;
+            case Manager manager:
+                if (manager.IsCEO) return true;
+                return meeting.Owner == manager;
+            default:
+                return false;
+        }
     }
 }
