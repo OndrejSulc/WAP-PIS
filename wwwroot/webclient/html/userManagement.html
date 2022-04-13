@@ -2,21 +2,35 @@
 <html>
 <body>
 
-<script src="/webclient/js/login.js"></script>
+<script src="/webclient/js/userManagement.js"></script>
 
 <h1>UserManagement</h1>
 
+<h3>Create New User</h3>
+
 <input id="um_login" placeholder="login" type="text">
 <br/>
-<input id="um_pw" placeholder="password" type="password">
-
+<input id="um_pw" value="password" placeholder="password" type="text">
 <br/>
+<input id="um_name" value="TestUserName" placeholder="name" type="text">
+<br/>
+<input id="um_surname" value="TestUserSurname" placeholder="password" type="text">
+<br/>
+<input id="um_date_of_birth" value="2020-04-13" placeholder="Date of birth" type="date">
+<br/>
+<input id="um_issecretary" placeholder="IsSecretary" type="checkbox">
+<br/>
+<input id="um_manager_id" value="" placeholder="Manger for secretary ID" type="string">
 
-<button onclick="Login()"> Login</button>
+<button onclick="CreateUser()"> CreateUser</button>
 
-<button onclick="Logout()"> Logout</button>
 
-<button onclick="CheckLogin()"> Check login</button>
+<h3>Delete User</h3>
+
+<input id="um_login" placeholder="userID" type="text">
+
+<button onclick="DeleteUser()"> Delete</button>
+
 
 <div id="result">Server Response:<br/></div>
 
