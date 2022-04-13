@@ -12,7 +12,7 @@
     <script src="/webclient/js/login.js"></script>
 </head>
 <body>
-<h1>Login</h1>
+<h2>Login</h2>
 
 <input id="login_login" placeholder="login" type="text">
 <br/>
@@ -38,6 +38,7 @@
     }
 </script>
 
+<h2>Meetings</h2>
 <div id="meetings">
 </div>
 <br>
@@ -67,13 +68,7 @@
 </label>
 <pre id="createMeetingResponse"></pre>
 <button onclick="createMeetingClick()">Create meeting</button>
-
-<pre id="getMeetingsResponse"></pre>
-<button onclick="getMeetingsClick()">Get meetings</button>
-
-<pre id="signalrNotifications"></pre>
-<button onclick="startSignalRClick()">Start signalR</button>
-<br>
+<button onclick="createGroupMeetingClick()">Create group meeting</button>
 
 <pre id="deleteMeetingResponse"></pre>
 <label>
@@ -88,12 +83,30 @@
     <input type="number" id="updateMeetingId"/>
 </label>
 <button onclick="updateMeetingClick()">Update meeting</button>
+<button onclick="updateGroupMeetingClick()">Update Group meeting</button>
 <br>
+
+<pre id="getMeetingsResponse"></pre>
+<button onclick="getMeetingsClick()">Get meetings</button>
+
+<h2>Notification</h2>
+
+<pre id="signalrNotifications"></pre>
+<button onclick="startSignalRClick()">Start signalR</button>
+<br>
+
 <pre id="getNotificationResult"></pre>
 <button onclick="getNotificationsClick()">Get notifications</button>
 
 <br>
+<label>
+    Notification id:
+<input type="number" id="notificationId"/>
+</label>
+<button onclick="dismissNotificationClick()">Dismiss notification</button>
 
+<br>
+<h2>User availability</h2>
 <label>
     From:
     <input type="datetime-local" id="userAvailabilityFrom"/>
@@ -112,6 +125,12 @@
 </label>
 <button onclick="userAvailableClick()">Check user availability</button>
 <script>
+    function dismissNotificationClick() {
+        let notificationId = $("#notificationId").val();
+        dismissNotification(notificationId);
+        
+    }
+    
     function getMeetingsClick() {
         // Calls getMeeting endpoint on server
         let meetings = getMeetings()
@@ -129,7 +148,20 @@
         let from = $("#meetingFrom").val()
         let until = $("#meetingUntil").val()
         // Calls create meeting endpoint on server
-        createMeeting(name, description, from, until, attendees).then(response => response.json())
+        createMeeting(name, description, from, until).then(response => response.json())
+            .then(data => {
+                $("#createMeetingResponse").text(JSON.stringify(data, null, 2));
+            })
+    }
+
+    function createGroupMeetingClick() {
+        let name = $("#meetingName").val()
+        let description = $("#meetingDescription").val()
+        let attendees = $("#attendees").val().split(",")
+        let from = $("#meetingFrom").val()
+        let until = $("#meetingUntil").val()
+        // Calls create meeting endpoint on server
+        createGroupMeeting(name, description, from, until, attendees).then(response => response.json())
             .then(data => {
                 $("#createMeetingResponse").text(JSON.stringify(data, null, 2));
             })
@@ -163,14 +195,33 @@
         name = name ? name : null
         let description = $("#meetingDescription").val()
         description = description ? description : null
-        let attendees = $("#attendees").val().split(",")
         let from = $("#meetingFrom").val()
         from = from ? from : null
         let until = $("#meetingUntil").val()
         until = until ? until : null
         let meetingId = $("#updateMeetingId").val()
         // Calls create meeting endpoint on server
-        updateMeeting(meetingId, name, description, from, until, attendees).then(response => response.json())
+        updateMeeting(meetingId, name, description, from, until).then(response => response.json())
+            .then(data => {
+                $("#createMeetingResponse").text(JSON.stringify(data, null, 2));
+            })
+    }
+    
+    function updateGroupMeetingClick() {
+        let name = $("#meetingName").val()
+        //Null if no change should be made
+        name = name ? name : null
+        let description = $("#meetingDescription").val()
+        description = description ? description : null
+        let attendees = $("#attendees").val().split(",")
+        attendees = attendees.length === 0? null : attendees
+        let from = $("#meetingFrom").val()
+        from = from ? from : null
+        let until = $("#meetingUntil").val()
+        until = until ? until : null
+        let meetingId = $("#updateMeetingId").val()
+        // Calls create meeting endpoint on server
+        updateGroupMeeting(meetingId, name, description, from, until, attendees).then(response => response.json())
             .then(data => {
                 $("#createMeetingResponse").text(JSON.stringify(data, null, 2));
             })
