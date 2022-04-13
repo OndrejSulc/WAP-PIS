@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
+using WAP_PIS.Extensions;
 
 namespace WAP_PIS.Controllers;
 
@@ -29,6 +30,18 @@ public class UserManagementController : ControllerBase
         _um = userManager;
         _he = webHostEnv;
         _sm = signInManager;
+    }
+
+    [HttpGet]
+    [Authorize("CEO")]
+    public UserManagementGetAllUsersViewModel GetAllUsers()
+    {
+        var managers = _db.Manager.ToList().Select( m => m.ToViewModel() ).ToList();
+        var secretaries = _db.Secretary.ToList().Select( s => s.ToViewModel() ).ToList();
+
+        var vm = new UserManagementGetAllUsersViewModel(){Managers = managers, Secretaries = secretaries};
+
+        return vm;
     }
 
 

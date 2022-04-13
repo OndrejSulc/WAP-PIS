@@ -39,4 +39,15 @@ public static class ViewModelExtensions
             Surname = manager.Surname
         };
     }
+
+     public static SecretaryViewModel ToViewModel(this Secretary secretary)
+    {
+        return new SecretaryViewModel
+        {
+            Id = secretary.Id,
+            Name = secretary.Name,
+            Surname = secretary.Surname,
+            Manager = secretary.Manager.ToViewModel()
+        };
+    }
 }
