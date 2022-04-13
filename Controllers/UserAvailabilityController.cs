@@ -7,8 +7,9 @@ using WAP_PIS.Models;
 
 namespace WAP_PIS.Controllers;
 
-[Authorize]
-public class UserAvailabilityController : Controller
+[ApiController]
+[Route("[controller]/[action]")]
+public class UserAvailabilityController : ControllerBase
 {
     private ILogger<UserAvailabilityController> logger;
     private ApplicationDbContext dbContext;

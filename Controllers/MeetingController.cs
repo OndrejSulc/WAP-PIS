@@ -16,8 +16,10 @@ namespace WAP_PIS.Controllers;
 /// <summary>
 /// Controller for managing meetings
 /// </summary>
+[ApiController]
+[Route("[controller]/[action]")]
 [Authorize]
-public class MeetingController : Controller
+public class MeetingController : ControllerBase
 {
     private readonly ILogger<MeetingController> _logger;
     private readonly ApplicationDbContext appDbContext;
@@ -65,9 +67,9 @@ public class MeetingController : Controller
     public async Task<ActionResult<MeetingViewModel>> UpdateMeeting(int meetingId, [FromBody] UpdateMeetingViewModel updateMeeting)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = appDbContext.Account.SingleOrDefault(u => u.Id == userId);
         
         var meeting = appDbContext.Meeting
+            .Include(meeting => meeting.Owner)
             .Include(meeting => meeting.Attendees)
             .SingleOrDefault(meeting => meeting.ID == meetingId);
     
@@ -162,14 +164,6 @@ public class MeetingController : Controller
         await appDbContext.SaveChangesAsync();
         return dbEntry.Entity.ToViewModel();
     }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
-
-
 
     private async Task NotifyUser(Account user, string title, string text, Meeting meeting)
     {

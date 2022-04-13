@@ -11,8 +11,10 @@ using System.Linq;
 
 namespace WAP_PIS.Controllers;
 
+[ApiController]
+[Route("[controller]/[action]")]
 [Authorize]
-public class UserManagementController : Controller
+public class UserManagementController : ControllerBase
 {
     private readonly ApplicationDbContext _db;
     private readonly UserManager<Account> _um;

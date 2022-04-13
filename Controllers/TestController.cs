@@ -26,7 +26,7 @@ public class TestController : Controller
     {
         var user = new Manager()
         {
-            UserName = "user2",
+            UserName = "user1",
             Email = "user@email.cz",
             Name = "Tester",
             Surname = "Testovič"

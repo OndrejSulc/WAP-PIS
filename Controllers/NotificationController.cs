@@ -11,7 +11,9 @@ using WAP_PIS.SignalRHubs;
 namespace WAP_PIS.Controllers;
 
 [Authorize]
-public class NotificationController : Controller
+[ApiController]
+[Route("[controller]/[action]")]
+public class NotificationController : ControllerBase
 {
     private readonly ILogger<NotificationController> _logger;
     private readonly ApplicationDbContext appDbContext;
@@ -29,6 +31,7 @@ public class NotificationController : Controller
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var relevantNotifications = appDbContext.Notification
+            .Include(n=> n.Meeting.Owner)
             .Include(notification => notification.Meeting)
             .Where(notification => notification.Recipient.Id == userId)
             .Select(notification => notification.ToViewModel())
