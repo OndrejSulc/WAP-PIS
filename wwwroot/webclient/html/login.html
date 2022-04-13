@@ -12,13 +12,23 @@
 
 <br/>
 
-<button onclick="Login()"> Login</button>
+<button onclick="l_login()">Login</button>
 
-<button onclick="Logout()"> Logout</button>
+<button onclick="logout()"> Logout</button>
 
-<button onclick="CheckLogin()"> Check login</button>
+<button onclick="checkLogin()"> Check login</button>
 
 <div id="result">Server Response:<br/></div>
+
+<script>
+    async function l_login()
+    {
+        var login = document.getElementById("login_login").value;
+        var pw = document.getElementById("login_pw").value;
+        var response = await login(login,pw);
+        document.getElementById("result").innerHTML += JSON.stringify(response)+"<br>";
+    }
+</script>
 
 </body>
 </html> 
