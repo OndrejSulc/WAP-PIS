@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <title>Test Page</title>
     <script src="/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.7/signalr.min.js"></script>
-
+    <script src="/lib/signalr/signalr.min.js"></script>
     <script src="/webclient/js/meeting.js"></script>
     <script src="/webclient/js/notification.js"></script>
     <script src="/webclient/js/userAvailability.js"></script>
@@ -17,17 +16,27 @@
 
 <input id="login_login" placeholder="login" type="text">
 <br/>
-<input id="login_pw" placeholder="password" type="password">
+<input id="login_pw" value="password" placeholder="password" type="text">
 
 <br/>
 
-<button onclick="Login()"> Login</button>
+<button onclick="l_login()">Login</button>
 
-<button onclick="Logout()"> Logout</button>
+<button onclick="logout()"> Logout</button>
 
-<button onclick="CheckLogin()"> Check login</button>
+<button onclick="checkLogin()"> Check login</button>
 
 <div id="result">Server Response:<br/></div>
+
+<script>
+    async function l_login()
+    {
+        var username = document.getElementById("login_login").value;
+        var pw = document.getElementById("login_pw").value;
+        var response = await login(username,pw);
+        document.getElementById("result").innerHTML += JSON.stringify(response)+"<br>";
+    }
+</script>
 
 <div id="meetings">
 </div>

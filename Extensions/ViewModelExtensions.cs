@@ -14,7 +14,8 @@ public static class ViewModelExtensions
             Description = meeting.Description,
             From = meeting.From,
             Until = meeting.Until,
-            Owner = meeting.Owner.ToViewModel()
+            Owner = meeting.Owner.ToViewModel(),
+            Attendees = meeting.Attendees?.Select(m => m.Id)?.ToArray() ?? Array.Empty<string>()
         };
     }
 
