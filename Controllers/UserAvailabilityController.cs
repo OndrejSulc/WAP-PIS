@@ -18,7 +18,7 @@ public class UserAvailabilityController : Controller
         this.logger = logger;
         this.dbContext = dbContext;
     }
-
+    
     [HttpGet]
     public ActionResult<UserAvailabilityResultViewModel> IsAvailable(string user, DateTime from, DateTime to)
     {
@@ -26,28 +26,27 @@ public class UserAvailabilityController : Controller
         {
             return NotFound($"User with id {user} not found.");
         }
-
+    
         var overlappingMeetings = dbContext.Meeting
             .Include(meeting => meeting.Attendees)
-            .Where(meeting => meeting.Owner == user || meeting.Attendees.Select(account => account.Id).Contains(user))
+            .Where(meeting => meeting.Owner.Id == user || meeting.Attendees.Select(manager => manager.Id).Contains(user))
             .Where(meeting => meeting.From < to && from < meeting.Until);
         return new UserAvailabilityResultViewModel
         {
             Available = !overlappingMeetings.Any()
         };
     }
-
-
+    
+    
     [HttpGet]
     public ActionResult<UserAvailabilityResultViewModel> IsCeoAvailable(DateTime from, DateTime to)
     {
         var ceo = dbContext.Manager
-            .Include(manager => manager.Account)
-            .Single(manager => manager.IsCEO).Account.Id;
-
+            .Single(manager => manager.IsCEO).Id;
+    
         var overlappingMeetings = dbContext.Meeting
             .Include(meeting => meeting.Attendees)
-            .Where(meeting => meeting.Owner == ceo || meeting.Attendees.Select(account => account.Id).Contains(ceo))
+            .Where(meeting => meeting.Owner.Id == ceo || meeting.Attendees.Select(manager => manager.Id).Contains(ceo))
             .Where(meeting => meeting.From < to && from < meeting.Until);
         return new UserAvailabilityResultViewModel
         {

@@ -60,7 +60,7 @@ public class AuthenticationController : Controller
         }
 
         
-        var managers = _db.Manager.Where( m => m.Account == user);
+        var managers = _db.Manager.Where( m => m == user);
         if(managers.Count() != 0)
         {
             var manager = managers.First();

@@ -14,7 +14,7 @@ public static class ViewModelExtensions
             Description = meeting.Description,
             From = meeting.From,
             Until = meeting.Until,
-            Owner = meeting.Owner
+            Owner = meeting.Owner.ToViewModel()
         };
     }
 
@@ -27,6 +27,16 @@ public static class ViewModelExtensions
             Text = notification.Text,
             Title = notification.Title,
             ID = notification.ID
+        };
+    }
+    
+    public static ManagerViewModel ToViewModel(this Manager manager)
+    {
+        return new ManagerViewModel
+        {
+            Id = manager.Id,
+            Name = manager.Name,
+            Surname = manager.Surname
         };
     }
 }
