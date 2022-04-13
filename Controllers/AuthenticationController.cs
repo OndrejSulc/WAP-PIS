@@ -48,9 +48,9 @@ public class AuthenticationController : Controller
             return lwm;
         }
 
-        var signInResult = _sm.PasswordSignInAsync(user, lwm.Password, false, false);
+        var signInResult = await _sm.PasswordSignInAsync(user, lwm.Password, false, false);
 
-        if( signInResult.IsCompletedSuccessfully)
+        if( signInResult.Succeeded)
         {
             lwm.Successful_Authentication = true;
         }
