@@ -10,6 +10,6 @@ public class Notification
     public string Title { get; set; }
     public string Text { get; set; }
     public DateTime Date { get; set; }
-    public Account Recipient { get; set; }
+    public Manager Recipient { get; set; }
     public Meeting Meeting { get; set; }
 }

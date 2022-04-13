@@ -8,9 +8,7 @@ public class Meeting
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int ID { get; set; }
-
-    [ForeignKey("Manager")]
-    public string Owner { get; set; }
+    public Manager Owner { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
     public DateTime From { get; set; }

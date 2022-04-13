@@ -19,11 +19,5 @@ public class ApplicationDbContext : IdentityDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
-        modelBuilder.Entity<Manager>()
-            .HasNoKey();
-        
-        modelBuilder.Entity<Secretary>()
-            .HasNoKey();
     }
 }

@@ -9,5 +9,4 @@ public class Account : IdentityUser
 {
     [Required]
     public DateTime Date_Of_Birth { get; set; }
-    public ICollection<Meeting> Meetings { get; set; }
 }

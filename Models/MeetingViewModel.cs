@@ -1,3 +1,5 @@
+using WAP_PIS.Database;
+
 namespace WAP_PIS.Models;
 
 public class MeetingViewModel
@@ -13,7 +15,7 @@ public class MeetingViewModel
     // },
     
     public int ID { get; set; }
-    public string Owner { get; set; }
+    public Manager Owner { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
     public DateTime From { get; set; }
