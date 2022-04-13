@@ -11,14 +11,9 @@ using System.Linq;
 
 namespace WAP_PIS.Controllers;
 
-[ApiController]
-[Route("[controller]/[action]")]
 [Authorize]
-<<<<<<< HEAD
 [ApiController]
 [Route("[controller]/[action]")]
-=======
->>>>>>> master
 public class UserManagementController : ControllerBase
 {
     private readonly ApplicationDbContext _db;
@@ -97,7 +92,6 @@ public class UserManagementController : ControllerBase
     
     private async Task<UserManagementViewModelCreate> CreateNewSecretaryAsync(UserManagementViewModelCreate umvm)
     {
-       
         if(umvm.ManagerIDForNewSecretary == null)
         {
             umvm.Status = false;
@@ -105,29 +99,25 @@ public class UserManagementController : ControllerBase
             return umvm;
         }
 
-        var new_Secretary_Manager_Account = await _um.FindByIdAsync(umvm.ManagerIDForNewSecretary);
-        var new_Secretarys_Manager = new_Secretary_Manager_Account as Manager;
-        if( (new_Secretary_Manager_Account) == null || (new_Secretarys_Manager) == null)
+        var managerAcc = await _um.FindByIdAsync(umvm.ManagerIDForNewSecretary);
+        if(managerAcc is Manager managerOfNewSecretary)
         {
-            umvm.Status = false;
-            umvm.Status_Message = "Wrong manager ID";
-            return umvm;
-        }
-
-        var new_Secretary = new Secretary(){UserName = umvm.Username,
+            var new_Secretary = new Secretary(){UserName = umvm.Username,
                                             Name = umvm.Name,
                                             Surname = umvm.Surname,
-                                            Date_Of_Birth = umvm.Date_Of_Birth
-        };
-
-        new_Secretarys_Manager.Secretary = new_Secretary;
-        new_Secretary.Manager = new_Secretarys_Manager;
-
-        await _um.CreateAsync(new_Secretary,umvm.Password);
-        await _um.UpdateAsync(new_Secretarys_Manager);
-
-        umvm.Status = true;
-        umvm.Status_Message = "New Secretary added";
+                                            Date_Of_Birth = umvm.Date_Of_Birth,
+                                            Manager = managerOfNewSecretary
+            };
+            await _um.CreateAsync(new_Secretary,umvm.Password);
+            umvm.Status = true;
+            umvm.Status_Message = "New Secretary added";
+        }
+        else
+        {
+            umvm.Status = false;
+            umvm.Status_Message = "Failed to bind manager of new secretary";
+        }
+        
         return umvm;
     }
 
