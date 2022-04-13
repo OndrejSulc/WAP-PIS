@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using WAP_PIS.Models;
 using System.Security.Claims;
@@ -31,6 +31,7 @@ public class UserManagementController : ControllerBase
         _sm = signInManager;
     }
 
+
     [HttpDelete]
     public async Task<UserManagementDeleteViewModel> DeleteUser([FromBody] UserManagementDeleteViewModel umvm)
     {
@@ -40,13 +41,31 @@ public class UserManagementController : ControllerBase
         if(!(user is Manager manager) || !(manager.IsCEO) )
         {
             umvm.Status = false;
-            umvm.Status_Message = "Only CEO can create new users";
+            umvm.Status_Message = "Only CEO can delete new users";
             return umvm;
         }
 
-        var userToDelete = await _um.FindByNameAsync(umvm.Username);
-        var result = await _um.DeleteAsync(userToDelete);
+        var userToDelete = await _um.FindByIdAsync(umvm.UserID);
 
+        if(userToDelete == null)
+        {
+            umvm.Status = false;
+            umvm.Status_Message = "User with this ID was not found";
+            return umvm;
+        }
+
+       
+        if(userToDelete is Manager managerToDelete)
+        {
+            if(managerToDelete.Secretary != null)
+            {
+                var his_secretaries = _db.Secretary.Where(s => s.Manager == managerToDelete);
+                _db.Secretary.RemoveRange(his_secretaries);
+            }
+        }
+
+        var result = await _um.DeleteAsync(userToDelete);
+        
         if(result.Succeeded)
         {
             umvm.Status = true;
@@ -61,14 +80,8 @@ public class UserManagementController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<UserManagementViewModelCreate> CreateNewUser([FromBody] UserManagementViewModelCreate umvm)
+    public async Task<UserManagementCreateViewModel> CreateNewUser([FromBody] UserManagementCreateViewModel umvm)
     {
-        if(umvm == null )
-        {
-            umvm = new UserManagementViewModelCreate(){Status = false, Status_Message="null body of request"};
-            return umvm;
-        }
-
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = await _um.FindByIdAsync(userId);
 
@@ -90,7 +103,7 @@ public class UserManagementController : ControllerBase
 
     }
     
-    private async Task<UserManagementViewModelCreate> CreateNewSecretaryAsync(UserManagementViewModelCreate umvm)
+    private async Task<UserManagementCreateViewModel> CreateNewSecretaryAsync(UserManagementCreateViewModel umvm)
     {
         if(umvm.ManagerIDForNewSecretary == null)
         {
@@ -121,7 +134,7 @@ public class UserManagementController : ControllerBase
         return umvm;
     }
 
-    private async Task<UserManagementViewModelCreate> CreateNewManagerAsync(UserManagementViewModelCreate umvm)
+    private async Task<UserManagementCreateViewModel> CreateNewManagerAsync(UserManagementCreateViewModel umvm)
     {
        
         var new_Manager = new Manager(){UserName = umvm.Username,
@@ -133,7 +146,7 @@ public class UserManagementController : ControllerBase
         await _um.CreateAsync(new_Manager,umvm.Password);
 
         umvm.Status = true;
-        umvm.Status_Message = "New Secretary added";
+        umvm.Status_Message = "New Manager added";
         return umvm;
     }
 
