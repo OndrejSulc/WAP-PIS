@@ -5,7 +5,7 @@ namespace WAP_PIS.Database;
 [Table("Manager")]
 public class Manager : Account
 {
-    public virtual Secretary? Secretary { get; set; }
+    public virtual List<Secretary?> Secretary { get; set; }
 
     public bool IsCEO { get; set; }
     
