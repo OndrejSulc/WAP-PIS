@@ -29,68 +29,35 @@ public class UserManagementController : Controller
         _sm = signInManager;
     }
 
-    private bool CheckIfUserIsCEO(Account user)
-    {
-        var manager = _db.Manager.Find(user);
-        return manager != null && manager.IsCEO;
-    }
-
-    [HttpGet]
+    /*[HttpPost]
     public async Task<UserManagementViewModel> CreateNewUser(UserManagementViewModel umvm)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var searchUser = new Account(){Id=userId};
-        var user = _db.Account.Find(searchUser);
+        var user = await _um.FindByNameAsync(umvm.Username);
 
-        if( user == null || !CheckIfUserIsCEO(user))
+        if(!(user is Manager manager) || !(manager.IsCEO) )
         {
             umvm.Create_Status = false;
             umvm.Status_Message = "User is not CEO";
             return umvm;
         }
 
-        if( umvm.IsSecretary ) //new acc is manager
+        if(umvm.IsSecretary)
         {
-            if( umvm.ManagerForNewSecretary == null ) 
+            if(umvm.ManagerForNewSecretary == null)
             {
-                umvm.Create_Status = false;
-                umvm.Status_Message = "Missing manager for new secretary";
-                return umvm;
+                
             }
 
-            var newUser = new Account(){ UserName=umvm.Username};
-            var result = await _um.CreateAsync(newUser);
-
-            if(!result.Succeeded)
-            {
-                umvm.Create_Status = false;
-                umvm.Status_Message = "Could not create new User: "+result.Errors.ToString();
-                return umvm;
-            }
-
-            var newSecretary = new Secretary(){Account = newUser, Manager = umvm.ManagerForNewSecretary};
-            _db.Secretary.Add(newSecretary);
-        }
-
-        else
-        {
-            var newUser = new Account(){ UserName=umvm.Username};
-            var result = await _um.CreateAsync(newUser);
-
-            if(!result.Succeeded)
-            {
-                umvm.Create_Status = false;
-                umvm.Status_Message = "Could not create new User: "+result.Errors.ToString();
-                return umvm;
-            }
-
-            var newManager = new Manager(){Account = newUser, IsCEO = false};
-            _db.Manager.Add(newManager);
+            var newUser = new Secretary(){ UserName = umvm.Username,
+                                           Name = umvm.Name,
+                                           Surname = umvm.Surname,
+                                           Date_Of_Birth = umvm.Date_Of_Birth
+            };
         }
 
         umvm.Create_Status = true;
         umvm.Status_Message = "New User added";
         return umvm;
-    }
+    }*/
 
 }
