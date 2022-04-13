@@ -1,10 +1,6 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using WAP_PIS.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using WAP_PIS.Database;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using System;
 
 namespace WAP_PIS.Controllers;
 
@@ -28,7 +24,13 @@ public class TestController : Controller
     [HttpGet]
     public async Task<string> CreateNewUser()
     {
-        var user = new Account(){UserName = "user", Email = "user@email.cz"};
+        var user = new Manager()
+        {
+            UserName = "user2",
+            Email = "user@email.cz",
+            Name = "Tester",
+            Surname = "Testovič"
+        };
         var result = await _um.CreateAsync(user, "password");
 
         if(result.Succeeded)

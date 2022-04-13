@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WAP_PIS.Models;
 
 namespace WAP_PIS.Database;
 public class Meeting
@@ -13,5 +14,5 @@ public class Meeting
     public string Description { get; set; }
     public DateTime From { get; set; }
     public DateTime Until { get; set; }
-    public ICollection<Account> Attendees { get; set; }
+    public List<Manager> Attendees { get; set; }
 }

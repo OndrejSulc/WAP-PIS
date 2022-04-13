@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -21,76 +22,78 @@ public class MeetingController : Controller
     private readonly ILogger<MeetingController> _logger;
     private readonly ApplicationDbContext appDbContext;
     private readonly IHubContext<NotificationHub> notificationHub;
+    private readonly UserManager<Account> userManager;
 
-    public MeetingController(ILogger<MeetingController> logger, ApplicationDbContext applicationDbContext, IHubContext<NotificationHub> notificationHub)
+    public MeetingController(ILogger<MeetingController> logger, ApplicationDbContext applicationDbContext, IHubContext<NotificationHub> notificationHub, UserManager<Account> userManager)
     {
         _logger = logger;
         appDbContext = applicationDbContext;
         this.notificationHub = notificationHub;
+        this.userManager = userManager;
     }
 
-    // [HttpDelete]
-    // public async Task<IActionResult> DeleteMeeting(int meetingId)
-    // {
-    //     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    //     var meeting = appDbContext.Meeting
-    //         .Include(meeting => meeting.Attendees)
-    //         .SingleOrDefault(meeting => meeting.ID == meetingId);
-    //     if (meeting == null)
-    //     {
-    //         return NotFound("Meeting with id: " + meetingId + " was not found.");
-    //     }
-    //     //Todo: Check for update permissions. Secretary can remove managers meetings. CEO can edit everything
-    //     if (meeting.Owner != userId) //Todo: More sophisticated permission checking needed
-    //     {
-    //         return Unauthorized("You do not have permissions for this action.");
-    //     }
-    //
-    //     foreach (var manager in meeting.Attendees)
-    //     {
-    //         await NotifyUser(manager, "Meeting cancelled", "Meeting, which you attend was cancelled", meeting);
-    //     }
-    //
-    //     //Todo: Notification is deleted when deleting meeting. This is probably wrong
-    //     appDbContext.Meeting.Remove(meeting);
-    //     await appDbContext.SaveChangesAsync();
-    //     return Ok();
-    // }
-    //
-    // [HttpPatch]
-    // public async Task<ActionResult<MeetingViewModel>> UpdateMeeting(int meetingId, [FromBody] UpdateMeetingViewModel updateMeeting)
-    // {
-    //     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    //     var user = appDbContext.Account.SingleOrDefault(u => u.Id == userId);
-    //     
-    //     var meeting = appDbContext.Meeting
-    //         .Include(meeting => meeting.Attendees)
-    //         .SingleOrDefault(meeting => meeting.ID == meetingId);
-    //
-    //     if (meeting == null)
-    //     {
-    //         return NotFound("Meeting with id: " + meetingId + " was not found.");
-    //     }
-    //     //Todo: Check for update permissions. Secretary can edit managers meetings. CEO can edit everything
-    //     if (meeting.Owner != userId) //Todo: More sophisticated permission checking needed
-    //     {
-    //         return Unauthorized("You do not have permissions for this action.");
-    //     }
-    //
-    //     foreach (var attendee in meeting.Attendees)
-    //     {
-    //         await NotifyUser(attendee, "Meeting changed", "Meeting, which you attend was changed", meeting);
-    //     }
-    //
-    //     meeting.Title = updateMeeting.Title ?? meeting.Title;
-    //     meeting.Description = updateMeeting.Description ?? meeting.Description;
-    //     meeting.From = updateMeeting.From ?? meeting.From;
-    //     meeting.Until = updateMeeting.Until ?? meeting.Until;
-    //
-    //     appDbContext.Update(meeting);
-    //     await appDbContext.SaveChangesAsync();
-    //     return meeting.ToViewModel();
-    // }
+    [HttpDelete]
+    public async Task<IActionResult> DeleteMeeting(int meetingId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var meeting = appDbContext.Meeting
+            .Include(meeting => meeting.Attendees)
+            .SingleOrDefault(meeting => meeting.ID == meetingId);
+        if (meeting == null)
+        {
+            return NotFound("Meeting with id: " + meetingId + " was not found.");
+        }
+        //Todo: Check for update permissions. Secretary can remove managers meetings. CEO can edit everything
+        if (meeting.Owner.Id != userId) //Todo: More sophisticated permission checking needed
+        {
+            return Unauthorized("You do not have permissions for this action.");
+        }
+    
+        foreach (var manager in meeting.Attendees)
+        {
+            await NotifyUser(manager, "Meeting cancelled", "Meeting, which you attend was cancelled", meeting);
+        }
+    
+        //Todo: Notification is deleted when deleting meeting. This is probably wrong
+        appDbContext.Meeting.Remove(meeting);
+        await appDbContext.SaveChangesAsync();
+        return Ok();
+    }
+    
+    [HttpPatch]
+    public async Task<ActionResult<MeetingViewModel>> UpdateMeeting(int meetingId, [FromBody] UpdateMeetingViewModel updateMeeting)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = appDbContext.Account.SingleOrDefault(u => u.Id == userId);
+        
+        var meeting = appDbContext.Meeting
+            .Include(meeting => meeting.Attendees)
+            .SingleOrDefault(meeting => meeting.ID == meetingId);
+    
+        if (meeting == null)
+        {
+            return NotFound("Meeting with id: " + meetingId + " was not found.");
+        }
+        //Todo: Check for update permissions. Secretary can edit managers meetings. CEO can edit everything
+        if (meeting.Owner.Id != userId) //Todo: More sophisticated permission checking needed
+        {
+            return Unauthorized("You do not have permissions for this action.");
+        }
+    
+        foreach (var attendee in meeting.Attendees)
+        {
+            await NotifyUser(attendee, "Meeting changed", "Meeting, which you attend was changed", meeting);
+        }
+    
+        meeting.Title = updateMeeting.Title ?? meeting.Title;
+        meeting.Description = updateMeeting.Description ?? meeting.Description;
+        meeting.From = updateMeeting.From ?? meeting.From;
+        meeting.Until = updateMeeting.Until ?? meeting.Until;
+    
+        appDbContext.Update(meeting);
+        await appDbContext.SaveChangesAsync();
+        return meeting.ToViewModel();
+    }
 
     /// <summary>
     /// Gets all relevant meetings for currently logged user
@@ -120,8 +123,9 @@ public class MeetingController : Controller
     public async Task<ActionResult<MeetingViewModel>> CreateMeeting([FromBody] CreateMeetingViewModel meeting)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = appDbContext.Account.SingleOrDefault(u => u.Id == userId);
-
+        // var user = appDbContext.Account.SingleOrDefault(u => u.Id == userId);
+        var user = userManager.Users.SingleOrDefault(u => u.Id == userId);
+    
         Manager owner;
         switch (user)
         {
@@ -134,9 +138,9 @@ public class MeetingController : Controller
             default:
                 return Unauthorized("You do not have permissions for this action");
         }
-
-        var attendees = appDbContext.Account.Where(a => meeting.Attendees.Contains(a.Id)).ToList();
-
+    
+        var attendees = appDbContext.Manager.Where(a => meeting.Attendees.Contains(a.Id)).ToList();
+    
         //Todo: Check for attendees and create notification if not empty (Send SignalR message if connected)
         var meetingDb = new Meeting
         {
@@ -147,12 +151,12 @@ public class MeetingController : Controller
             Owner = owner,
             Attendees = attendees
         };
-
+    
         foreach (var manager in attendees)
         {
             await NotifyUser(manager, "Meeting created", "You were added to meeting.", meetingDb);
         }
-
+    
         var dbEntry = appDbContext.Meeting.Add(meetingDb);
         await appDbContext.SaveChangesAsync();
         return dbEntry.Entity.ToViewModel();
