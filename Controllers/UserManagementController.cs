@@ -121,9 +121,18 @@ public class UserManagementController : ControllerBase
                                             Date_Of_Birth = umvm.Date_Of_Birth,
                                             Manager = managerOfNewSecretary
             };
-            await _um.CreateAsync(new_Secretary,umvm.Password);
-            umvm.Status = true;
-            umvm.Status_Message = "New Secretary added";
+            
+            var result = await _um.CreateAsync(new_Secretary,umvm.Password);
+            if(result.Succeeded)
+            {
+                umvm.Status = true;
+                umvm.Status_Message = "New Secretary added";
+            }
+            else
+            {
+                umvm.Status = false;
+                umvm.Status_Message = "Provided Username already in use.";
+            }
         }
         else
         {
@@ -143,10 +152,20 @@ public class UserManagementController : ControllerBase
                                         Date_Of_Birth = umvm.Date_Of_Birth
         };
 
-        await _um.CreateAsync(new_Manager,umvm.Password);
+        
+        var result = await _um.CreateAsync(new_Manager,umvm.Password);
 
-        umvm.Status = true;
-        umvm.Status_Message = "New Manager added";
+        if(result.Succeeded)
+        {
+            umvm.Status = true;
+            umvm.Status_Message = "New Manager added";
+        }
+        else
+        {
+            umvm.Status = false;
+            umvm.Status_Message = "Provided Username already in use.";
+        }
+        
         return umvm;
     }
 
