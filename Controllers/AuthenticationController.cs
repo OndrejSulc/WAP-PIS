@@ -59,11 +59,8 @@ public class AuthenticationController : Controller
             lwm.Successful_Authentication = false;
         }
 
-        
-        var managers = _db.Manager.Where( m => m == user);
-        if(managers.Count() != 0)
+        if( user is Manager manager)
         {
-            var manager = managers.First();
             lwm.IsCEO = manager.IsCEO;
         }
         else
@@ -76,7 +73,6 @@ public class AuthenticationController : Controller
     [HttpPost]
     public async Task<bool> Logout()
     {
-        Console.WriteLine(_sm.IsSignedIn(User));
         if( _sm.IsSignedIn(User))
         {
             await _sm.SignOutAsync();
