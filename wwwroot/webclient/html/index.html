@@ -1,16 +1,34 @@
 <!DOCTYPE html>
 <html>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.7/signalr.min.js"></script>
-<body>
+    <head>
+        <!-- Login management -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.7/signalr.min.js"></script>
+        <script src="/webclient/js/meeting.js"></script>
+        <script src="/webclient/js/notification.js"></script>
+        <script src="/webclient/js/userAvailability.js"></script>
+        <script src="/webclient/js/signalr.js"></script>
+        <script src="/webclient/js/login.js"></script>
 
-<h1>My First Heading</h1>
-<p>My first paragraph.</p>
-<script>
-</script>
-<script src="/webclient/js/meeting.js"></script>
-<script src="/webclient/js/notification.js"></script>
-<script src="/webclient/js/userAvailability.js"></script>
-<script src="/webclient/js/signalr.js"></script>
-<script src="/webclient/js/login.js"></script>
+        <!-- Calendar management -->
+        <!-- CSS-->
+        <link rel="stylesheet" type="text/css" href="/webclient/js/tui.calendar-1.15.3/tui-calendar.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+        <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+        <!-- JS -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+        <script src="https://uicdn.toast.com/tui.code-snippet/v1.5.2/tui-code-snippet.min.js"></script>
+        <script src="https://uicdn.toast.com/tui.time-picker/v2.0.3/tui-time-picker.min.js"></script>
+        <script src="https://uicdn.toast.com/tui.date-picker/v4.0.3/tui-date-picker.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.0.13/chance.min.js"></script>
+        <script src="/webclient/js/tui.calendar-1.15.3/tui-calendar.js"></script>
+        <script src="/webclient/js/calendar.js" defer></script>
+    </head>
+<body>
+<h1>Calendar</h1>
+<div id="calendar" style="height: 800px;"></div>
 </body>
 </html> 
