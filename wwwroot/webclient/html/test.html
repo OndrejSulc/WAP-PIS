@@ -146,7 +146,7 @@
         let description = $("#meetingDescription").val()
         let attendees = $("#attendees").val().split(",")
         let from = $("#meetingFrom").val()
-        let until = $("#meetingUntil").val()
+        let until = $("#meetingTo").val()
         // Calls create meeting endpoint on server
         createMeeting(name, description, from, until).then(response => response.json())
             .then(data => {
@@ -159,7 +159,7 @@
         let description = $("#meetingDescription").val()
         let attendees = $("#attendees").val().split(",")
         let from = $("#meetingFrom").val()
-        let until = $("#meetingUntil").val()
+        let until = $("#meetingTo").val()
         // Calls create meeting endpoint on server
         createGroupMeeting(name, description, from, until, attendees).then(response => response.json())
             .then(data => {
@@ -197,7 +197,7 @@
         description = description ? description : null
         let from = $("#meetingFrom").val()
         from = from ? from : null
-        let until = $("#meetingUntil").val()
+        let until = $("#meetingTo").val()
         until = until ? until : null
         let meetingId = $("#updateMeetingId").val()
         // Calls create meeting endpoint on server
@@ -217,7 +217,7 @@
         attendees = attendees.length === 0? null : attendees
         let from = $("#meetingFrom").val()
         from = from ? from : null
-        let until = $("#meetingUntil").val()
+        let until = $("#meetingTo").val()
         until = until ? until : null
         let meetingId = $("#updateMeetingId").val()
         // Calls create meeting endpoint on server
