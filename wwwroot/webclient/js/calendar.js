@@ -49,6 +49,8 @@ var calendar = new Calendar('#calendar', {
     ],
 });
 load_manager_meetings(calendar);
+document.getElementById('prev_button').addEventListener("click", calendar.prev());
+document.getElementById('next_button').addEventListener("click", calendar.next());
 
 //console.log(exampleMeetings.meetings);
 /*
