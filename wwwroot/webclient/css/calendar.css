@@ -1,0 +1,27 @@
+a.buttons{
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 16px;
+}
+
+.previous {
+    background-color: #696969;
+    color: white;
+}
+
+.next {
+    background-color: #696969;
+    color: white;
+}
+
+.round {
+    border-radius: 50%;
+}
+
+pre{
+    text-align: center;
+    white-space: pre-line;
+    width: 75px;
+    display: inline;
+    margin: 0px 8px;
+}

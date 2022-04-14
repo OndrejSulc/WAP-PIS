@@ -22,6 +22,12 @@ function load_manager_meetings(calendar){
     calendar.toggleScheduleView(true);
 }
 
+function setMonth(){
+    var month = calendar.getDate().getMonth()+1;
+    var year = calendar.getDate().getFullYear();
+    document.getElementById('actual_month').innerHTML = year+'/'+month;
+}
+
 var Calendar = tui.Calendar;
 var calendar = new Calendar('#calendar', {
     defaultView: 'month',
@@ -51,7 +57,7 @@ var calendar = new Calendar('#calendar', {
 load_manager_meetings(calendar);
 document.getElementById('prev_button').addEventListener("click", calendar.prev());
 document.getElementById('next_button').addEventListener("click", calendar.next());
-
+setMonth();
 //console.log(exampleMeetings.meetings);
 /*
 calendar.createSchedules([

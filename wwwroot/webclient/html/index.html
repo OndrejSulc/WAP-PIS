@@ -16,8 +16,11 @@
         <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
         <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="/webclient/css/calendar.css" />
+        <!-- JS -->
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
             crossorigin="anonymous"></script>
+
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
         <script src="https://uicdn.toast.com/tui.code-snippet/v1.5.2/tui-code-snippet.min.js"></script>
         <script src="https://uicdn.toast.com/tui.time-picker/v2.0.3/tui-time-picker.min.js"></script>
@@ -26,41 +29,12 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.0.13/chance.min.js"></script>
         <script src="/webclient/js/tui.calendar-1.15.3/tui-calendar.js"></script>
         <script src="/webclient/js/calendar.js" defer></script>
-        <style>
-            a.buttons{
-            text-decoration: none;
-            display: inline-block;
-            padding: 8px 16px;
-            }
-
-            .previous {
-            background-color: #696969;
-            color: white;
-            }
-
-            .next {
-            background-color: #696969;
-            color: white;
-            }
-
-            .round {
-            border-radius: 50%;
-            }
-        </style>
     </head>
 <body>
 <h1>Calendar</h1>
-<a id="prev_button" onclick="calendar.prev();setMonth();" href="#" class="buttons previous round">&#8249;</a>
-<a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
-<pre id="actual_month"></pre>
+<a id="prev_button" onclick="calendar.prev();setMonth();" href="#" class="buttons previous round">&#8249;</a><pre id="actual_month"></pre><a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
+
 <!--<button><i class='fas fa-caret-square-left'></i></button>-->
 <div id="calendar" style="height: 800px;"></div>
 </body>
-<script>
-    function setMonth(){
-        var month = calendar.getDate().getMonth()+1;
-        var year = calendar.getDate().getFullYear();
-        document.getElementById('actual_month').innerHTML = year+'/'+month;
-    }
-</script>
 </html> 
