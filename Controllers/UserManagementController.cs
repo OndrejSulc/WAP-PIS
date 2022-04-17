@@ -22,9 +22,9 @@ public class UserManagementController : ControllerBase
     private IWebHostEnvironment _he;
     private SignInManager<Account> _sm;
     public UserManagementController(ApplicationDbContext applicationDbContext,
-                         UserManager<Account> userManager,
-                         IWebHostEnvironment webHostEnv,
-                         SignInManager<Account> signInManager)
+        UserManager<Account> userManager,
+        IWebHostEnvironment webHostEnv,
+        SignInManager<Account> signInManager)
     {
         _db = applicationDbContext;
         _um = userManager;
@@ -36,12 +36,24 @@ public class UserManagementController : ControllerBase
     [Authorize("CEO")]
     public UserManagementGetAllUsersViewModel GetAllUsers()
     {
-        var managers = _db.Manager.ToList().Select( m => m.ToViewModel() ).ToList();
-        var secretaries = _db.Secretary.ToList().Select( s => s.ToViewModel() ).ToList();
+        var managers = _db.Manager.ToList().Select(m => m.ToViewModel()).ToList();
+        var secretaries = _db.Secretary.ToList().Select(s => s.ToViewModel()).ToList();
 
-        var vm = new UserManagementGetAllUsersViewModel(){Managers = managers, Secretaries = secretaries};
+        var vm = new UserManagementGetAllUsersViewModel() { Managers = managers, Secretaries = secretaries };
 
         return vm;
+    }
+
+    [HttpGet]
+    [Authorize("CEO")]
+    public async Task<ActionResult<AccountViewModel>> GetUserInfo(string userId)
+    {
+        var user = await _um.Users.SingleOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return NotFound($"User with id: {userId} not found");
+        }
+        return user.ToAccountViewModel();
     }
 
 
@@ -51,7 +63,7 @@ public class UserManagementController : ControllerBase
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = await _um.FindByIdAsync(userId);
 
-        if(!(user is Manager manager) || !(manager.IsCEO) )
+        if (!(user is Manager manager) || !(manager.IsCEO))
         {
             umvm.Status = false;
             umvm.Status_Message = "Only CEO can delete new users";
@@ -60,17 +72,17 @@ public class UserManagementController : ControllerBase
 
         var userToDelete = await _um.FindByIdAsync(umvm.UserID);
 
-        if(userToDelete == null)
+        if (userToDelete == null)
         {
             umvm.Status = false;
             umvm.Status_Message = "User with this ID was not found";
             return umvm;
         }
 
-       
-        if(userToDelete is Manager managerToDelete)
+
+        if (userToDelete is Manager managerToDelete)
         {
-            if(managerToDelete.Secretary != null)
+            if (managerToDelete.Secretary != null)
             {
                 var his_secretaries = _db.Secretary.Where(s => s.Manager == managerToDelete);
                 _db.Secretary.RemoveRange(his_secretaries);
@@ -78,8 +90,8 @@ public class UserManagementController : ControllerBase
         }
 
         var result = await _um.DeleteAsync(userToDelete);
-        
-        if(result.Succeeded)
+
+        if (result.Succeeded)
         {
             umvm.Status = true;
             umvm.Status_Message = "User deleted.";
@@ -98,14 +110,14 @@ public class UserManagementController : ControllerBase
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = await _um.FindByIdAsync(userId);
 
-        if(!(user is Manager manager) || !(manager.IsCEO) )
+        if (!(user is Manager manager) || !(manager.IsCEO))
         {
             umvm.Status = false;
             umvm.Status_Message = "Only CEO can create new users";
             return umvm;
         }
 
-        if( umvm.IsSecretary )
+        if (umvm.IsSecretary)
         {
             return await CreateNewSecretaryAsync(umvm);
         }
@@ -115,10 +127,10 @@ public class UserManagementController : ControllerBase
         }
 
     }
-    
+
     private async Task<UserManagementCreateViewModel> CreateNewSecretaryAsync(UserManagementCreateViewModel umvm)
     {
-        if(umvm.ManagerIDForNewSecretary == null)
+        if (umvm.ManagerIDForNewSecretary == null)
         {
             umvm.Status = false;
             umvm.Status_Message = "Missing manager";
@@ -126,17 +138,19 @@ public class UserManagementController : ControllerBase
         }
 
         var managerAcc = await _um.FindByIdAsync(umvm.ManagerIDForNewSecretary);
-        if(managerAcc is Manager managerOfNewSecretary)
+        if (managerAcc is Manager managerOfNewSecretary)
         {
-            var new_Secretary = new Secretary(){UserName = umvm.Username,
-                                            Name = umvm.Name,
-                                            Surname = umvm.Surname,
-                                            Date_Of_Birth = umvm.Date_Of_Birth,
-                                            Manager = managerOfNewSecretary
+            var new_Secretary = new Secretary()
+            {
+                UserName = umvm.Username,
+                Name = umvm.Name,
+                Surname = umvm.Surname,
+                Date_Of_Birth = umvm.Date_Of_Birth,
+                Manager = managerOfNewSecretary
             };
-            
-            var result = await _um.CreateAsync(new_Secretary,umvm.Password);
-            if(result.Succeeded)
+
+            var result = await _um.CreateAsync(new_Secretary, umvm.Password);
+            if (result.Succeeded)
             {
                 umvm.Status = true;
                 umvm.Status_Message = "New Secretary added";
@@ -152,23 +166,25 @@ public class UserManagementController : ControllerBase
             umvm.Status = false;
             umvm.Status_Message = "Failed to bind manager of new secretary";
         }
-        
+
         return umvm;
     }
 
     private async Task<UserManagementCreateViewModel> CreateNewManagerAsync(UserManagementCreateViewModel umvm)
     {
-       
-        var new_Manager = new Manager(){UserName = umvm.Username,
-                                        Name = umvm.Name,
-                                        Surname = umvm.Surname,
-                                        Date_Of_Birth = umvm.Date_Of_Birth
+
+        var new_Manager = new Manager()
+        {
+            UserName = umvm.Username,
+            Name = umvm.Name,
+            Surname = umvm.Surname,
+            Date_Of_Birth = umvm.Date_Of_Birth
         };
 
-        
-        var result = await _um.CreateAsync(new_Manager,umvm.Password);
 
-        if(result.Succeeded)
+        var result = await _um.CreateAsync(new_Manager, umvm.Password);
+
+        if (result.Succeeded)
         {
             umvm.Status = true;
             umvm.Status_Message = "New Manager added";
@@ -178,7 +194,7 @@ public class UserManagementController : ControllerBase
             umvm.Status = false;
             umvm.Status_Message = "Provided Username already in use.";
         }
-        
+
         return umvm;
     }
 

@@ -28,6 +28,19 @@ async function createUser(Username,Password, Name, Surname, Date_Of_Birth, IsSec
     return await response.json();
 }
 
+async function getUserInfo(UserID) {
+    const response = await fetch("/UserManagement/GetUserInfo?" + new URLSearchParams({
+        userId: UserID
+    }), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+    });
+    return await response.json();
+}
 
 async function deleteUser(UserID) {
 

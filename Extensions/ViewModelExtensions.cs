@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using WAP_PIS.Authorization;
 using WAP_PIS.Database;
 using WAP_PIS.Models;
 
@@ -28,6 +30,17 @@ public static class ViewModelExtensions
             Text = notification.Text,
             Title = notification.Title,
             ID = notification.ID
+        };
+    }
+
+    public static AccountViewModel ToAccountViewModel(this Account account)
+    {
+        return new AccountViewModel
+        {
+            Id = account.Id,
+            Name = account.Name,
+            Surname = account.Surname,
+            Role = account.GetRole()
         };
     }
     

@@ -40,24 +40,7 @@ public class AuthenticationController : Controller
             };
 
         var account = await _um.GetUserAsync(User);
-        var accountViewModel = account switch
-        {
-            Manager m => new AccountViewModel
-            {
-                Id = m.Id,
-                Name = m.Name,
-                Surname = m.Surname,
-                Role = m.GetRole()
-            },
-            Secretary s => new AccountViewModel
-            {
-                Id = s.Id,
-                Name = s.Name,
-                Surname = s.Surname,
-                Role = s.GetRole()
-            },
-            _ => null
-        };
+        var accountViewModel = account.ToAccountViewModel();
 
         return new CheckLoginResultViewModel
         {
