@@ -61,3 +61,229 @@ pre{
     margin-right: 3px;
     font-weight: normal;
 }
+
+#calendar,#calendar-navigation{
+    margin-left: 300px;
+}
+
+/*    PROJEKT    */
+
+@media (min-width: 1000px){ 
+	#nav-menu{
+		text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    z-index: 1030;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  #nav-menu .navbar-href{
+  	display: flex;
+    margin-top: 20vh;
+    padding: 10px;
+    font-size: 40px;
+    width: 120px;
+    height: 100px;
+    line-height: inherit;
+    white-space: nowrap;
+  }
+  .profile-img{
+  	max-width: 120px;
+    max-height:  100px;
+    width: 120px;
+    height:  100px;
+    border-radius: 50%;
+    text-align: center;
+  }
+  .span-name{
+  	display: none!important;
+  }
+  .nav-button{
+  	display: none;
+  }
+  #nav-menu #main-menu{
+  	text-align: center;
+  }
+   #nav-menu #main-menu .nav-ul{
+  	flex-direction: column;
+    width: 100%;
+    padding-left: 0px;
+  }
+  #nav-menu #main-menu .nav-ul .nav-li{
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  #nav-menu #main-menu .nav-ul .nav-li .nav-li-a{
+  	font-weight: 800;
+    letter-spacing: .05rem;
+    text-transform: uppercase;
+    color: white;
+    text-decoration: none;
+  }
+  .active{
+  	color: #a89999!important;
+  }
+  #main-body{
+  	padding-left: 350px;
+  	padding-right: 50px;
+  }
+}
+.navbar{
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+  padding: 8px 16px;
+  background-color: #696969;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+.link{
+	text-decoration: none;
+	color: #5e5e5e;
+	font-weight: normal;
+}
+#about{
+  height: 60vh;
+  padding-top: 25vh;
+}
+#detail{
+  padding-top: 15vh;
+}
+#about span a{
+  text-decoration: none;
+  color: #696969;
+}
+#education{
+  height: 70vh;
+  padding-top: 30vh;
+}
+#skills{
+ 	height: 70vh;
+  padding-top: 30vh;
+}
+#skills h3{
+  display: inline;
+}
+#skills h3 a:hover{
+ 	color: #a89999;
+}
+#interests{
+ 	height: 70vh;
+  padding-top: 30vh;
+}
+.showMenu{
+  display: block!important;
+}
+.hideMenu{
+	display: none;
+}
+#tools{
+	display: none;
+}
+#proj{
+	display: none;
+}
+.edit{
+  color: #696969;
+  font-size: 18px;
+  font-weight: 600;
+  text-decoration: none;
+  line-height: 1.6;
+}
+.user_img{
+  width: 120px;
+  height: 150px;
+  border-radius: 10%;
+}
+.name_error{
+  color:red;
+  font-size:22px;
+  font-weight: 600;
+}
+@media (max-width: 999px){
+	.profile-img{
+  	display: none!important;
+  }
+  .span-name{
+  	display: block;
+  	font-size: 40px;
+    line-height: inherit;
+    white-space: nowrap;
+    font-weight: 400;
+    color: white;
+    padding-left: 35px;
+  }
+  .navbar-href{
+  	text-decoration: none;
+  }
+  .nav-button {
+	  background-color: #696969;
+	  color: white;
+	  padding: 60px;
+	  padding-right: 80px;
+	  font-size: 60px;
+	  border: none;
+	  cursor: pointer;
+	  background-image: url("../img/menu.png");
+	}
+	#main-menu {
+	  display: none;
+	  position: absolute;
+	  top: 135px;
+	  left: 0px;
+	  width: 100%;
+	  background-color: #696969;
+	  min-width: 160px;
+	  overflow: auto;
+	  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	  z-index: 1;
+	}
+	#main-menu li a {
+	  color: white;
+	  font-size: 30px;
+	  padding: 12px 16px;
+	  text-decoration: none;
+	  display: block;
+	  font-weight: 400;
+	}
+	#main-menu li a:hover{
+		font-size: 30px;
+	}
+	.show {
+		display: block!important;
+	}
+	#main-body{
+  	padding-left: 35px;
+  }
+
+  #about{
+    font-size: 28px;
+  }
+  #detail{
+    padding-top: 25vh;
+    font-size: 28px;
+  }
+  .edit{
+    font-size: 32px;
+  }
+  .user_img{
+    width: 150px;
+    height: 200px;
+  }
+  .fa.fa-user{
+    font-size: 140px!important;
+  }
+  .name_error{
+    font-size:28px;
+  }
+
+}
+
+/*    PROJEKT KONIEC   */

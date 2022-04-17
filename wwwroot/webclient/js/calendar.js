@@ -17,7 +17,7 @@ function load_manager_meetings(calendar){
                     }
                 ]);
             }
-        })
+        });
     calendar.render();
     calendar.toggleScheduleView(true);
 }
@@ -43,14 +43,14 @@ var calendar = new Calendar('#calendar', {
         startDayOfWeek: 0,
         narrowWeekend: true
     },
-    useCreationPopup: true,
+    useCreationPopup: false,
     // whether use default detail popup or not
     useDetailPopup: false,
     // list of Calendars that can be used to add new schedule
     calendars: [
         {
-        id: '1',
-        name: 'My Calendar',
+            id: '1',
+            name: 'My Calendar',
         }
     ],
 });
@@ -69,6 +69,7 @@ calendar.on({
     },
     'beforeCreateSchedule': function(e) {
         console.log('beforeCreateSchedule', e);
+        startCreateManagerMeeting(e);
         // open a creation popup
 
         // If you dont' want to show any popup, just use `e.guide.clearGuideElement()`
@@ -89,22 +90,26 @@ calendar.on({
     }
 });
 
-function showManagerMeeting(e){
-    document.getElementById('meeting_id_man_view').value  = e.schedule.id;
-    document.getElementById('title_man_view').value  = e.schedule.title;
-    document.getElementById('start_date_man_view').value  = new Date(e.schedule.start);
-    document.getElementById('end_date_man_view').value  = new Date(e.schedule.end);
-    document.getElementById('description_man_view').value  = e.schedule.body;
-    document.getElementById('modal_view').style.display = "block";
-}
-
 function hideManagerMeeting(){
+    document.getElementById('calendar_id_man_view').value  = "";
     document.getElementById('meeting_id_man_view').value  = "";
     document.getElementById('title_man_view').value  = "";
     document.getElementById('start_date_man_view').value  = "";
     document.getElementById('end_date_man_view').value  = "";
     document.getElementById('description_man_view').value  = "";
     document.getElementById('modal_view').style.display = "none";
+}
+
+function showManagerMeeting(e){
+    document.getElementById('calendar_id_man_view').value  = e.schedule.calendarId;
+    document.getElementById('meeting_id_man_view').value  = e.schedule.id;
+    document.getElementById('title_man_view').value  = e.schedule.title;
+    document.getElementById('start_date_man_view').value  = changeDatetimeFormat(e.schedule.start);
+    document.getElementById('end_date_man_view').value  = changeDatetimeFormat(e.schedule.end);
+    document.getElementById('description_man_view').value  = e.schedule.body;
+    document.getElementById('modal_view').style.display = "block";
+    document.getElementById('man_meeting_view').style.display = "block";
+    document.getElementById('man_meeting_create').style.display = "none";
 }
 
 function changeDatetimeFormat(input_datetime){
@@ -122,7 +127,6 @@ function changeDatetimeFormat(input_datetime){
     let format = year.toString();   
     format = format + "-" + month.toString().padStart(2,"0");   
     format = format + "-" + day.toString().padStart(2,"0"); 
-
     format = format + " " + hours.toString().padStart(2,"0"); 
     format = format + ":" + minutes.toString().padStart(2,"0");
 
@@ -144,15 +148,94 @@ function saveManagerMeeting(){
     until = until ? until : null
 
     let meetingId = document.getElementById('meeting_id_man_view').value;
+    let calendarId = document.getElementById('calendar_id_man_view').value;
     console.log(meetingId, name, description, from, until);
     // Calls create meeting endpoint on server
     updateMeeting(meetingId, name, description, from, until).then(response => response.json())
         .then(data => {
-           console.log(JSON.stringify(data, null, 2));
-           hideManagerMeeting();
-           calendar.render();
-        })
+            console.log(JSON.stringify(data, null, 2));
+            calendar.updateSchedule(parseInt(meetingId), calendarId, {
+                title: name,
+                body: description,
+                start: new Date(document.getElementById('start_date_man_view').value),
+                end: new Date(document.getElementById('end_date_man_view').value)
+            });
+            calendar.render();
+            hideManagerMeeting();
+        });
 }
+
+function deleteManagerMeeting(){
+    let meetingId = document.getElementById('meeting_id_man_view').value;
+    let calendarId = document.getElementById('calendar_id_man_view').value;
+    //Calls remove meeting endpoint
+    removeMeeting(meetingId).then(result => {
+        calendar.deleteSchedule(parseInt(meetingId), calendarId);
+        calendar.render();
+        hideManagerMeeting();
+    });
+}
+
+function startCreateManagerMeeting(e){
+    document.getElementById('start_date_man_view').value  = changeDatetimeFormat(e.start);
+    document.getElementById('end_date_man_view').value  = changeDatetimeFormat(e.end);
+    document.getElementById('modal_view').style.display = "block";
+    document.getElementById('man_meeting_view').style.display = "none";
+    document.getElementById('man_meeting_create').style.display = "block";
+}
+
+function createManagerMeeting(e){
+
+    let name = document.getElementById('title_man_view').value.toString();
+    name = name ? name : null
+
+    let description = document.getElementById('description_man_view').value;
+    description = description ? description : null
+
+    let from = new Date(document.getElementById('start_date_man_view').value).toISOString();
+    from = from ? from : null
+
+    let until = new Date(document.getElementById('end_date_man_view').value).toISOString();
+    until = until ? until : null
+
+    //console.log(name,description,from,until);
+    createMeeting(name, description, from, until).then(response => response.json())
+            .then(data => {
+                let result = JSON.stringify(data, null, 2);
+                let item = JSON.parse(result);
+                calendar.createSchedules([
+                    {
+                    id: item.id,
+                    calendarId: '1',
+                    title: item.title,
+                    body: item.description,
+                    category: 'time',
+                    dueDateClass: '',
+                    start: new Date(item.from),
+                    end: new Date(item.until)
+                    }
+                ]);
+                calendar.render();
+                hideManagerMeeting();
+            })
+
+    //let meetingId = document.getElementById('meeting_id_man_view').value;
+    //let calendarId = document.getElementById('calendar_id_man_view').value;
+
+    /*calendar.createSchedules([
+        {
+        id: item.id,
+        calendarId: '1',
+        title: item.title,
+        body: item.description,
+        category: 'time',
+        dueDateClass: '',
+        start: new Date(item.from),
+        end: new Date(item.until)
+        }
+    ]);*/
+}
+
 //console.log(exampleMeetings.meetings);
 /*
 calendar.createSchedules([

@@ -3,7 +3,7 @@ async function checkLogin()
     var response = await fetch("/Authentication/CheckLogin");
     var check_login = await response.json();
     console.log(check_login);
-    if(check_login.loggedIn == "true"){
+    if(check_login.loggedIn == true){
       window.location = "index.html";
     }
 }
@@ -13,7 +13,8 @@ async function checkLogout()
 {
     var response = await fetch("/Authentication/CheckLogin");
     var check_login = await response.json();
-    if(check_login.loggedIn == "false"){
+    if(check_login.loggedIn == false){
+      console.log(check_login);
       window.location = "login.html";
     }
     //console.log(check_login);
@@ -23,11 +24,12 @@ async function checkLogout()
 async function logout()
 {
     var response = await fetch("/Authentication/Logout",{method:'POST'});
-    var logout = await response.text();
-    if(logout == "true"){
+    var check_logout = await response.text();
+    console.log(check_logout);
+    if(check_logout == "true"){
       window.location = "login.html";
     }
-    //console.log(logout);
+    
 }
 
 async function login(login, pw) {

@@ -36,11 +36,14 @@
         <script src="/webclient/js/calendar.js" defer></script>
     </head>
 <body>
-<h1>Calendar</h1>
-<a id="prev_button" onclick="calendar.prev();setMonth();" href="#" class="buttons previous round">&#8249;</a>
-<pre id="actual_month"></pre>
-<a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
-<a id="sign_out" onclick="logout();" class="buttons"><i class="fas fa-sign-out-alt" style="color: #696969;font-size: 20px;"></i></a>
+    <div id="calendar-navigation">
+        <h1>Calendar</h1>
+        <a id="prev_button" onclick="calendar.prev();setMonth();" href="#" class="buttons previous round">&#8249;</a>
+        <pre id="actual_month"></pre>
+        <a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
+    </div>
+
+
 <!--<button><i class='fas fa-caret-square-left'></i></button>-->
 <script>
     checkLogout();
@@ -62,6 +65,30 @@
         console.log('box clicked');
     }*/
 </script>
+
+<nav class="navbar" id="nav-menu">
+    <a class="navbar-href" href="index.php">
+      <span class="span-name"><?php echo $user["fullname"]?></span>
+      <span>
+        <i class="fa fa-hospital-o profile-img" style="font-size: 100px;color: white;"></i>
+      </span>
+    </a>
+    <button class="nav-button" type="button" onclick="showMenu()" id="menu-button">
+    </button>
+    <div id="main-menu">
+      <ul class="nav-ul">
+         <li class="nav-li">
+            <a class="nav-li-a active" href="index.html" id="li-about">Home</a>
+        </li>
+        <li class="nav-li">
+            <a class="nav-li-a" href="my_account.php" id="li-int">Notification</a>
+        </li>
+        <li class="nav-li">
+            <a id="sign_out" onclick="logout();" class="nav-li-a buttons"><i class="fas fa-sign-out-alt" style="color: white;font-size: 20px;"></i></a>
+        </li>
+      </ul>
+    </div>
+  </nav>
 <div id="calendar" style="height: 800px;"></div>
 
 <div id="modal_view" style="display: none;">
@@ -84,8 +111,14 @@
         <button onclick="hideManagerMeeting()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
         <br>
         <div class="tui-full-calendar-popup-section">
+            <input type="hidden" id="calendar_id_man_view">
             <input type="hidden" id="meeting_id_man_view">
-            <button class="save_button" onclick="saveManagerMeeting()"><span>Save</span></button><button class="save_button"><span>Delete</span></button>
+            <div id="man_meeting_view">
+            <button class="save_button" onclick="saveManagerMeeting()"><span>Save</span></button><button class="save_button" onclick="deleteManagerMeeting()"><span>Delete</span></button>
+            </div>
+            <div id="man_meeting_create">
+                <button class="save_button" onclick="createManagerMeeting()"><span>Create</span></button>
+            </div>
         </div>
         
     </div>
