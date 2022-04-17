@@ -37,7 +37,8 @@ public static class ViewModelExtensions
         {
             Id = manager.Id,
             Name = manager.Name,
-            Surname = manager.Surname
+            Surname = manager.Surname,
+            IsCeo = manager.IsCEO
         };
     }
 
