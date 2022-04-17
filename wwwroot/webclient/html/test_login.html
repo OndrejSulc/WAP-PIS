@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<script src="/webclient/js/login.js"></script>
+
+<h1>Login</h1>
+
+<input id="login_login" placeholder="login" type="text">
+<br/>
+<input id="login_pw" value="password" placeholder="password" type="text">
+
+<br/>
+
+<button onclick="l_login()">Login</button>
+
+<button onclick="logout()"> Logout</button>
+
+<button onclick="checkLogin()"> Check login</button>
+
+<div id="result">Server Response:<br/></div>
+
+<script>
+    async function l_login()
+    {
+        var username = document.getElementById("login_login").value;
+        var pw = document.getElementById("login_pw").value;
+        var response = await login(username,pw);
+        document.getElementById("result").innerHTML += JSON.stringify(response)+"<br>";
+    }
+</script>
+
+</body>
+</html> 

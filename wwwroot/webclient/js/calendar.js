@@ -58,6 +58,33 @@ load_manager_meetings(calendar);
 document.getElementById('prev_button').addEventListener("click", calendar.prev());
 document.getElementById('next_button').addEventListener("click", calendar.next());
 setMonth();
+
+// event handlers
+calendar.on({
+    'clickSchedule': function(e) {
+        console.log('clickSchedule', e);
+    },
+    'beforeCreateSchedule': function(e) {
+        console.log('beforeCreateSchedule', e);
+        // open a creation popup
+
+        // If you dont' want to show any popup, just use `e.guide.clearGuideElement()`
+
+        // then close guide element(blue box from dragging or clicking days)
+        e.guide.clearGuideElement();
+    },
+    //UPRAVIT NA UPDATE MEETING
+    'beforeUpdateSchedule': function(e) {
+        console.log('beforeUpdateSchedule', e);
+        e.schedule.start = e.start;
+        e.schedule.end = e.end;
+        cal.updateSchedule(e.schedule.id, e.schedule.calendarId, e.schedule);
+    },
+    'beforeDeleteSchedule': function(e) {
+        console.log('beforeDeleteSchedule', e);
+        cal.deleteSchedule(e.schedule.id, e.schedule.calendarId);
+    }
+});
 //console.log(exampleMeetings.meetings);
 /*
 calendar.createSchedules([

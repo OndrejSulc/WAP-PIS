@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <title>Management calendar</title>
         <!-- Login management -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.7/signalr.min.js"></script>
         <script src="/webclient/js/meeting.js"></script>
@@ -11,6 +12,8 @@
 
         <!-- Calendar management -->
         <!-- CSS-->
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
         <link rel="stylesheet" type="text/css" href="/webclient/js/tui.calendar-1.15.3/tui-calendar.css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
@@ -32,7 +35,13 @@
     </head>
 <body>
 <h1>Calendar</h1>
-<a id="prev_button" onclick="calendar.prev();setMonth();" href="#" class="buttons previous round">&#8249;</a><pre id="actual_month"></pre><a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
+<a id="prev_button" onclick="calendar.prev();setMonth();" href="#" class="buttons previous round">&#8249;</a>
+<pre id="actual_month"></pre>
+<a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
+<a id="sign_out" onclick="logout();" class="buttons"><i class="fas fa-sign-out-alt" style="color: #696969;font-size: 20px;"></i></a>
+<script>
+    checkLogout();
+</script>
 
 <!--<button><i class='fas fa-caret-square-left'></i></button>-->
 <div id="calendar" style="height: 800px;"></div>
