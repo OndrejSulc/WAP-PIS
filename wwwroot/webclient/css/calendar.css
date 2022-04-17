@@ -25,3 +25,39 @@ pre{
     display: inline;
     margin: 0px 8px;
 }
+
+.tui-full-calendar-month-creation-guide{
+    border: none!important;
+}
+
+.modal_inputs{
+    font-size: 14px!important;
+}
+
+#modal_view{
+    position: absolute;
+    font-weight: 2.5;
+    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 10%);
+    clear: both;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.save_button{
+    width: 96px;
+    height: 36px;
+    border-radius: 40px;
+    background-color: #696969;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    margin-right: 8px;
+}
+
+.modal_view_label{
+    font-size: 15px;
+    margin-right: 3px;
+    font-weight: normal;
+}

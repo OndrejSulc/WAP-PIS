@@ -1,18 +1,19 @@
 async function checkLogin()
 {
     var response = await fetch("/Authentication/CheckLogin");
-    var check_login = await response.text();
-    if(check_login == "true"){
+    var check_login = await response.json();
+    console.log(check_login);
+    if(check_login.loggedIn == "true"){
       window.location = "index.html";
     }
-    //console.log(check_login);
 }
+    
 
 async function checkLogout()
 {
     var response = await fetch("/Authentication/CheckLogin");
-    var check_login = await response.text();
-    if(check_login == "false"){
+    var check_login = await response.json();
+    if(check_login.loggedIn == "false"){
       window.location = "login.html";
     }
     //console.log(check_login);

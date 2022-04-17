@@ -45,7 +45,7 @@ var calendar = new Calendar('#calendar', {
     },
     useCreationPopup: true,
     // whether use default detail popup or not
-    useDetailPopup: true,
+    useDetailPopup: false,
     // list of Calendars that can be used to add new schedule
     calendars: [
         {
@@ -59,10 +59,13 @@ document.getElementById('prev_button').addEventListener("click", calendar.prev()
 document.getElementById('next_button').addEventListener("click", calendar.next());
 setMonth();
 
+
 // event handlers
 calendar.on({
     'clickSchedule': function(e) {
+
         console.log('clickSchedule', e);
+        showManagerMeeting(e);
     },
     'beforeCreateSchedule': function(e) {
         console.log('beforeCreateSchedule', e);
@@ -85,6 +88,71 @@ calendar.on({
         cal.deleteSchedule(e.schedule.id, e.schedule.calendarId);
     }
 });
+
+function showManagerMeeting(e){
+    document.getElementById('meeting_id_man_view').value  = e.schedule.id;
+    document.getElementById('title_man_view').value  = e.schedule.title;
+    document.getElementById('start_date_man_view').value  = new Date(e.schedule.start);
+    document.getElementById('end_date_man_view').value  = new Date(e.schedule.end);
+    document.getElementById('description_man_view').value  = e.schedule.body;
+    document.getElementById('modal_view').style.display = "block";
+}
+
+function hideManagerMeeting(){
+    document.getElementById('meeting_id_man_view').value  = "";
+    document.getElementById('title_man_view').value  = "";
+    document.getElementById('start_date_man_view').value  = "";
+    document.getElementById('end_date_man_view').value  = "";
+    document.getElementById('description_man_view').value  = "";
+    document.getElementById('modal_view').style.display = "none";
+}
+
+function changeDatetimeFormat(input_datetime){
+    
+    const datetime = new Date(input_datetime);
+
+    //extract the parts of the date
+    const day = datetime.getDate();
+    const month = datetime.getMonth() + 1;
+    const year = datetime.getFullYear();
+    
+    const hours = datetime.getHours();
+    const minutes = datetime.getMinutes();
+
+    let format = year.toString();   
+    format = format + "-" + month.toString().padStart(2,"0");   
+    format = format + "-" + day.toString().padStart(2,"0"); 
+
+    format = format + " " + hours.toString().padStart(2,"0"); 
+    format = format + ":" + minutes.toString().padStart(2,"0");
+
+    return format;
+}
+
+function saveManagerMeeting(){
+
+    let name = document.getElementById('title_man_view').value.toString();
+    name = name ? name : null
+
+    let description = document.getElementById('description_man_view').value;
+    description = description ? description : null
+
+    let from = new Date(document.getElementById('start_date_man_view').value).toISOString();
+    from = from ? from : null
+
+    let until = new Date(document.getElementById('end_date_man_view').value).toISOString();
+    until = until ? until : null
+
+    let meetingId = document.getElementById('meeting_id_man_view').value;
+    console.log(meetingId, name, description, from, until);
+    // Calls create meeting endpoint on server
+    updateMeeting(meetingId, name, description, from, until).then(response => response.json())
+        .then(data => {
+           console.log(JSON.stringify(data, null, 2));
+           hideManagerMeeting();
+           calendar.render();
+        })
+}
 //console.log(exampleMeetings.meetings);
 /*
 calendar.createSchedules([
