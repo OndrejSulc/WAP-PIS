@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
 using System.Text.Json;
+using WAP_PIS.Authorization;
 using WAP_PIS.Extensions;
 
 namespace WAP_PIS.Controllers;
@@ -31,7 +32,6 @@ public class AuthenticationController : Controller
     [HttpGet]
     public async Task<CheckLoginResultViewModel> CheckLogin()
     {
-        CheckLoginResultViewModel response;
         if (!_sm.IsSignedIn(User))
             return new CheckLoginResultViewModel
             {
@@ -47,24 +47,23 @@ public class AuthenticationController : Controller
                 Id = m.Id,
                 Name = m.Name,
                 Surname = m.Surname,
-                IsCeo = m.IsCEO
+                Role = m.GetRole()
             },
             Secretary s => new AccountViewModel
             {
                 Id = s.Id,
                 Name = s.Name,
                 Surname = s.Surname,
-                IsCeo = s.Manager.IsCEO
+                Role = s.GetRole()
             },
             _ => null
         };
 
-        response = new CheckLoginResultViewModel
+        return new CheckLoginResultViewModel
         {
             LoggedIn = true,
             User = accountViewModel
         };
-        return response;
     }
 
     [HttpPost]
@@ -90,14 +89,7 @@ public class AuthenticationController : Controller
             lwm.Successful_Authentication = false;
         }
 
-        if (user is Manager manager)
-        {
-            lwm.IsCEO = manager.IsCEO;
-        }
-        else
-        {
-            lwm.IsCEO = false;
-        }
+        lwm.Role = user.GetRole();
         return lwm;
     }
 
