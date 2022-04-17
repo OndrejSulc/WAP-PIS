@@ -43,32 +43,19 @@
         <a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
     </div>
 
-
-<!--<button><i class='fas fa-caret-square-left'></i></button>-->
 <script>
-    checkLogout();
-    /*const boxes = document.getElementsByClassName('tui-full-calendar-weekday-schedule-title');
+    var logged_user_result,logger_user;
+    logged_user_result = checkLogout();
 
-    boxes.forEach(box => {
-    box.addEventListener('click', function handleClick(event) {
-        console.log('box clicked', event);
-
-        //box.setAttribute('style', 'background-color: yellow;');
+    logged_user_result.then(function(result) {
+        document.getElementById('logged_user_role').value = result.role;
     });
-    });*/
-    /*var spans = document.getElementsByClassName('tui-full-calendar-weekday-schedule-title');
-    for(i=0;i<spans.length;i++)
-        spans[i].onclick=showManagerMeeting();
-    */
-    /*function doSomething() 
-    {
-        console.log('box clicked');
-    }*/
+    
 </script>
 
 <nav class="navbar" id="nav-menu">
-    <a class="navbar-href" href="index.php">
-      <span class="span-name"><?php echo $user["fullname"]?></span>
+    <a class="navbar-href" href="index.html">
+      <span class="span-name">Calendar</span>
       <span>
         <i class="fa fa-hospital-o profile-img" style="font-size: 100px;color: white;"></i>
       </span>
@@ -78,10 +65,13 @@
     <div id="main-menu">
       <ul class="nav-ul">
          <li class="nav-li">
-            <a class="nav-li-a active" href="index.html" id="li-about">Home</a>
+            <a class="nav-li-a active" href="#" id="li-about">Calendar</a>
         </li>
         <li class="nav-li">
-            <a class="nav-li-a" href="my_account.php" id="li-int">Notification</a>
+            <a class="nav-li-a" href="" id="li-int">Notification</a>
+        </li>
+        <li class="nav-li">
+            <a class="nav-li-a" href="userManagement.html" id="li-int">User Management</a>
         </li>
         <li class="nav-li">
             <a id="sign_out" onclick="logout();" class="nav-li-a buttons"><i class="fas fa-sign-out-alt" style="color: white;font-size: 20px;"></i></a>
@@ -90,6 +80,7 @@
     </div>
   </nav>
 <div id="calendar" style="height: 800px;"></div>
+<input type="hidden" id="logged_user_role" value="">
 
 <div id="modal_view" style="display: none;">
     <div class="tui-full-calendar-popup-container">
@@ -101,6 +92,9 @@
         </div>
         <div class="tui-full-calendar-popup-section">
             <label for="end_date_man_view" class="modal_view_label">End:  </label><input id="end_date_man_view" class="tui-full-calendar-content modal_inputs" placeholder="End date" type="datetime">
+        </div>
+        <div class="tui-full-calendar-popup-section" id="group_meeting">
+            <input id="group_meeting_man_view" class="tui-full-calendar-content modal_inputs" type="checkbox"><label for="group_meeting_man_view" class="modal_view_label">Group meeting</label>
         </div>
         <div class="tui-full-calendar-popup-section">
             <label for="description_man_view" class="modal_view_label">Description:  </label>
@@ -126,3 +120,21 @@
 
 </body>
 </html> 
+<!--<button><i class='fas fa-caret-square-left'></i></button>-->
+<!--const boxes = document.getElementsByClassName('tui-full-calendar-weekday-schedule-title');
+
+    boxes.forEach(box => {
+    box.addEventListener('click', function handleClick(event) {
+        console.log('box clicked', event);
+
+        //box.setAttribute('style', 'background-color: yellow;');
+    });
+    });*/
+    /*var spans = document.getElementsByClassName('tui-full-calendar-weekday-schedule-title');
+    for(i=0;i<spans.length;i++)
+        spans[i].onclick=showManagerMeeting();
+    */
+    /*function doSomething() 
+    {
+        console.log('box clicked');
+    }-->
