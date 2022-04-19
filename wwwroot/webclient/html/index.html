@@ -1,134 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Management calendar</title>
-        <!-- Login management -->
-        <script src="/lib/jquery/dist/jquery.min.js"></script>
-        <script src="/lib/signalr/signalr.min.js"></script>
-        <script src="/webclient/js/meeting.js"></script>
-        <script src="/webclient/js/notification.js"></script>
-        <script src="/webclient/js/userAvailability.js"></script>
-        <script src="/webclient/js/userManagement.js"></script>
-        <script src="/webclient/js/signalr.js"></script>
-        <script src="/webclient/js/login.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Management calendar</title>
+    <!-- Login management -->
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/signalr/signalr.min.js"></script>
+    <script src="/webclient/js/meeting.js"></script>
+    <script src="/webclient/js/notification.js"></script>
+    <script src="/webclient/js/userAvailability.js"></script>
+    <script src="/webclient/js/userManagement.js"></script>
+    <script src="/webclient/js/signalr.js"></script>
+    <script src="/webclient/js/login.js"></script>
 
-        <!-- Calendar management -->
-        <!-- CSS-->
-        <meta name='viewport' content='width=device-width, initial-scale=1'>
-        <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-        <link rel="stylesheet" type="text/css" href="/webclient/js/tui.calendar-1.15.3/tui-calendar.css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
-        <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="/webclient/css/calendar.css" />
-        <!-- JS -->
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    <!-- Calendar management -->
+    <!-- CSS-->
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <link rel="stylesheet" type="text/css" href="/webclient/js/tui.calendar-1.15.3/tui-calendar.css" />
+    <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+    <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/webclient/css/calendar.css" />
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
             crossorigin="anonymous"></script>
 
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-        <script src="https://uicdn.toast.com/tui.code-snippet/v1.5.2/tui-code-snippet.min.js"></script>
-        <script src="https://uicdn.toast.com/tui.time-picker/v2.0.3/tui-time-picker.min.js"></script>
-        <script src="https://uicdn.toast.com/tui.date-picker/v4.0.3/tui-date-picker.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.0.13/chance.min.js"></script>
-        <script src="/webclient/js/tui.calendar-1.15.3/tui-calendar.js"></script>
-        <script src="/webclient/js/calendar.js" defer></script>
-    </head>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="https://uicdn.toast.com/tui.code-snippet/v1.5.2/tui-code-snippet.min.js"></script>
+    <script src="https://uicdn.toast.com/tui.time-picker/v2.0.3/tui-time-picker.min.js"></script>
+    <script src="https://uicdn.toast.com/tui.date-picker/v4.0.3/tui-date-picker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.0.13/chance.min.js"></script>
+    <script src="/webclient/js/tui.calendar-1.15.3/tui-calendar.js"></script>
+    <script src="/webclient/js/calendar.js" defer></script>
+</head>
 <body>
-    <div id="calendar-navigation">
-        <h1>Calendar</h1>
-        <a id="prev_button" onclick="calendar.prev();setMonth();" href="#" class="buttons previous round">&#8249;</a>
-        <pre id="actual_month"></pre>
-        <a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
+
+
+    <script>
+        var logged_user_result, logger_user;
+        logged_user_result = checkLogout();
+
+        logged_user_result.then(function (result) {
+            if (result.role == "Ceo" || result.role == "CeoSecretary") {
+                document.getElementById('div_group_meeting_man_view').style.display = "block";
+            }
+            else {
+                document.getElementById('div_group_meeting_man_view').style.display = "none";
+            }
+            document.getElementById('logged_user_role').value = result.role;
+        });
+
+    </script>
+
+    <nav class="navbar" id="nav-menu">
+        <a class="navbar-href" href="index.html">
+            <span class="span-name">Calendar</span>
+            <span>
+                <i class="fa fa-hospital-o profile-img" style="font-size: 100px;color: white;"></i>
+            </span>
+        </a>
+        <button class="nav-button" type="button" onclick="showMenu()" id="menu-button">
+        </button>
+        <div id="main-menu">
+            <ul class="nav-ul">
+                <li class="nav-li">
+                    <a class="nav-li-a active" href="#" id="li-about">Calendar</a>
+                </li>
+                <li class="nav-li">
+                    <a class="nav-li-a" href="#calendar" id="li-int">Notification</a>
+                </li>
+                <li class="nav-li">
+                    <a class="nav-li-a" href="#userManagement" id="li-int">User Management</a>
+                </li>
+                <li class="nav-li">
+                    <a class="nav-li-a" href="#testdiv" id="li-int">Test</a>
+                </li>
+                <li class="nav-li">
+                    <a class="nav-li-a" href="#testdiv2" id="li-int">Test2</a>
+                </li>
+                <li class="nav-li">
+                    <a id="sign_out" onclick="logout();" class="nav-li-a buttons"><i class="fas fa-sign-out-alt" style="color: white;font-size: 20px;"></i></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div class="container">
+        <div id="testdiv" class="section" onmouseover="homein()" onmouseleave="homeout()">
+
+            <h2> <a target="_blank" href="https://www.stud.fit.vutbr.cz/~xgalba03/">Šimon Galba</a></h2><p>Som študujúci programátor s hlavnými záľubami v počítačovej grafike. Táto stránka bola vytvorená za účelom vzdelávania sa v tvorbe webových stránok pomocou jazyka HTML. Na stránke nie sú využité žiadne knižnice okrem vlastnoručne vytvorených funkcií JavaScript. </p>
+        </div>
+        <div id="calendar-navigation">
+            <h1>Calendar</h1>
+            <a id="prev_button" onclick="calendar.prev();setMonth();" href="#" class="buttons previous round">&#8249;</a>
+            <pre id="actual_month"></pre>
+            <a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
+        </div>
+
+        <div id="calendar" class="section" style="height: 800px;"></div>
+        <input type="hidden" id="logged_user_role" value="">
+
+        <div id="userManagement" class="section" onmouseover="homein()" onmouseleave="homeout()">
+            <h1>UserManagement</h1>
+
+            <h3>Create New User</h3>
+
+            <input id="um_login" placeholder="login" type="text">
+            <br />
+            <input id="um_pw" value="password" placeholder="password" type="text">
+            <br />
+            <input id="um_name" value="TestUserName" placeholder="name" type="text">
+            <br />
+            <input id="um_surname" value="TestUserSurname" placeholder="password" type="text">
+            <br />
+            <input id="um_date_of_birth" value="2020-04-13" placeholder="Date of birth" type="date">
+            <br />
+            <input id="um_issecretary" placeholder="IsSecretary" type="checkbox">
+            <br />
+            <input id="um_manager_id" value="" placeholder="Manger for secretary ID" type="string">
+
+            <button onclick="um_createUser()"> CreateUser</button>
+
+            <script>
+                async function um_createUser() {
+                    var login = document.getElementById("um_login").value;
+                    var pw = document.getElementById("um_pw").value;
+                    var name = document.getElementById("um_name").value;
+                    var surname = document.getElementById("um_surname").value;
+                    var dateOfBirth = document.getElementById("um_date_of_birth").value;
+                    var issecretary = document.getElementById("um_issecretary").checked;
+                    var managerID = document.getElementById("um_manager_id").value;
+
+                    var response = await createUser(login, pw, name, surname, dateOfBirth, issecretary, managerID);
+                    document.getElementById("result").innerHTML += JSON.stringify(response) + "<br>";
+                }
+            </script>
+
+
+            <h3>Delete User</h3>
+
+            <input id="um_delete_id" placeholder="userID" type="text">
+
+            <button onclick="um_deleteUser()"> Delete</button>
+
+            <script>
+                async function um_deleteUser() {
+                    var deleteId = document.getElementById("um_delete_id").value;
+
+                    var response = await deleteUser(deleteId);
+                    document.getElementById("result").innerHTML += JSON.stringify(response) + "<br>";
+                }
+            </script>
+
+
+            <h3>GetAllUsers</h3>
+            <button onclick="um_getAllUsers()">GetAllUsers</button>
+
+            <script>
+                async function um_getAllUsers() {
+                    var response = await getAllUsers();
+                    document.getElementById("result").innerHTML += JSON.stringify(response) + "<br>";
+                }
+            </script>
+
+            <div id="result">Server Response:<br /></div>
+        </div>
+
+
+        <div id="testdiv2" class="section" onmouseover="homein()" onmouseleave="homeout()">
+
+            <h2> <a target="_blank" href="https://www.stud.fit.vutbr.cz/~xgalba03/">Test 2 section</a></h2><p>Som študujúci programátor s hlavnými záľubami v počítačovej grafike. Táto stránka bola vytvorená za účelom vzdelávania sa v tvorbe webových stránok pomocou jazyka HTML. Na stránke nie sú využité žiadne knižnice okrem vlastnoručne vytvorených funkcií JavaScript. </p>
+        </div>
+
     </div>
 
-<script>
-    var logged_user_result,logger_user;
-    logged_user_result = checkLogout();
-
-    logged_user_result.then(function(result) {
-        if(result.role=="Ceo" || result.role=="CeoSecretary"){
-            document.getElementById('div_group_meeting_man_view').style.display = "block";
-        }
-        else{
-            document.getElementById('div_group_meeting_man_view').style.display = "none";
-        }
-        document.getElementById('logged_user_role').value = result.role;
-    });
-    
-</script>
-
-<nav class="navbar" id="nav-menu">
-    <a class="navbar-href" href="index.html">
-      <span class="span-name">Calendar</span>
-      <span>
-        <i class="fa fa-hospital-o profile-img" style="font-size: 100px;color: white;"></i>
-      </span>
-    </a>
-    <button class="nav-button" type="button" onclick="showMenu()" id="menu-button">
-    </button>
-    <div id="main-menu">
-      <ul class="nav-ul">
-         <li class="nav-li">
-            <a class="nav-li-a active" href="#" id="li-about">Calendar</a>
-        </li>
-        <li class="nav-li">
-            <a class="nav-li-a" href="" id="li-int">Notification</a>
-        </li>
-        <li class="nav-li">
-            <a class="nav-li-a" href="userManagement.html" id="li-int">User Management</a>
-        </li>
-        <li class="nav-li">
-            <a id="sign_out" onclick="logout();" class="nav-li-a buttons"><i class="fas fa-sign-out-alt" style="color: white;font-size: 20px;"></i></a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-<div id="calendar" style="height: 800px;"></div>
-<input type="hidden" id="logged_user_role" value="">
-
-<div id="modal_view" style="display: none;">
-    <div class="tui-full-calendar-popup-container">
-        <div class="tui-full-calendar-popup-section">
-            <label for="title_man_view" class="modal_view_label">Title:  </label><input id="title_man_view" class="tui-full-calendar-content modal_inputs" placeholder="Subject" value="Title" type="text">
-        </div>
-        <div class="tui-full-calendar-popup-section">
-            <label for="start_date_man_view" class="modal_view_label">Start:  </label><input id="start_date_man_view" class="tui-full-calendar-content modal_inputs" placeholder="Start date" type="datetime-local" value="">
-        </div>
-        <div class="tui-full-calendar-popup-section">
-            <label for="end_date_man_view" class="modal_view_label">End:  </label><input id="end_date_man_view" class="tui-full-calendar-content modal_inputs" placeholder="End date" type="datetime-local" value="">
-        </div>
-        <div id="div_group_meeting_man_view">
-        <div class="tui-full-calendar-popup-section" id="group_meeting" >
-            <input id="group_meeting_man_view" class="tui-full-calendar-content modal_inputs" type="checkbox" onchange="checkGroupMeeting()">
-            <label for="group_meeting_man_view" class="modal_view_label">Group meeting</label><br>
-            <select name="group_meeting_attendees" id="group_meeting_attendees" style="display: none;" size="3" multiple></select>
-        </div>
-        </div>
-        <div class="tui-full-calendar-popup-section">
-            <label for="description_man_view" class="modal_view_label">Description:  </label>
-        </div>
-        <div class="tui-full-calendar-popup-section">
-            <textarea name="description_man_view" id="description_man_view" cols="30" rows="3" class="modal_inputs">Description</textarea>
-        </div>
-        <button onclick="hideManagerMeeting()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
-        <br>
-        <div class="tui-full-calendar-popup-section">
-            <input type="hidden" id="calendar_id_man_view">
-            <input type="hidden" id="meeting_id_man_view">
-            <div id="man_meeting_view">
-            <button class="save_button" onclick="saveManagerMeeting()"><span>Save</span></button><button class="save_button" onclick="deleteManagerMeeting()"><span>Delete</span></button>
+    <div id="modal_view" style="display: none;">
+        <div class="tui-full-calendar-popup-container">
+            <div class="tui-full-calendar-popup-section">
+                <label for="title_man_view" class="modal_view_label">Title:  </label><input id="title_man_view" class="tui-full-calendar-content modal_inputs" placeholder="Subject" value="Title" type="text">
             </div>
-            <div id="man_meeting_create">
-                <button class="save_button" onclick="createManagerMeeting()"><span>Create</span></button>
+            <div class="tui-full-calendar-popup-section">
+                <label for="start_date_man_view" class="modal_view_label">Start:  </label><input id="start_date_man_view" class="tui-full-calendar-content modal_inputs" placeholder="Start date" type="datetime-local" value="">
             </div>
-        </div>
-        
-    </div>
-</div>
+            <div class="tui-full-calendar-popup-section">
+                <label for="end_date_man_view" class="modal_view_label">End:  </label><input id="end_date_man_view" class="tui-full-calendar-content modal_inputs" placeholder="End date" type="datetime-local" value="">
+            </div>
+            <div id="div_group_meeting_man_view">
+                <div class="tui-full-calendar-popup-section" id="group_meeting">
+                    <input id="group_meeting_man_view" class="tui-full-calendar-content modal_inputs" type="checkbox" onchange="checkGroupMeeting()">
+                    <label for="group_meeting_man_view" class="modal_view_label">Group meeting</label><br>
+                    <select name="group_meeting_attendees" id="group_meeting_attendees" style="display: none;" size="3" multiple></select>
+                </div>
+            </div>
+            <div class="tui-full-calendar-popup-section">
+                <label for="description_man_view" class="modal_view_label">Description:  </label>
+            </div>
+            <div class="tui-full-calendar-popup-section">
+                <textarea name="description_man_view" id="description_man_view" cols="30" rows="3" class="modal_inputs">Description</textarea>
+            </div>
+            <button onclick="hideManagerMeeting()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
+            <br>
+            <div class="tui-full-calendar-popup-section">
+                <input type="hidden" id="calendar_id_man_view">
+                <input type="hidden" id="meeting_id_man_view">
+                <div id="man_meeting_view">
+                    <button class="save_button" onclick="saveManagerMeeting()"><span>Save</span></button><button class="save_button" onclick="deleteManagerMeeting()"><span>Delete</span></button>
+                </div>
+                <div id="man_meeting_create">
+                    <button class="save_button" onclick="createManagerMeeting()"><span>Create</span></button>
+                </div>
+            </div>
 
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@15.0.0/dist/smooth-scroll.polyfills.min.js"></script>
 </body>
 </html> 
 <!--<button><i class='fas fa-caret-square-left'></i></button>-->
