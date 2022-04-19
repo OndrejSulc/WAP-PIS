@@ -10,6 +10,7 @@ function load_manager_meetings(calendar){
                     calendarId: '1',
                     title: item.title,
                     body: item.description,
+                    attendees: item.attendees,
                     category: 'time',
                     dueDateClass: '',
                     start: new Date(item.from),
@@ -97,6 +98,13 @@ function hideManagerMeeting(){
     document.getElementById('start_date_man_view').value  = "";
     document.getElementById('end_date_man_view').value  = "";
     document.getElementById('description_man_view').value  = "";
+    var select = document.getElementById("group_meeting_attendees");
+    var length = select.length;
+    for (i = 0; i < length; i++) {
+        select.remove(0);
+    }
+    document.getElementById('group_meeting_man_view').checked = false; 
+    document.getElementById('group_meeting_attendees').style.display = "none";
     document.getElementById('modal_view').style.display = "none";
 }
 
@@ -107,6 +115,38 @@ function showManagerMeeting(e){
     document.getElementById('start_date_man_view').value  = changeDatetimeFormat(e.schedule.start);
     document.getElementById('end_date_man_view').value  = changeDatetimeFormat(e.schedule.end);
     document.getElementById('description_man_view').value  = e.schedule.body;
+    if(e.schedule.attendees.length !== 0){
+        document.getElementById('group_meeting_man_view').checked = true; 
+        //PRIDAT ATTENDEES
+        getAllUsers().then(data => {
+            for(item of data.managers) {
+                var opt = document.createElement('option');
+                opt.value = item.id;
+                opt.innerHTML = item.name + " " + item.surname;
+                if(e.schedule.attendees.includes(item.id)){
+                    opt.selected = true;
+                }
+                document.getElementById('group_meeting_attendees').appendChild(opt);
+            }
+        });
+
+            //getUserInfo(e.schedule.attendees[i]).then(data => {
+                //console.log(data);
+                /*var opt = document.createElement('option');
+                opt.value = data.id;
+                opt.innerHTML = data.name + " " + data.surname;
+                document.getElementById('group_meeting_attendees').appendChild(opt);*/
+                /*for(item of data.managers) {
+                    var opt = document.createElement('option');
+                    opt.value = item.id;
+                    opt.innerHTML = item.name + " " + item.surname;
+                    document.getElementById('group_meeting_attendees').appendChild(opt);
+                }*/
+            //});
+        document.getElementById('group_meeting_attendees').style.display = "block";
+    }
+
+
     document.getElementById('modal_view').style.display = "block";
     document.getElementById('man_meeting_view').style.display = "block";
     document.getElementById('man_meeting_create').style.display = "none";
@@ -127,7 +167,7 @@ function changeDatetimeFormat(input_datetime){
     let format = year.toString();   
     format = format + "-" + month.toString().padStart(2,"0");   
     format = format + "-" + day.toString().padStart(2,"0"); 
-    format = format + " " + hours.toString().padStart(2,"0"); 
+    format = format + "T" + hours.toString().padStart(2,"0"); 
     format = format + ":" + minutes.toString().padStart(2,"0");
 
     return format;
@@ -141,10 +181,10 @@ function saveManagerMeeting(){
     let description = document.getElementById('description_man_view').value;
     description = description ? description : null
 
-    let from = new Date(document.getElementById('start_date_man_view').value).toISOString();
+    let from = document.getElementById('start_date_man_view').value;
     from = from ? from : null
 
-    let until = new Date(document.getElementById('end_date_man_view').value).toISOString();
+    let until = document.getElementById('end_date_man_view').value;
     until = until ? until : null
 
     let meetingId = document.getElementById('meeting_id_man_view').value;
@@ -199,7 +239,39 @@ function createManagerMeeting(e){
     until = until ? until : null
 
     //console.log(name,description,from,until);
-    createMeeting(name, description, from, until).then(response => response.json())
+
+    if(document.getElementById('group_meeting_man_view').checked == true){
+        var attendees = [];
+        for (var option of document.getElementById('group_meeting_attendees').options)
+        {
+            if (option.selected) {
+                attendees.push(option.value);
+            }
+        }
+        console.log(attendees);
+        createGroupMeeting(name, description, from, until, attendees).then(response => response.json())
+            .then(data => {
+                let result = JSON.stringify(data, null, 2);
+                let item = JSON.parse(result);
+                calendar.createSchedules([
+                    {
+                    id: item.id,
+                    calendarId: '1',
+                    title: item.title,
+                    body: item.description,
+                    attendees: item.attendees,
+                    category: 'time',
+                    dueDateClass: '',
+                    start: new Date(item.from),
+                    end: new Date(item.until)
+                    }
+                ]);
+                calendar.render();
+                hideManagerMeeting();
+            });
+    }
+    else{
+        createMeeting(name, description, from, until).then(response => response.json())
             .then(data => {
                 let result = JSON.stringify(data, null, 2);
                 let item = JSON.parse(result);
@@ -217,7 +289,9 @@ function createManagerMeeting(e){
                 ]);
                 calendar.render();
                 hideManagerMeeting();
-            })
+            });
+    }
+    
 
     //let meetingId = document.getElementById('meeting_id_man_view').value;
     //let calendarId = document.getElementById('calendar_id_man_view').value;
@@ -235,6 +309,36 @@ function createManagerMeeting(e){
         }
     ]);*/
 }
+
+function checkGroupMeeting(){
+    var group_meeting_checkbox = document.getElementById('group_meeting_man_view');
+
+    if(group_meeting_checkbox.checked === true) {
+        console.log("Checkbox is checked - boolean value: ", group_meeting_checkbox.checked);
+
+        getAllUsers().then(data => {
+            for(item of data.managers) {
+                var opt = document.createElement('option');
+                opt.value = item.id;
+                opt.innerHTML = item.name + " " + item.surname;
+                document.getElementById('group_meeting_attendees').appendChild(opt);
+            }
+        });
+
+        document.getElementById('group_meeting_attendees').style.display = "block";
+    }
+        /*for (var i = min; i<=max; i++){
+            var opt = document.createElement('option');
+            opt.value = i;
+            opt.innerHTML = i;
+            group_meeting_checkbox.appendChild(opt);
+        }*/
+    if(group_meeting_checkbox.checked === false) {
+        console.log("Checkbox is not checked - boolean value: ", group_meeting_checkbox.checked)
+        document.getElementById('group_meeting_attendees').style.display = "none";
+    }
+}
+
 
 //console.log(exampleMeetings.meetings);
 /*
