@@ -66,6 +66,18 @@ pre{
     margin-left: 300px;
 }
 
+input[type=datetime-local]{
+  line-height: inherit;
+}
+
+#group_meeting_attendees{
+  width: 150px;
+}
+
+#group_meeting_attendees option{
+  font-size: 14px;
+}
+
 /*    PROJEKT    */
 
 @media (min-width: 1000px){ 

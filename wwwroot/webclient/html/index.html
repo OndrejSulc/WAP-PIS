@@ -9,6 +9,7 @@
         <script src="/webclient/js/meeting.js"></script>
         <script src="/webclient/js/notification.js"></script>
         <script src="/webclient/js/userAvailability.js"></script>
+        <script src="/webclient/js/userManagement.js"></script>
         <script src="/webclient/js/signalr.js"></script>
         <script src="/webclient/js/login.js"></script>
 
@@ -48,6 +49,12 @@
     logged_user_result = checkLogout();
 
     logged_user_result.then(function(result) {
+        if(result.role=="Ceo" || result.role=="CeoSecretary"){
+            document.getElementById('div_group_meeting_man_view').style.display = "block";
+        }
+        else{
+            document.getElementById('div_group_meeting_man_view').style.display = "none";
+        }
         document.getElementById('logged_user_role').value = result.role;
     });
     
@@ -88,13 +95,17 @@
             <label for="title_man_view" class="modal_view_label">Title:  </label><input id="title_man_view" class="tui-full-calendar-content modal_inputs" placeholder="Subject" value="Title" type="text">
         </div>
         <div class="tui-full-calendar-popup-section">
-            <label for="start_date_man_view" class="modal_view_label">Start:  </label><input id="start_date_man_view" class="tui-full-calendar-content modal_inputs" placeholder="Start date" type="datetime">
+            <label for="start_date_man_view" class="modal_view_label">Start:  </label><input id="start_date_man_view" class="tui-full-calendar-content modal_inputs" placeholder="Start date" type="datetime-local" value="">
         </div>
         <div class="tui-full-calendar-popup-section">
-            <label for="end_date_man_view" class="modal_view_label">End:  </label><input id="end_date_man_view" class="tui-full-calendar-content modal_inputs" placeholder="End date" type="datetime">
+            <label for="end_date_man_view" class="modal_view_label">End:  </label><input id="end_date_man_view" class="tui-full-calendar-content modal_inputs" placeholder="End date" type="datetime-local" value="">
         </div>
-        <div class="tui-full-calendar-popup-section" id="group_meeting">
-            <input id="group_meeting_man_view" class="tui-full-calendar-content modal_inputs" type="checkbox"><label for="group_meeting_man_view" class="modal_view_label">Group meeting</label>
+        <div id="div_group_meeting_man_view">
+        <div class="tui-full-calendar-popup-section" id="group_meeting" >
+            <input id="group_meeting_man_view" class="tui-full-calendar-content modal_inputs" type="checkbox" onchange="checkGroupMeeting()">
+            <label for="group_meeting_man_view" class="modal_view_label">Group meeting</label><br>
+            <select name="group_meeting_attendees" id="group_meeting_attendees" style="display: none;" size="3" multiple></select>
+        </div>
         </div>
         <div class="tui-full-calendar-popup-section">
             <label for="description_man_view" class="modal_view_label">Description:  </label>
