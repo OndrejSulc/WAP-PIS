@@ -339,6 +339,64 @@ function checkGroupMeeting(){
     }
 }
 
+function load_users(){
+    var i = 0;
+    getAllUsers().then(data => {
+        var table = document.getElementById("user_management");
+        table.innerHTML = '';
+        for(item of data.managers) {
+            var row = table.insertRow(i);
+
+            // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            //console.log(item.isCeo);
+            // Add some text to the new cells:
+            if(item.isCeo == true){
+                cell1.innerHTML = "Ceo";
+            }
+            else{
+                cell1.innerHTML = "Manager";
+            }
+            cell2.innerHTML = item.name;
+            cell3.innerHTML = item.surname;
+            cell4.innerHTML
+            
+            = "<button onclick=\"delete_user('" + item.id + "')\"> Delete!</button>";
+            i=i+1;
+        }
+        for(item of data.secretaries) {
+            var row = table.insertRow(i);
+
+            // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            //console.log(item.isCeo);
+            // Add some text to the new cells:
+            if(item.manager.isCeo == true){
+                cell1.innerHTML = "CeoSecreteary";
+            }
+            else{
+                cell1.innerHTML = "Secreteary";
+            }
+            cell2.innerHTML = item.name;
+            cell3.innerHTML = item.surname;
+            cell4.innerHTML = "<button onclick=\"delete_user('" + item.id + "')\"> Delete!</button>";
+            i=i+1;
+        }
+    });
+}
+
+function delete_user(id){
+    console.log(deleteUser(id));
+    load_users();
+}
+
+
 
 //console.log(exampleMeetings.meetings);
 /*

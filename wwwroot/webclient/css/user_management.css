@@ -1,0 +1,51 @@
+table td,table th{
+    text-align: center;
+  }
+  table td.info{
+    border:1px solid #696969;
+    overflow-x: overlay;
+  }
+  table th {
+    font-weight: 600;
+  }
+  table input{
+    width: 95%;
+  }
+  table input:focus{
+    background-color: #ddd;
+    outline: 0px;
+  }
+  button:hover{
+    background-color: #696969;
+    color: white;
+  }
+  h3{
+    margin-bottom: 2px;
+  }
+  .edit{
+    font-size: 16px!important;
+  }
+  .fa.fa-edit,.fa.fa-remove{
+    font-size: 26px;
+  }
+  div#main-body div{
+    padding-bottom: 40px;
+  }
+  @media (max-width: 999px){
+    #main-body{
+      padding-top: 135px;
+    }
+    .edit{
+      font-size: 26px;
+    }
+    table{
+      font-size: 26px;
+    }
+    h3{
+      font-size: 32px;
+      margin-bottom: 2px;
+    }
+    .fa.fa-edit,.fa.fa-remove{
+      font-size: 40px;
+    }
+  }

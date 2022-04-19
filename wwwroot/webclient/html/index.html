@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/webclient/css/calendar.css" />
+    <link rel="stylesheet" type="text/css" href="/webclient/css/user_management.css" />
     <!-- JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
             crossorigin="anonymous"></script>
@@ -46,12 +47,18 @@
         logged_user_result.then(function (result) {
             if (result.role == "Ceo" || result.role == "CeoSecretary") {
                 document.getElementById('div_group_meeting_man_view').style.display = "block";
+                load_users();
             }
             else {
                 document.getElementById('div_group_meeting_man_view').style.display = "none";
             }
             document.getElementById('logged_user_role').value = result.role;
         });
+
+        
+
+        // Create an empty <tr> element and add it to the 1st position of the table:
+        
 
     </script>
 
@@ -106,6 +113,20 @@
 
         <div id="userManagement" class="section" onmouseover="homein()" onmouseleave="homeout()">
             <h1>UserManagement</h1>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Firstname</th>
+                        <th>Surname</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="user_management">
+                </tbody>
+            </table>
 
             <h3>Create New User</h3>
 
