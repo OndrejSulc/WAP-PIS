@@ -10,4 +10,7 @@ public class Manager : Account
     public bool IsCEO { get; set; }
     
     public virtual List<Meeting> Meetings { get; set; }
+
+    public virtual List<Notification> Notifications { get; set; }
+
 }

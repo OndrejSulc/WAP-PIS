@@ -15,4 +15,6 @@ public class Meeting
     public DateTime From { get; set; }
     public DateTime Until { get; set; }
     public virtual List<Manager> Attendees { get; set; }
+    public virtual List<Notification> Notifications { get; set; }
+
 }

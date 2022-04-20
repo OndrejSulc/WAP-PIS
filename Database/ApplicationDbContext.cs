@@ -27,6 +27,13 @@ public class ApplicationDbContext : IdentityDbContext
 
         modelBuilder.Entity<Meeting>()
             .HasMany<Manager>(m => m.Attendees).WithMany(m => m.Meetings);
+
+        modelBuilder.Entity<Meeting>()
+            .HasMany<Notification>(m=>m.Notifications).WithOne(n => n.Meeting);
+
+        modelBuilder.Entity<Manager>()
+            .HasMany<Notification>(m=>m.Notifications).WithOne(n => n.Recipient);
+
         base.OnModelCreating(modelBuilder);
     }
 }
