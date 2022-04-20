@@ -220,6 +220,47 @@
 
         </div>
     </div>
+
+    <div id="create_user_view" style="display: none;">
+        <div class="tui-full-calendar-popup-container">
+            <h3>Create New User</h3>
+            <div class="tui-full-calendar-popup-section">
+                <label for="um_login" class="modal_view_label">Login:  </label><input id="um_login" class="tui-full-calendar-content modal_inputs" placeholder="Login" type="text">
+            </div>
+            <div class="tui-full-calendar-popup-section">
+                <label for="um_password" class="modal_view_label">Password:  </label><input id="um_password" class="tui-full-calendar-content modal_inputs" placeholder="Password" type="text">
+            </div>
+            <div class="tui-full-calendar-popup-section">
+                <label for="um_name" class="modal_view_label">Name:  </label><input id="um_name" class="tui-full-calendar-content modal_inputs" placeholder="User Name" type="text">
+            </div>
+            <div class="tui-full-calendar-popup-section">
+                <label for="um_surname" class="modal_view_label">Surname:  </label><input id="um_surname" class="tui-full-calendar-content modal_inputs" placeholder="User Surname" type="text">
+            </div>
+            <div class="tui-full-calendar-popup-section">
+                <label for="um_date_of_birth" class="modal_view_label">Date of birth:  </label><input id="um_date_of_birth" class="tui-full-calendar-content modal_inputs" type="date">
+            </div>
+            <div id="um_secretary_div">
+                <div class="tui-full-calendar-popup-section" id="group_meeting">
+                    <input id="um_issecretary" class="tui-full-calendar-content modal_inputs" type="checkbox" onchange="checkSecretary()">
+                    <label for="um_issecretary" class="modal_view_label">Group meeting</label><br>
+                    <select name="secretary_attendees" id="group_meeting_attendees" style="display: none;" size="3" multiple></select>
+                </div>
+            </div>
+            <button onclick="hideCreateUser()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
+            <br>
+            <div class="tui-full-calendar-popup-section">
+                <input type="hidden" id="calendar_id_man_view">
+                <input type="hidden" id="meeting_id_man_view">
+                <div id="user_view">
+                    <button class="save_button" onclick="saveUser()"><span>Save</span></button><button class="save_button" onclick="deleteUser()"><span>Delete</span></button>
+                </div>
+                <div id="user_create">
+                    <button class="save_button" onclick="createNewUser()"><span>Create</span></button>
+                </div>
+            </div>
+
+        </div>
+    </div>
     <!--<script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@15.0.0/dist/smooth-scroll.polyfills.min.js"></script>-->
 </body>
 </html> 
