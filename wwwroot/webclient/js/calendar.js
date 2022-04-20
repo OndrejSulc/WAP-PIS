@@ -23,6 +23,24 @@ function load_manager_meetings(calendar){
     calendar.toggleScheduleView(true);
 }
 
+
+
+// Option 2 - jQuery Smooth Scrolling
+$('a.nav-li-a').on('click', function (e) {
+    if (this.hash !== '') {
+        e.preventDefault();
+        console.log(this.hash);
+
+        const hash = this.hash;
+        var targetOffset = $(this.hash).offset().top;
+        console.log(targetOffset);
+
+        $("html, body").animate({
+            scrollTop: targetOffset + "px"
+        }, 1000);
+    }
+});
+
 function setMonth(){
     var month = calendar.getDate().getMonth()+1;
     var year = calendar.getDate().getFullYear();
@@ -339,12 +357,12 @@ function checkGroupMeeting(){
     }
 }
 
-function load_users(){
+function load_users() {
     var i = 0;
     getAllUsers().then(data => {
         var table = document.getElementById("user_management");
         table.innerHTML = '';
-        for(item of data.managers) {
+        for (item of data.managers) {
             var row = table.insertRow(i);
 
             // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
@@ -354,20 +372,20 @@ function load_users(){
             var cell4 = row.insertCell(3);
             //console.log(item.isCeo);
             // Add some text to the new cells:
-            if(item.isCeo == true){
+            if (item.isCeo == true) {
                 cell1.innerHTML = "Ceo";
             }
-            else{
+            else {
                 cell1.innerHTML = "Manager";
             }
             cell2.innerHTML = item.name;
             cell3.innerHTML = item.surname;
             cell4.innerHTML
-            
-            = "<button onclick=\"delete_user('" + item.id + "')\"> Delete!</button>";
-            i=i+1;
+
+                = "<button onclick=\"delete_user('" + item.id + "')\"> Delete!</button>";
+            i = i + 1;
         }
-        for(item of data.secretaries) {
+        for (item of data.secretaries) {
             var row = table.insertRow(i);
 
             // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
@@ -377,26 +395,28 @@ function load_users(){
             var cell4 = row.insertCell(3);
             //console.log(item.isCeo);
             // Add some text to the new cells:
-            if(item.manager.isCeo == true){
+            if (item.manager.isCeo == true) {
                 cell1.innerHTML = "CeoSecreteary";
             }
-            else{
+            else {
                 cell1.innerHTML = "Secreteary";
             }
             cell2.innerHTML = item.name;
             cell3.innerHTML = item.surname;
             cell4.innerHTML = "<button onclick=\"delete_user('" + item.id + "')\"> Delete!</button>";
-            i=i+1;
+            i = i + 1;
         }
     });
 }
 
-function delete_user(id){
+function delete_user(id) {
     console.log(deleteUser(id));
     load_users();
 }
 
-
+//const scroll = new SmoothScroll('.navbar a[href*="#"]', {
+//    speed: 500
+//});
 
 //console.log(exampleMeetings.meetings);
 /*

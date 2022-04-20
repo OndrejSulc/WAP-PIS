@@ -103,6 +103,13 @@ input[type=datetime-local]{
         flex-direction: column;
         justify-content: flex-start;
     }
+        #nav-menu h2 {
+            display: table;
+            color: #353535;
+        }
+            #nav-menu h2:hover {
+                cursor: pointer;
+            }
   #nav-menu .navbar-href{
   	display: flex;
     margin-top: 20vh;
@@ -192,26 +199,42 @@ body {
     font-size: 20px;
 }
 .container {
-   /* scroll-behavior: smooth;*/
+    /* scroll-behavior: smooth;*/
     overflow-y: scroll;
     overflow-x: hidden;
-    height: 100vh;
+   /* height: 100vh;*/
+    width: 80vw;
+    margin-right = 0;
     /*scroll-snap-type: y mandatory;*/
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
 }
+    .container::-webkit-scrollbar {
+        display: none; /* Safari and Chrome */
+    }
 .section {
     color: black;
     line-height: 400%;
     /*display: flex;*/
     align-content: center;
     /*width: 70%;*/
-    height: 100vh;
+    /*height: 100vh;*/
     background-size: cover;
    /* scroll-snap-align: start;*/
 }
-.link{
-	text-decoration: none;
-	color: #5e5e5e;
-	font-weight: normal;
+.tui-full-calendar-popup-container {
+    text-align: left;
+    padding: 15px;
+    border-radius: 25px;
+}
+.tui-full-calendar-popup-section {
+    text-align: center;
+    font-size: 18px;
+}
+.link {
+    text-decoration: none;
+    color: #5e5e5e;
+    font-weight: normal;
 }
 #about{
   height: 60vh;
