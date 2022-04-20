@@ -62,9 +62,9 @@ pre{
     font-weight: normal;
 }
 
-#calendar,#calendar-navigation{
+/*#calendar,#calendar-navigation{
     margin-left: 300px;
-}
+}*/
 
 input[type=datetime-local]{
   line-height: inherit;
@@ -80,9 +80,9 @@ input[type=datetime-local]{
 
 /*    PROJEKT    */
 
-@media (min-width: 1000px){ 
-	#nav-menu{
-		text-align: center;
+@media (min-width: 1000px){
+    #nav-menu {
+        /*text-align: center;
     position: fixed;
     top: 0;
     left: 0;
@@ -91,8 +91,18 @@ input[type=datetime-local]{
     z-index: 1030;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-  }
+    justify-content: flex-start;*/
+        text-align: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 250px;
+        height: 100vh;
+        z-index: 1030;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
   #nav-menu .navbar-href{
   	display: flex;
     margin-top: 20vh;
@@ -117,7 +127,16 @@ input[type=datetime-local]{
   .nav-button{
   	display: none;
   }
-  #nav-menu #main-menu{
+    /* The navigation menu links */
+    .nav-menu a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+    }
+ /* #nav-menu #main-menu{
   	text-align: center;
   }
    #nav-menu #main-menu .nav-ul{
@@ -125,16 +144,16 @@ input[type=datetime-local]{
     width: 100%;
     padding-left: 0px;
     list-style-type: none;
-  }
-  #nav-menu #main-menu .nav-ul .nav-li{
+  }*/
+/*  #nav-menu #main-menu .nav-ul .nav-li{
     padding-top: 5px;
     padding-bottom: 5px;
-  }
+  }*/
   #nav-menu #main-menu .nav-ul .nav-li .nav-li-a{
   	font-weight: 800;
     letter-spacing: .05rem;
     text-transform: uppercase;
-    color: white;
+    color: black;
     text-decoration: none;
   }
   .active{
@@ -144,9 +163,9 @@ input[type=datetime-local]{
   	padding-left: 350px;
   	padding-right: 50px;
   }
-  #calendar,#calendar-navigation{
+ /* #calendar,#calendar-navigation{
     margin-left: 300px;
-  }
+  }*/
 }
 .navbar{
 	display: flex;
@@ -159,6 +178,35 @@ input[type=datetime-local]{
   top: 0;
   left: 0;
   width: 100%;
+}
+body {
+    line-height: 200%;
+    /*overflow-x: hidden;*/
+    margin: 0;
+    background-color: white;
+    padding-left: 10%;
+    font-family: "Helvetica", Helvetica, serif;
+    text-align: left;
+    margin: 0 0 0 0;
+    color: black;
+    font-size: 20px;
+}
+.container {
+   /* scroll-behavior: smooth;*/
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 100vh;
+    /*scroll-snap-type: y mandatory;*/
+}
+.section {
+    color: black;
+    line-height: 400%;
+    /*display: flex;*/
+    align-content: center;
+    /*width: 70%;*/
+    height: 100vh;
+    background-size: cover;
+   /* scroll-snap-align: start;*/
 }
 .link{
 	text-decoration: none;
@@ -213,6 +261,7 @@ input[type=datetime-local]{
   text-decoration: none;
   line-height: 1.6;
 }
+
 .user_img{
   width: 120px;
   height: 150px;
@@ -253,9 +302,9 @@ input[type=datetime-local]{
 	  display: none;
 	  position: absolute;
 	  top: 135px;
-	  left: 0px;
+	  /*left: 0px;*/
 	  width: 100%;
-	  background-color: #696969;
+	  background-color: white;
 	  min-width: 160px;
 	  overflow: auto;
 	  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);

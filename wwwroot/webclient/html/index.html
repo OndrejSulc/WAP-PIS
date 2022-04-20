@@ -12,6 +12,7 @@
     <script src="/webclient/js/userManagement.js"></script>
     <script src="/webclient/js/signalr.js"></script>
     <script src="/webclient/js/login.js"></script>
+    <script src="/webclient/js/calendar.js"></script>
 
     <!-- Calendar management -->
     <!-- CSS-->
@@ -55,11 +56,6 @@
             document.getElementById('logged_user_role').value = result.role;
         });
 
-        
-
-        // Create an empty <tr> element and add it to the 1st position of the table:
-        
-
     </script>
 
     <nav class="navbar" id="nav-menu">
@@ -74,19 +70,13 @@
         <div id="main-menu">
             <ul class="nav-ul">
                 <li class="nav-li">
-                    <a class="nav-li-a active" href="#" id="li-about">Calendar</a>
+                    <a class="nav-li-a active" href="#calendar" id="li-about">Calendar</a>
                 </li>
                 <li class="nav-li">
                     <a class="nav-li-a" href="#calendar" id="li-int">Notification</a>
                 </li>
                 <li class="nav-li">
                     <a class="nav-li-a" href="#userManagement" id="li-int">User Management</a>
-                </li>
-                <li class="nav-li">
-                    <a class="nav-li-a" href="#testdiv" id="li-int">Test</a>
-                </li>
-                <li class="nav-li">
-                    <a class="nav-li-a" href="#testdiv2" id="li-int">Test2</a>
                 </li>
                 <li class="nav-li">
                     <a id="sign_out" onclick="logout();" class="nav-li-a buttons"><i class="fas fa-sign-out-alt" style="color: white;font-size: 20px;"></i></a>
@@ -97,10 +87,7 @@
 
 
     <div class="container">
-        <div id="testdiv" class="section" onmouseover="homein()" onmouseleave="homeout()">
 
-            <h2> <a target="_blank" href="https://www.stud.fit.vutbr.cz/~xgalba03/">Šimon Galba</a></h2><p>Som študujúci programátor s hlavnými záľubami v počítačovej grafike. Táto stránka bola vytvorená za účelom vzdelávania sa v tvorbe webových stránok pomocou jazyka HTML. Na stránke nie sú využité žiadne knižnice okrem vlastnoručne vytvorených funkcií JavaScript. </p>
-        </div>
         <div id="calendar-navigation">
             <h1>Calendar</h1>
             <a id="prev_button" onclick="calendar.prev();setMonth();" href="#" class="buttons previous round">&#8249;</a>
@@ -113,7 +100,7 @@
 
         <div id="userManagement" class="section" onmouseover="homein()" onmouseleave="homeout()">
             <h1>UserManagement</h1>
-            
+
             <table>
                 <thead>
                     <tr>
@@ -188,14 +175,9 @@
                 }
             </script>
 
-            <div id="result">Server Response:<br /></div>
+            <!--<div id="result">Server Response:<br /></div>-->
         </div>
 
-
-        <div id="testdiv2" class="section" onmouseover="homein()" onmouseleave="homeout()">
-
-            <h2> <a target="_blank" href="https://www.stud.fit.vutbr.cz/~xgalba03/">Test 2 section</a></h2><p>Som študujúci programátor s hlavnými záľubami v počítačovej grafike. Táto stránka bola vytvorená za účelom vzdelávania sa v tvorbe webových stránok pomocou jazyka HTML. Na stránke nie sú využité žiadne knižnice okrem vlastnoručne vytvorených funkcií JavaScript. </p>
-        </div>
 
     </div>
 
@@ -238,7 +220,7 @@
 
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@15.0.0/dist/smooth-scroll.polyfills.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@15.0.0/dist/smooth-scroll.polyfills.min.js"></script>-->
 </body>
 </html> 
 <!--<button><i class='fas fa-caret-square-left'></i></button>-->
