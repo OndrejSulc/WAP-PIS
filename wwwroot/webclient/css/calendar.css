@@ -1,9 +1,36 @@
-a.buttons{
+a.buttons {
     text-decoration: none;
     display: inline-block;
     padding: 8px 16px;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    font-size: 45px;
 }
-
+#actual_month {
+    /*padding: 12px 0px 12px 0px;*/
+    text-decoration: none;
+    padding: 8px 16px;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    font-size: 45px;
+}
+.tui-full-calendar-weekday-schedule-title {
+    color: red !important;
+    text-align: center !important;
+}
+.tui-full-calendar-weekday-schedule-bullet {
+    color: red !important;
+    text-align: center !important;
+}
+#calendar-navigation {
+    margin: auto;
+}
+#calendar {
+    border: 2px solid #ccc;
+    border-radius: 6px;
+}
 .previous {
     background-color: #696969;
     color: white;
@@ -31,7 +58,12 @@ pre{
 }
 
 .modal_inputs{
-    font-size: 14px!important;
+    font-size: 22px!important;
+}
+
+input#group_meeting_man_view.groupCheck {
+    width: 22px;
+    height: 22px;
 }
 
 #modal_view{
@@ -45,8 +77,8 @@ pre{
 }
 
 .save_button{
-    width: 96px;
-    height: 36px;
+    width: 126px;
+    height: 56px;
     border-radius: 40px;
     background-color: #696969;
     font-size: 12px;
@@ -57,7 +89,7 @@ pre{
 }
 
 .modal_view_label{
-    font-size: 15px;
+    font-size: 25px;
     margin-right: 3px;
     font-weight: normal;
 }
@@ -213,8 +245,9 @@ body {
         display: none; /* Safari and Chrome */
     }
 .section {
+    margin-top: 15px;
+
     color: black;
-    line-height: 400%;
     /*display: flex;*/
     align-content: center;
     /*width: 70%;*/
@@ -226,6 +259,8 @@ body {
     text-align: left;
     padding: 15px;
     border-radius: 25px;
+    line-height: 1.6;
+    font-size: 18px;
 }
 .tui-full-calendar-popup-section {
     text-align: center;

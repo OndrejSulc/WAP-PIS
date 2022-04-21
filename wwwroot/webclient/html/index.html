@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Management calendar</title>
     <!-- Login management -->
-    <script src="/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="/lib/signalr/signalr.min.js"></script>
     <script src="/webclient/js/meeting.js"></script>
     <script src="/webclient/js/notification.js"></script>
@@ -12,7 +12,6 @@
     <script src="/webclient/js/userManagement.js"></script>
     <script src="/webclient/js/signalr.js"></script>
     <script src="/webclient/js/login.js"></script>
-    <script src="/webclient/js/calendar.js"></script>
 
     <!-- Calendar management -->
     <!-- CSS-->
@@ -29,6 +28,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
             crossorigin="anonymous"></script>
 
+    <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@15.0.0/dist/smooth-scroll.polyfills.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="https://uicdn.toast.com/tui.code-snippet/v1.5.2/tui-code-snippet.min.js"></script>
     <script src="https://uicdn.toast.com/tui.time-picker/v2.0.3/tui-time-picker.min.js"></script>
@@ -70,11 +70,11 @@
         <div id="main-menu">
             <ul class="nav-ul">
                 <li class="nav-li">
-                    <a class="nav-li-a active" href="#calendar" id="li-about">Calendar</a>
+                    <a class="nav-li-a active" href="#calendar-navigation" id="li-about">Calendar</a>
                 </li>
-                <li class="nav-li">
+                <!--<li class="nav-li">
                     <a class="nav-li-a" href="#calendar" id="li-int">Notification</a>
-                </li>
+                </li>-->
                 <li class="nav-li">
                     <a class="nav-li-a" href="#userManagement" id="li-int">User Management</a>
                 </li>
@@ -95,10 +95,10 @@
             <a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
         </div>
 
-        <div id="calendar" class="section" style="height: 800px;"></div>
+        <div id="calendar" class="section"></div>
         <input type="hidden" id="logged_user_role" value="">
 
-        <div id="userManagement" class="section" onmouseover="homein()" onmouseleave="homeout()">
+        <div id="userManagement" class="section">
             <h1>UserManagement</h1>
 
             <table>
@@ -194,8 +194,8 @@
             </div>
             <div id="div_group_meeting_man_view">
                 <div class="tui-full-calendar-popup-section" id="group_meeting">
-                    <input id="group_meeting_man_view" class="tui-full-calendar-content modal_inputs" type="checkbox" onchange="checkGroupMeeting()">
-                    <label for="group_meeting_man_view" class="modal_view_label">Group meeting</label><br>
+                    <label for="group_meeting_man_view" class="modal_view_label">Group meeting: </label>
+                    <input id="group_meeting_man_view" class="groupCheck" type="checkbox" onchange="checkGroupMeeting()">
                     <select name="group_meeting_attendees" id="group_meeting_attendees" style="display: none;" size="3" multiple></select>
                 </div>
             </div>
@@ -261,7 +261,8 @@
 
         </div>
     </div>
-    <!--<script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@15.0.0/dist/smooth-scroll.polyfills.min.js"></script>-->
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/webclient/js/calendar.js"></script>
 </body>
 </html> 
 <!--<button><i class='fas fa-caret-square-left'></i></button>-->
