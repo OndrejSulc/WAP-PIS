@@ -99,7 +99,7 @@
         <input type="hidden" id="logged_user_role" value="">
 
         <div id="userManagement" class="section">
-            <h1>UserManagement</h1>
+            <h1>UserManagement</h1><button onclick="createNewUser()"> Create New User</button>
 
             <table>
                 <thead>
@@ -108,74 +108,30 @@
                         <th>Firstname</th>
                         <th>Surname</th>
                         <th></th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody id="user_management">
                 </tbody>
             </table>
+        </div>
 
-            <h3>Create New User</h3>
+        <div id="notifications_div" class="section">
+            <h1>Notifications</h1>
 
-            <input id="um_login" placeholder="login" type="text">
-            <br />
-            <input id="um_pw" value="password" placeholder="password" type="text">
-            <br />
-            <input id="um_name" value="TestUserName" placeholder="name" type="text">
-            <br />
-            <input id="um_surname" value="TestUserSurname" placeholder="password" type="text">
-            <br />
-            <input id="um_date_of_birth" value="2020-04-13" placeholder="Date of birth" type="date">
-            <br />
-            <input id="um_issecretary" placeholder="IsSecretary" type="checkbox">
-            <br />
-            <input id="um_manager_id" value="" placeholder="Manger for secretary ID" type="string">
-
-            <button onclick="um_createUser()"> CreateUser</button>
-
-            <script>
-                async function um_createUser() {
-                    var login = document.getElementById("um_login").value;
-                    var pw = document.getElementById("um_pw").value;
-                    var name = document.getElementById("um_name").value;
-                    var surname = document.getElementById("um_surname").value;
-                    var dateOfBirth = document.getElementById("um_date_of_birth").value;
-                    var issecretary = document.getElementById("um_issecretary").checked;
-                    var managerID = document.getElementById("um_manager_id").value;
-
-                    var response = await createUser(login, pw, name, surname, dateOfBirth, issecretary, managerID);
-                    document.getElementById("result").innerHTML += JSON.stringify(response) + "<br>";
-                }
-            </script>
-
-
-            <h3>Delete User</h3>
-
-            <input id="um_delete_id" placeholder="userID" type="text">
-
-            <button onclick="um_deleteUser()"> Delete</button>
-
-            <script>
-                async function um_deleteUser() {
-                    var deleteId = document.getElementById("um_delete_id").value;
-
-                    var response = await deleteUser(deleteId);
-                    document.getElementById("result").innerHTML += JSON.stringify(response) + "<br>";
-                }
-            </script>
-
-
-            <h3>GetAllUsers</h3>
-            <button onclick="um_getAllUsers()">GetAllUsers</button>
-
-            <script>
-                async function um_getAllUsers() {
-                    var response = await getAllUsers();
-                    document.getElementById("result").innerHTML += JSON.stringify(response) + "<br>";
-                }
-            </script>
-
-            <!--<div id="result">Server Response:<br /></div>-->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Meet. Title</th>
+                        <th>Meet. Description</th>
+                        <th>Meet. From</th>
+                        <th>Meet. Until</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="notifications">
+                </tbody>
+            </table>
         </div>
 
 
@@ -242,27 +198,25 @@
             <div id="um_secretary_div">
                 <div class="tui-full-calendar-popup-section" id="group_meeting">
                     <input id="um_issecretary" class="tui-full-calendar-content modal_inputs" type="checkbox" onchange="checkSecretary()">
-                    <label for="um_issecretary" class="modal_view_label">Group meeting</label><br>
-                    <select name="secretary_attendees" id="group_meeting_attendees" style="display: none;" size="3" multiple></select>
+                    <label for="um_issecretary" class="modal_view_label">Secretary</label><br>
+                    <select name="secretary_attendees" id="secretary_attendees" style="display: none;" size="1"></select>
                 </div>
             </div>
-            <button onclick="hideCreateUser()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
+            <button onclick="hideUser()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
             <br>
             <div class="tui-full-calendar-popup-section">
-                <input type="hidden" id="calendar_id_man_view">
-                <input type="hidden" id="meeting_id_man_view">
-                <div id="user_view">
+                <!--<div id="user_view">
+                    <input type="hidden" id="um_user_id">
                     <button class="save_button" onclick="saveUser()"><span>Save</span></button><button class="save_button" onclick="deleteUser()"><span>Delete</span></button>
-                </div>
+                </div>-->
                 <div id="user_create">
-                    <button class="save_button" onclick="createNewUser()"><span>Create</span></button>
+                    <button class="save_button" onclick="saveNewUser()"><span>Create</span></button>
                 </div>
             </div>
 
         </div>
     </div>
     <script src="/lib/jquery/dist/jquery.min.js"></script>
-    <script src="/webclient/js/calendar.js"></script>
 </body>
 </html> 
 <!--<button><i class='fas fa-caret-square-left'></i></button>-->

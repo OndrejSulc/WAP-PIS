@@ -54,7 +54,7 @@ var calendar = new Calendar('#calendar', {
     scheduleView: true,
     template: {
         monthDayname: function(dayname) {
-        return '<span class="calendar-week-dayname-name">' + dayname.label + '</span>';
+            return '<span class="calendar-week-dayname-name">' + dayname.label + '</span>';
         }
     },
     month: {
@@ -77,7 +77,8 @@ load_manager_meetings(calendar);
 document.getElementById('prev_button').addEventListener("click", calendar.prev());
 document.getElementById('next_button').addEventListener("click", calendar.next());
 setMonth();
-
+startSignalRNotifications();
+get_notifications();
 
 // event handlers
 calendar.on({
@@ -357,62 +358,235 @@ function checkGroupMeeting(){
     }
 }
 
+//     USER MANAGEMENT
+function fill_table_of_users(list,type){
+    var table = document.getElementById("user_management");
+    var i = table.rows.length;
+
+    for (item of list) {
+        var row = table.insertRow(i);
+
+        // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+        var role = row.insertCell(0);
+        var name = row.insertCell(1);
+        var surname = row.insertCell(2);
+        //var edit = row.insertCell(3);
+        var delete_button = row.insertCell(3);
+        //console.log(item.isCeo);
+        // Add some text to the new cells:
+        if(type === "managers"){
+            if (item.isCeo == true) {
+                role.innerHTML = "Ceo";
+            }
+            else {
+                role.innerHTML = "Manager";
+            }
+        }
+        else{
+            if (item.manager.isCeo == true) {
+                role.innerHTML = "CeoSecreteary";
+            }
+            else {
+                role.innerHTML = "Secreteary";
+            }
+        }
+        name.innerHTML = item.name;
+        surname.innerHTML = item.surname;
+        //edit.innerHTML = "<button onclick=\"showUser('"+ item.id +"');\"> Edit!</button>";
+        delete_button.innerHTML = "<button onclick=\"delete_user('" + item.id + "')\"> Delete!</button>";
+        i = i + 1;
+    }
+}
+
 function load_users() {
     var i = 0;
     getAllUsers().then(data => {
         var table = document.getElementById("user_management");
         table.innerHTML = '';
-        for (item of data.managers) {
-            var row = table.insertRow(i);
-
-            // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-            var cell3 = row.insertCell(2);
-            var cell4 = row.insertCell(3);
-            //console.log(item.isCeo);
-            // Add some text to the new cells:
-            if (item.isCeo == true) {
-                cell1.innerHTML = "Ceo";
-            }
-            else {
-                cell1.innerHTML = "Manager";
-            }
-            cell2.innerHTML = item.name;
-            cell3.innerHTML = item.surname;
-            cell4.innerHTML
-
-                = "<button onclick=\"delete_user('" + item.id + "')\"> Delete!</button>";
-            i = i + 1;
-        }
-        for (item of data.secretaries) {
-            var row = table.insertRow(i);
-
-            // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-            var cell3 = row.insertCell(2);
-            var cell4 = row.insertCell(3);
-            //console.log(item.isCeo);
-            // Add some text to the new cells:
-            if (item.manager.isCeo == true) {
-                cell1.innerHTML = "CeoSecreteary";
-            }
-            else {
-                cell1.innerHTML = "Secreteary";
-            }
-            cell2.innerHTML = item.name;
-            cell3.innerHTML = item.surname;
-            cell4.innerHTML = "<button onclick=\"delete_user('" + item.id + "')\"> Delete!</button>";
-            i = i + 1;
-        }
+        fill_table_of_users(data.managers,"managers");
+        fill_table_of_users(data.secretaries,"secretaries");
     });
 }
 
 function delete_user(id) {
     console.log(deleteUser(id));
-    load_users();
+    setTimeout(function(){
+        load_users();
+      }, 500);
 }
+
+function createNewUser(){
+
+    document.getElementById('um_login').value  = "";
+    document.getElementById('um_password').value  = "";
+    document.getElementById('um_name').value  = "";
+    document.getElementById('um_surname').value  = "";
+    document.getElementById('um_date_of_birth').value  = "";
+    var select = document.getElementById("secretary_attendees");
+    var length = select.length;
+    for (i = 0; i < length; i++) {
+        select.remove(0);
+    }
+    document.getElementById('um_issecretary').checked = false; 
+    document.getElementById('secretary_attendees').style.display = "none";
+    document.getElementById('create_user_view').style.display = "block";
+}
+
+function hideUser(){
+    document.getElementById('um_login').value  = "";
+    document.getElementById('um_password').value  = "";
+    document.getElementById('um_name').value  = "";
+    document.getElementById('um_surname').value  = "";
+    document.getElementById('um_date_of_birth').value  = "";
+    var select = document.getElementById("secretary_attendees");
+    var length = select.length;
+    for (i = 0; i < length; i++) {
+        select.remove(0);
+    }
+    document.getElementById('um_issecretary').checked = false; 
+    document.getElementById('secretary_attendees').style.display = "none";
+    document.getElementById('create_user_view').style.display = "none";
+}
+
+function checkSecretary(){
+    var secretary_checkbox = document.getElementById('um_issecretary');
+
+    if(secretary_checkbox.checked === true) {
+        console.log("Checkbox is checked - boolean value: ", secretary_checkbox.checked);
+
+        getAllUsers().then(data => {
+            for(item of data.managers) {
+                var opt = document.createElement('option');
+                opt.value = item.id;
+                opt.innerHTML = item.name + " " + item.surname;
+                document.getElementById('secretary_attendees').appendChild(opt);
+            }
+        });
+
+        document.getElementById('secretary_attendees').style.display = "block";
+    }
+    if(secretary_checkbox.checked === false) {
+        console.log("Checkbox is not checked - boolean value: ", secretary_checkbox.checked)
+        document.getElementById('secretary_attendees').style.display = "none";
+    }
+}
+
+function saveNewUser(){
+
+    var login = document.getElementById("um_login").value;
+    var password = document.getElementById("um_password").value;
+    var name = document.getElementById("um_name").value;
+    var surname = document.getElementById("um_surname").value;
+    var date_of_birth = document.getElementById("um_date_of_birth").value;
+    var is_secretary = document.getElementById("um_issecretary").checked;
+    var manager_id = document.getElementById("secretary_attendees").value;
+
+    createUser(login, password, name, surname, date_of_birth, is_secretary, manager_id).then(response => {
+        console.log(response);
+    });
+    load_users();
+    hideUser();
+}
+
+//NOTIFICATIONS
+
+//Function called when signalR receives net notification
+function onNotification(notification) {
+    console.log(JSON.stringify(notification, null, 2))
+    let result = JSON.stringify(notification, null, 2);
+    let item = JSON.parse(result);
+    var table = document.getElementById("notifications");
+    var i = table.rows.length;
+    var row = table.insertRow(i);
+    var notification_title = row.insertCell(0);
+    var title = row.insertCell(1);
+    var description = row.insertCell(2);
+    var from = row.insertCell(3);
+    var until = row.insertCell(4);
+    notification_title.innerHTML = notification.Title;
+    title.innerHTML = notification.Meeting.Title;
+    description.innerHTML = notification.Meeting.Description;
+    from.innerHTML = notification.Meeting.From;
+    until.innerHTML = notification.Meeting.Until;
+    //dismiss_button.innerHTML = "<button onclick=\"dismiss_notification('" + notification.ID + "')\"> Dismiss!</button>";
+}
+
+function startSignalRNotifications() {
+    //Starts signalR receiver with callback for new notification
+    startSignalR(onNotification);
+    console.log("SignalR started");
+}
+
+function get_notifications() {
+    var table = document.getElementById("notifications");
+    table.innerHTML = '';
+    getNotifications().then(response => response.json()).then(data => {
+        //console.log(data.notifications);
+    
+        for(notification of data.notifications){
+            var i = table.rows.length;
+            var row = table.insertRow(i);
+            var notification_title = row.insertCell(0);
+            var title = row.insertCell(1);
+            var description = row.insertCell(2);
+            var from = row.insertCell(3);
+            var until = row.insertCell(4);
+            var dismiss = row.insertCell(5);
+            notification_title.innerHTML = notification.title;
+            title.innerHTML = notification.meeting.title;
+            description.innerHTML = notification.meeting.description;
+            from.innerHTML = notification.meeting.from;
+            until.innerHTML = notification.meeting.until;
+            dismiss.innerHTML = "<button onclick=\"dismiss_notification('" + notification.id + "')\"> Dismiss!</button>";
+        }
+    });
+}
+
+function dismiss_notification(notification_id){
+    console.log(dismissNotification(notification_id));
+    setTimeout(function(){
+        get_notifications();
+      }, 500);
+}
+
+
+/*function showUser(user_id){
+
+    console.log(user_id);
+    getAllUsers().then(data => {
+        var found = false;
+        for(user in data.managers){
+            if(user.id != user_id)continue;
+            document.getElementById('um_user_id').value  = user_id;
+            document.getElementById('um_login').value  = user.login;
+            document.getElementById('um_password').value  = "";
+            document.getElementById('um_name').value  = user.name;
+            document.getElementById('um_surname').value  = user.surname
+            document.getElementById('um_date_of_birth').value  = changeDatetimeFormat(user.);
+            var select = document.getElementById("secretary_attendees");
+            var length = select.length;
+            for (i = 0; i < length; i++) {
+                select.remove(0);
+            }
+            document.getElementById('um_issecretary').checked = false; 
+            document.getElementById('secretary_attendees').style.display = "none";
+            document.getElementById('create_user_view').style.display = "none";
+        }
+    });
+}*/
+    /*document.getElementById('um_login').value  = "";
+    document.getElementById('um_password').value  = "";
+    document.getElementById('um_name').value  = "";
+    document.getElementById('um_surname').value  = "";
+    document.getElementById('um_name').value  = "";
+    var select = document.getElementById("secretary_attendees");
+    var length = select.length;
+    for (i = 0; i < length; i++) {
+        select.remove(0);
+    }
+    document.getElementById('um_issecretary').checked = false; 
+    document.getElementById('secretary_attendees').style.display = "none";
+    document.getElementById('create_user_view').style.display = "block";*/
 
 //const scroll = new SmoothScroll('.navbar a[href*="#"]', {
 //    speed: 500
