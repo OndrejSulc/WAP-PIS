@@ -16,11 +16,10 @@ builder.Services.AddScoped<IAuthorizationHandler, CeoAuthorizeHandler>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("CEO", policy =>
-        {
-            policy.Requirements.Add(new CeoAuthorizeHandler.CeoRequirement());
-        }
+        policy.Requirements.Add(new CeoAuthorizeHandler.CeoRequirement())
     );
 });
+builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, AuthorizationResultHandler>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
