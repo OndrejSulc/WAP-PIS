@@ -74,6 +74,7 @@ input#group_meeting_man_view.groupCheck {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    border-radius: 25px;
 }
 
 .save_button{
@@ -222,7 +223,6 @@ input[type=datetime-local]{
     left: 0;
     width: 100%;
    /* background-image: linear-gradient(to right, BLACK, WHITE);*/
-}
 }
 body {
     line-height: 200%;

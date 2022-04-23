@@ -98,7 +98,7 @@ calendar.on({
         e.guide.clearGuideElement();
     },
     //UPRAVIT NA UPDATE MEETING
-    'beforeUpdateSchedule': function(e) {
+    /*'beforeUpdateSchedule': function(e) {
         console.log('beforeUpdateSchedule', e);
         e.schedule.start = e.start;
         e.schedule.end = e.end;
@@ -107,7 +107,7 @@ calendar.on({
     'beforeDeleteSchedule': function(e) {
         console.log('beforeDeleteSchedule', e);
         cal.deleteSchedule(e.schedule.id, e.schedule.calendarId);
-    }
+    }*/
 });
 
 function hideManagerMeeting(){
