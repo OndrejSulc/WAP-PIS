@@ -103,17 +103,12 @@ public class MeetingController : ControllerBase
     /// </summary>
     /// <returns>Object with relevant meeting for logged user</returns>
     [HttpGet]
-    public GetMeetingViewModel GetMeetings()
+    public ActionResult<GetMeetingViewModel> GetMeetings()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = userManager.Users.SingleOrDefault(u => u.Id == userId);
-
-        var manager = (user is Secretary s ? s.Manager : user as Manager)!;
-
-        var relevantMeetings = appDbContext.Meeting
-            .Include(m => m.Attendees)
-            .Where(meeting => meeting.Owner == manager || meeting.Attendees.Contains(manager))
-            .ToList() //Do not remove. Causes sql connection to be used multiple times asynchronously which causes error
+        if (user == null) return NotFound("Logged user not found in database");
+        var relevantMeetings = GetMeetingsForAccount(user)
             .Select(meeting => meeting.ToViewModel())
             .ToArray();
 
@@ -165,6 +160,44 @@ public class MeetingController : ControllerBase
         var dbEntry = appDbContext.Meeting.Add(meetingDb);
         await appDbContext.SaveChangesAsync();
         return dbEntry.Entity.ToViewModel();
+    }
+
+
+    /// <summary>
+    /// Returns meetings for user with specified userId
+    /// </summary>
+    /// <param name="userId">Id of user for meetings search</param>
+    /// <returns>Relevant meetings for user with specified user ID</returns>
+    [HttpGet]
+    [Authorize("CEO")]
+    public ActionResult<GetMeetingViewModel> GetMeetingsForUser(string userId)
+    {
+        var user = userManager.Users.SingleOrDefault(u => u.Id == userId);
+        if (user == null) return NotFound($"User with id: {userId} was not found");
+        var relevantMeetings = GetMeetingsForAccount(user)
+            .Select(meeting => meeting.ToViewModel())
+            .ToArray();
+        return new GetMeetingViewModel
+        {
+            Meetings = relevantMeetings
+        };
+    }
+
+    /// <summary>
+    /// Returns all meetings in database
+    /// </summary>
+    /// <returns>All meetings in system</returns>
+    [HttpGet]
+    [Authorize("CEO")]
+    public ActionResult<GetMeetingViewModel> GetAllMeetings()
+    {
+        var meetings = appDbContext.Meeting.ToList()
+            .Select(meetings => meetings.ToViewModel())
+            .ToArray();
+        return new GetMeetingViewModel
+        {
+            Meetings = meetings
+        };
     }
 
     /// <summary>
@@ -306,5 +339,15 @@ public class MeetingController : ControllerBase
             default:
                 return false;
         }
+    }
+
+    private List<Meeting> GetMeetingsForAccount(Account account)
+    {
+        var manager = (account is Secretary s ? s.Manager : account as Manager)!;
+
+        return appDbContext.Meeting
+            .Include(m => m.Attendees)
+            .Where(meeting => meeting.Owner == manager || meeting.Attendees.Contains(manager))
+            .ToList();
     }
 }

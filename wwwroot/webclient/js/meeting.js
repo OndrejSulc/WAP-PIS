@@ -55,6 +55,24 @@ async function removeMeeting(meetingId) {
     );
 }
 
+async function getMeetingsForUser(userId) {
+    return fetch("/Meeting/GetMeetingsForUser?" + new URLSearchParams({
+        userId: userId
+    }),
+        {
+            method: "GET"
+        }
+    );
+}
+
+async function getAllMeetings() {
+    return fetch("/Meeting/GetAllMeetings",
+        {
+            method: "GET"
+        }
+    );
+}
+
 async function createGroupMeeting(title, description, from, until, attendees) {
     let body = {
         "title": title,
