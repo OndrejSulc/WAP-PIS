@@ -3,6 +3,7 @@ function load_manager_meetings(calendar){
     meetings
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             for(item of data.meetings) {
                 calendar.createSchedules([
                     {
@@ -14,7 +15,8 @@ function load_manager_meetings(calendar){
                     category: 'time',
                     dueDateClass: '',
                     start: new Date(item.from),
-                    end: new Date(item.until)
+                    end: new Date(item.until),
+                    raw: item.owner.name + " " + item.owner.surname
                     }
                 ]);
             }
@@ -130,10 +132,44 @@ function hideManagerMeeting(){
 function showManagerMeeting(e){
     document.getElementById('calendar_id_man_view').value  = e.schedule.calendarId;
     document.getElementById('meeting_id_man_view').value  = e.schedule.id;
-    document.getElementById('title_man_view').value  = e.schedule.title;
-    document.getElementById('start_date_man_view').value  = changeDatetimeFormat(e.schedule.start);
-    document.getElementById('end_date_man_view').value  = changeDatetimeFormat(e.schedule.end);
-    document.getElementById('description_man_view').value  = e.schedule.body;
+    document.getElementById('owner_man_view').innerHTML  = e.schedule.raw;
+    document.getElementById('title_man_view').innerHTML  = e.schedule.title;
+    var start_datetime = changeDatetimeFormat(e.schedule.start);
+    document.getElementById('date_time_man_view').innerHTML  = start_datetime.replace("T", " ") + " - " + getTimeFromDatetime(e.schedule.end);
+    document.getElementById('description_man_view').innerHTML  = e.schedule.body;
+    if(e.schedule.attendees.length !== 0){
+        var logged = document.getElementById('logged_user_role').value
+        if(logged === "Ceo" || logged === "CeoSecretary"){
+            let managers = [];
+            getAllUsers().then(data => {
+            
+                for(item of data.managers) {
+                    if(e.schedule.attendees.includes(item.id)){
+                        var manager = item.name + " " + item.surname;
+                        managers.push(manager);
+                    }
+                }
+            });
+            document.getElementById('attendees_man_view').innerHTML = managers.join(', ');
+            document.getElementById('control_buttons').style.display = "block";    
+        }
+        else{
+            document.getElementById('attendees_man_view').innerHTML = e.schedule.attendees.length;
+            document.getElementById('control_buttons').style.display = "none";
+        }
+        document.getElementById('attendees_div_man_view').style.display = "block";        
+    }
+    document.getElementById('modal_view').style.display = "block";
+}
+
+function editManagerMeeting(e){
+    document.getElementById('calendar_id_man_view').value  = e.schedule.calendarId;
+    document.getElementById('meeting_id_man_view').value  = e.schedule.id;
+    
+    document.getElementById('title_man_view').innerHTML  = e.schedule.title;
+    var start_datetime = changeDatetimeFormat(e.schedule.start);
+    document.getElementById('date_time_man_view').innerHTML  = start_datetime.replace("T", " ") + " - " + getTimeFromDatetime(e.schedule.end);
+    document.getElementById('description_man_view').innerHTML  = e.schedule.body;
     if(e.schedule.attendees.length !== 0){
         document.getElementById('group_meeting_man_view').checked = true; 
         //PRIDAT ATTENDEES
@@ -187,6 +223,19 @@ function changeDatetimeFormat(input_datetime){
     format = format + "-" + month.toString().padStart(2,"0");   
     format = format + "-" + day.toString().padStart(2,"0"); 
     format = format + "T" + hours.toString().padStart(2,"0"); 
+    format = format + ":" + minutes.toString().padStart(2,"0");
+
+    return format;
+}
+
+function getTimeFromDatetime(input_datetime){
+    
+    const datetime = new Date(input_datetime);
+    
+    const hours = datetime.getHours();
+    const minutes = datetime.getMinutes();
+
+    let format = hours.toString().padStart(2,"0"); 
     format = format + ":" + minutes.toString().padStart(2,"0");
 
     return format;
