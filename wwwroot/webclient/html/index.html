@@ -85,6 +85,43 @@
         </div>
     </nav>
 
+    <section class="top-nav">
+        <div>
+            Logo Here
+        </div>
+        <input id="menu-toggle" type="checkbox" />
+        <label class='menu-button-container' for="menu-toggle">
+            <div class='menu-button'></div>
+        </label>
+        <ul class="menu">
+            <li class="nav-li">
+                <a class="nav-li-a active" href="#calendar-navigation" id="li-about">Calendar</a>
+            </li>
+            <!--<li class="nav-li">
+        <a class="nav-li-a" href="#calendar" id="li-int">Notification</a>
+    </li>-->
+            <li class="nav-li">
+                <a class="nav-li-a" href="#userManagement" id="li-int">User Management</a>
+            </li>
+            <li class="nav-li">
+                <a id="sign_out" onclick="logout();" class="nav-li-a buttons"><i class="fas fa-sign-out-alt" style="color: white;font-size: 20px;"></i></a>
+            </li>
+        </ul>
+    </section>
+
+    <!--<div id="mobile_headline">
+        <h1>UTest TEXT</h1>
+        <div class='menu-button'></div>
+        <div class="ham"></div>
+        <div class="ham"></div>
+        <div class="ham"></div>
+        <div id="mobile_headline_content">
+            <a class="menu" href="#home"><p>Home</p>&nbsp;&nbsp;</a>
+            <a class="menu" href="#resume"><p>Resume</p>&nbsp;&nbsp;</a>
+            <a class="menu" href="#tvorba"><p>Tvorba</p>&nbsp;&nbsp;</a>
+            <a class="menu" href="#vzdelanie"><p>Vzdelanie</p>&nbsp;&nbsp;</a>
+        </div>
+    </div>-->
 
     <div class="container">
 
@@ -138,37 +175,7 @@
     </div>
 
     <div id="modal_view" style="display: none;">
-        <div class="tui-full-calendar-popup-container">
-            <div class="tui-full-calendar-popup-section">
-                <span id="owner_man_view" style="font-size: 24px;"></span>
-            </div>
-            <div class="tui-full-calendar-popup-section">
-                <span id="title_man_view" style="font-size: 24px;"></span>
-            </div>
-            <div class="tui-full-calendar-popup-section">
-                <i class="fa fa-calendar"></i><span id="date_time_man_view"></span>
-            </div>
-            <div id="attendees_div_man_view">
-                <div class="tui-full-calendar-popup-section">
-                    <i class="fa fa-users"></i><span id="attendees_man_view"></span>
-                </div>
-            </div>
-            <div class="tui-full-calendar-popup-section">
-                <i class="fa fa-note"></i><span id="description_man_view"></span>
-            </div>
-            <button onclick="hideManagerMeeting()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
-            <div  id="control_buttons" class="tui-full-calendar-popup-section">
-                <input type="hidden" id="calendar_id_man_view">
-                <input type="hidden" id="meeting_id_man_view">
-                <button class="save_button" onclick="editManagerMeeting()"><span>Edit</span></button>
-                <button class="save_button" onclick="deleteManagerMeeting()"><span>Delete</span></button>
-            </div>
-
-        </div>
-    </div>
-
-    <div id="modal_edit" style="display: none;">
-        <div class="tui-full-calendar-popup-container">
+        <div class="tui-full-calendar-popup-container"> 
             <div class="tui-full-calendar-popup-section">
                 <label for="title_man_view" class="modal_view_label">Title:  </label><input id="title_man_view" class="tui-full-calendar-content modal_inputs" placeholder="Subject" value="Title" type="text">
             </div>
