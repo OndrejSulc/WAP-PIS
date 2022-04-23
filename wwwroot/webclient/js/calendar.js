@@ -82,12 +82,14 @@ setMonth();
 startSignalRNotifications();
 get_notifications();
 
+let actual_meeting;
 // event handlers
 calendar.on({
     'clickSchedule': function(e) {
 
         console.log('clickSchedule', e);
-        showManagerMeeting(e);
+        showViewMeeting(e);
+        actual_meeting = e;
     },
     'beforeCreateSchedule': function(e) {
         console.log('beforeCreateSchedule', e);
@@ -112,24 +114,19 @@ calendar.on({
     }*/
 });
 
-function hideManagerMeeting(){
+function hideViewMeeting(){
     document.getElementById('calendar_id_man_view').value  = "";
     document.getElementById('meeting_id_man_view').value  = "";
-    document.getElementById('title_man_view').value  = "";
-    document.getElementById('start_date_man_view').value  = "";
-    document.getElementById('end_date_man_view').value  = "";
-    document.getElementById('description_man_view').value  = "";
-    var select = document.getElementById("group_meeting_attendees");
-    var length = select.length;
-    for (i = 0; i < length; i++) {
-        select.remove(0);
-    }
-    document.getElementById('group_meeting_man_view').checked = false; 
-    document.getElementById('group_meeting_attendees').style.display = "none";
+    document.getElementById('owner_man_view').innerHTML  = "";
+    document.getElementById('title_man_view').innerHTML  = "";
+    document.getElementById('date_time_man_view').innerHTML  = "";
+    document.getElementById('attendees_man_view').innerHTML  = "";
+    document.getElementById('description_man_view').innerHTML  = "";
+    document.getElementById('control_buttons').style.display = "none";
     document.getElementById('modal_view').style.display = "none";
 }
 
-function showManagerMeeting(e){
+function showViewMeeting(e){
     document.getElementById('calendar_id_man_view').value  = e.schedule.calendarId;
     document.getElementById('meeting_id_man_view').value  = e.schedule.id;
     document.getElementById('owner_man_view').innerHTML  = e.schedule.raw;
@@ -138,7 +135,7 @@ function showManagerMeeting(e){
     document.getElementById('date_time_man_view').innerHTML  = start_datetime.replace("T", " ") + " - " + getTimeFromDatetime(e.schedule.end);
     document.getElementById('description_man_view').innerHTML  = e.schedule.body;
     if(e.schedule.attendees.length !== 0){
-        var logged = document.getElementById('logged_user_role').value
+        var logged = document.getElementById('logged_user_role').value;
         if(logged === "Ceo" || logged === "CeoSecretary"){
             let managers = [];
             getAllUsers().then(data => {
@@ -162,49 +159,46 @@ function showManagerMeeting(e){
     document.getElementById('modal_view').style.display = "block";
 }
 
-function editManagerMeeting(e){
-    document.getElementById('calendar_id_man_view').value  = e.schedule.calendarId;
-    document.getElementById('meeting_id_man_view').value  = e.schedule.id;
-    
-    document.getElementById('title_man_view').innerHTML  = e.schedule.title;
-    var start_datetime = changeDatetimeFormat(e.schedule.start);
-    document.getElementById('date_time_man_view').innerHTML  = start_datetime.replace("T", " ") + " - " + getTimeFromDatetime(e.schedule.end);
-    document.getElementById('description_man_view').innerHTML  = e.schedule.body;
-    if(e.schedule.attendees.length !== 0){
-        document.getElementById('group_meeting_man_view').checked = true; 
-        //PRIDAT ATTENDEES
+function hideEditMeeting(){
+    document.getElementById('calendar_id_man_edit').value  = "";
+    document.getElementById('meeting_id_man_edit').value  = "";
+    document.getElementById('title_man_edit').value  = "";
+    document.getElementById('start_date_man_edit').value  = "";
+    document.getElementById('end_date_man_edit').value  = "";
+    document.getElementById('description_man_edit').value  = "";
+    document.getElementById('group_meeting_man_edit').checked = false;
+    let select = document.getElementById('group_meeting_attendees');
+    while (select.firstChild){
+        select.removeChild(select.firstChild);
+    }
+    document.getElementById('modal_edit').style.display = "none";
+}
+
+
+function showEditMeeting(){
+    hideViewMeeting();
+    document.getElementById('calendar_id_man_edit').value  = actual_meeting.schedule.calendarId;
+    document.getElementById('meeting_id_man_edit').value  = actual_meeting.schedule.calendarId;
+    document.getElementById('title_man_edit').value  = actual_meeting.schedule.title;
+    document.getElementById('start_date_man_edit').value  = changeDatetimeFormat(actual_meeting.schedule.start);
+    document.getElementById('end_date_man_edit').value  = changeDatetimeFormat(actual_meeting.schedule.end);
+    document.getElementById('description_man_edit').value  = actual_meeting.schedule.body;
+    if(actual_meeting.schedule.attendees.length !== 0){
+        document.getElementById('group_meeting_man_edit').checked = true; 
         getAllUsers().then(data => {
             for(item of data.managers) {
                 var opt = document.createElement('option');
                 opt.value = item.id;
                 opt.innerHTML = item.name + " " + item.surname;
-                if(e.schedule.attendees.includes(item.id)){
+                if(actual_meeting.schedule.attendees.includes(item.id)){
                     opt.selected = true;
                 }
                 document.getElementById('group_meeting_attendees').appendChild(opt);
             }
         });
-
-            //getUserInfo(e.schedule.attendees[i]).then(data => {
-                //console.log(data);
-                /*var opt = document.createElement('option');
-                opt.value = data.id;
-                opt.innerHTML = data.name + " " + data.surname;
-                document.getElementById('group_meeting_attendees').appendChild(opt);*/
-                /*for(item of data.managers) {
-                    var opt = document.createElement('option');
-                    opt.value = item.id;
-                    opt.innerHTML = item.name + " " + item.surname;
-                    document.getElementById('group_meeting_attendees').appendChild(opt);
-                }*/
-            //});
         document.getElementById('group_meeting_attendees').style.display = "block";
     }
-
-
-    document.getElementById('modal_view').style.display = "block";
-    document.getElementById('man_meeting_view').style.display = "block";
-    document.getElementById('man_meeting_create').style.display = "none";
+    document.getElementById('modal_edit').style.display = "block";
 }
 
 function changeDatetimeFormat(input_datetime){
@@ -241,7 +235,7 @@ function getTimeFromDatetime(input_datetime){
     return format;
 }
 
-function saveManagerMeeting(){
+function saveEditMeeting(){
 
     let name = document.getElementById('title_man_view').value.toString();
     name = name ? name : null
@@ -273,7 +267,7 @@ function saveManagerMeeting(){
         });
 }
 
-function deleteManagerMeeting(){
+function deleteMeeting(){
     let meetingId = document.getElementById('meeting_id_man_view').value;
     let calendarId = document.getElementById('calendar_id_man_view').value;
     //Calls remove meeting endpoint

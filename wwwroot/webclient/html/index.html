@@ -47,11 +47,11 @@
 
         logged_user_result.then(function (result) {
             if (result.role == "Ceo" || result.role == "CeoSecretary") {
-                document.getElementById('div_group_meeting_man_view').style.display = "block";
+                document.getElementById('div_group_meeting_man_edit').style.display = "block";
                 load_users();
             }
             else {
-                document.getElementById('div_group_meeting_man_view').style.display = "none";
+                document.getElementById('div_group_meeting_man_edit').style.display = "none";
             }
             document.getElementById('logged_user_role').value = result.role;
         });
@@ -175,42 +175,66 @@
     </div>
 
     <div id="modal_view" style="display: none;">
-        <div class="tui-full-calendar-popup-container"> 
+        <div class="tui-full-calendar-popup-container">
             <div class="tui-full-calendar-popup-section">
-                <label for="title_man_view" class="modal_view_label">Title:  </label><input id="title_man_view" class="tui-full-calendar-content modal_inputs" placeholder="Subject" value="Title" type="text">
+                <span id="owner_man_view" style="font-size: 24px;"></span>
             </div>
             <div class="tui-full-calendar-popup-section">
-                <label for="start_date_man_view" class="modal_view_label">Start:  </label><input id="start_date_man_view" class="tui-full-calendar-content modal_inputs" placeholder="Start date" type="datetime-local" value="">
+                <span id="title_man_view" style="font-size: 24px;"></span>
             </div>
             <div class="tui-full-calendar-popup-section">
-                <label for="end_date_man_view" class="modal_view_label">End:  </label><input id="end_date_man_view" class="tui-full-calendar-content modal_inputs" placeholder="End date" type="datetime-local" value="">
+                <i class="fa fa-calendar"></i><span id="date_time_man_view"></span>
             </div>
-            <div id="div_group_meeting_man_view">
+            <div id="attendees_div_man_view">
+                <div class="tui-full-calendar-popup-section">
+                    <i class="fa fa-users"></i><span id="attendees_man_view"></span>
+                </div>
+            </div>
+            <div class="tui-full-calendar-popup-section">
+                <i class="fa fa-note"></i><span id="description_man_view"></span>
+            </div>
+            <button onclick="hideViewMeeting()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
+            <div id="control_buttons" class="tui-full-calendar-popup-section">
+                <input type="hidden" id="calendar_id_man_view">
+                <input type="hidden" id="meeting_id_man_view">
+                <button class="save_button" onclick="showEditMeeting()"><span>Edit</span></button>
+                <button class="save_button" onclick="deleteMeeting()"><span>Delete</span></button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modal_edit" style="display: none;">
+        <div class="tui-full-calendar-popup-container">
+            <div class="tui-full-calendar-popup-section">
+                <label for="title_man_edit" class="modal_edit_label">Title:  </label><input id="title_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="Subject" value="Title" type="text">
+            </div>
+            <div class="tui-full-calendar-popup-section">
+                <label for="start_date_man_edit" class="modal_edit_label">Start:  </label><input id="start_date_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="Start date" type="datetime-local" value="">
+            </div>
+            <div class="tui-full-calendar-popup-section">
+                <label for="end_date_man_edit" class="modal_edit_label">End:  </label><input id="end_date_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="End date" type="datetime-local" value="">
+            </div>
+            <div id="div_group_meeting_man_edit">
                 <div class="tui-full-calendar-popup-section" id="group_meeting">
-                    <label for="group_meeting_man_view" class="modal_view_label">Group meeting: </label>
-                    <input id="group_meeting_man_view" class="groupCheck" type="checkbox" onchange="checkGroupMeeting()">
+                    <label for="group_meeting_man_edit" class="modal_edit_label">Group meeting: </label>
+                    <input id="group_meeting_man_edit" class="groupCheck" type="checkbox" onchange="checkGroupMeeting()">
                     <select name="group_meeting_attendees" id="group_meeting_attendees" style="display: none;" size="3" multiple></select>
                 </div>
             </div>
             <div class="tui-full-calendar-popup-section">
-                <label for="description_man_view" class="modal_view_label">Description:  </label>
+                <label for="description_man_edit" class="modal_edit_label">Description:  </label>
             </div>
             <div class="tui-full-calendar-popup-section">
-                <textarea name="description_man_view" id="description_man_view" cols="30" rows="3" class="modal_inputs">Description</textarea>
+                <textarea name="description_man_edit" id="description_man_edit" cols="30" rows="3" class="modal_inputs">Description</textarea>
             </div>
-            <button onclick="hideManagerMeeting()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
+            <button onclick="hideEditMeeting()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
             <br>
             <div class="tui-full-calendar-popup-section">
-                <input type="hidden" id="calendar_id_man_view">
-                <input type="hidden" id="meeting_id_man_view">
-                <div id="man_meeting_view">
-                    <button class="save_button" onclick="saveManagerMeeting()"><span>Save</span></button><button class="save_button" onclick="deleteManagerMeeting()"><span>Delete</span></button>
-                </div>
-                <div id="man_meeting_create">
-                    <button class="save_button" onclick="createManagerMeeting()"><span>Create</span></button>
-                </div>
+                <input type="hidden" id="calendar_id_man_edit">
+                <input type="hidden" id="meeting_id_man_edit">
+                <button class="save_button" onclick="saveEditMeeting()"><span>Save</span></button>
             </div>
-
+    
         </div>
     </div>
 
