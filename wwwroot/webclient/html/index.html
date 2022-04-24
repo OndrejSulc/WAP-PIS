@@ -44,11 +44,27 @@
     <script>
         var logged_user_result, logger_user;
         logged_user_result = checkLogout();
-
+        var logged_user_id;
         logged_user_result.then(function (result) {
             if (result.role == "Ceo" || result.role == "CeoSecretary") {
+                logged_user_id = result.id;
                 document.getElementById('div_group_meeting_man_edit').style.display = "block";
                 load_users();
+                document.getElementById('calendar_for_user').style.display = "inline-block";
+                getAllUsers().then(data => {
+                    for(item of data.managers) {
+                        var opt = document.createElement('option');
+                        opt.value = item.id;
+                        opt.innerHTML = item.name + " " + item.surname;
+                        console.log("ITEM ID:" + item.id);
+                        console.log("LOGGED ID:" + logged_user_id);
+                        opt.selected = item.id == logged_user_id;
+                        document.getElementById('calendar_for_user').appendChild(opt);
+                    }
+                });
+                if(result.role == "Ceo"){
+                    document.getElementById('userManagement').style.display = "block";
+                }
             }
             else {
                 document.getElementById('div_group_meeting_man_edit').style.display = "none";
@@ -56,6 +72,7 @@
             document.getElementById('logged_user_role').value = result.role;
         });
 
+    
     </script>
 
     <nav class="navbar" id="nav-menu">
@@ -130,12 +147,13 @@
             <a id="prev_button" onclick="calendar.prev();setMonth();" href="#" class="buttons previous round">&#8249;</a>
             <pre id="actual_month"></pre>
             <a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
+            <select id="calendar_for_user" size="1" onchange="showCalendarforUser()" style="display: none;"></select>
         </div>
 
         <div id="calendar" class="section"></div>
         <input type="hidden" id="logged_user_role" value="">
 
-        <div id="userManagement" class="section">
+        <div id="userManagement" class="section" style="display: none;">
             <h1>UserManagement</h1><button onclick="createNewUser()"> Create New User</button>
 
             <table>
@@ -177,7 +195,7 @@
     <div id="modal_view" style="display: none;">
         <div class="tui-full-calendar-popup-container">
             <div class="tui-full-calendar-popup-section">
-                <span id="owner_man_view" style="font-size: 24px;"></span>
+                <i class="fa fa-user-circle"></i><span id="owner_man_view" style="font-size: 24px;"></span>
             </div>
             <div class="tui-full-calendar-popup-section">
                 <span id="title_man_view" style="font-size: 24px;"></span>

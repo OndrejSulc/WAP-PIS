@@ -16,7 +16,7 @@ function load_manager_meetings(calendar){
                     dueDateClass: '',
                     start: new Date(item.from),
                     end: new Date(item.until),
-                    raw: item.owner.name + " " + item.owner.surname
+                    raw: item.owner.id + "," + item.owner.name + " " + item.owner.surname
                     }
                 ]);
             }
@@ -114,6 +114,35 @@ calendar.on({
     }*/
 });
 
+function showCalendarforUser(){
+    let actual_user_id = document.getElementById('calendar_for_user').value;
+    calendar.clear();
+    let meetings = getMeetingsForUser(actual_user_id);
+    meetings
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            for(item of data.meetings) {
+                calendar.createSchedules([
+                    {
+                    id: item.id,
+                    calendarId: '1',
+                    title: item.title,
+                    body: item.description,
+                    attendees: item.attendees,
+                    category: 'time',
+                    dueDateClass: '',
+                    start: new Date(item.from),
+                    end: new Date(item.until),
+                    raw: item.owner.id + "," + item.owner.name + " " + item.owner.surname
+                    }
+                ]);
+            }
+        });
+    calendar.render();
+    calendar.toggleScheduleView(true);
+}
+
 function hideViewMeeting(){
     document.getElementById('calendar_id_man_view').value  = "";
     document.getElementById('meeting_id_man_view').value  = "";
@@ -127,9 +156,11 @@ function hideViewMeeting(){
 }
 
 function showViewMeeting(e){
+    console.log(e);
     document.getElementById('calendar_id_man_view').value  = e.schedule.calendarId;
     document.getElementById('meeting_id_man_view').value  = e.schedule.id;
-    document.getElementById('owner_man_view').innerHTML  = e.schedule.raw;
+    var user = e.schedule.raw.split(",");
+    document.getElementById('owner_man_view').innerHTML  = user[1];
     document.getElementById('title_man_view').innerHTML  = e.schedule.title;
     var start_datetime = changeDatetimeFormat(e.schedule.start);
     document.getElementById('date_time_man_view').innerHTML  = start_datetime.replace("T", " ") + " - " + getTimeFromDatetime(e.schedule.end);
@@ -155,6 +186,9 @@ function showViewMeeting(e){
             document.getElementById('control_buttons').style.display = "none";
         }
         document.getElementById('attendees_div_man_view').style.display = "block";        
+    }
+    else{
+
     }
     document.getElementById('modal_view').style.display = "block";
 }
