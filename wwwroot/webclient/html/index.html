@@ -89,9 +89,9 @@
                 <li class="nav-li">
                     <a class="nav-li-a active" href="#calendar-navigation" id="li-about">Calendar</a>
                 </li>
-                <!--<li class="nav-li">
-                    <a class="nav-li-a" href="#calendar" id="li-int">Notification</a>
-                </li>-->
+                <li class="nav-li">
+                    <a class="nav-li-a" href="#notifications_div" id="li-int">Notification</a>
+                </li>
                 <li class="nav-li">
                     <a class="nav-li-a" href="#userManagement" id="li-int">User Management</a>
                 </li>
@@ -114,9 +114,9 @@
             <li class="nav-li">
                 <a class="nav-li-a active" href="#calendar-navigation" id="li-about">Calendar</a>
             </li>
-            <!--<li class="nav-li">
-        <a class="nav-li-a" href="#calendar" id="li-int">Notification</a>
-    </li>-->
+            <li class="nav-li">
+                <a class="nav-li-a" href="#notifications_div" id="li-int">Notification</a>
+            </li>
             <li class="nav-li">
                 <a class="nav-li-a" href="#userManagement" id="li-int">User Management</a>
             </li>
@@ -142,165 +142,174 @@
 
     <div class="container">
 
-        <div id="calendar-navigation">
-            <h1>Calendar</h1>
-            <a id="prev_button" onclick="calendar.prev();setMonth();" href="#" class="buttons previous round">&#8249;</a>
-            <pre id="actual_month"></pre>
-            <a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
-            <select id="calendar_for_user" size="1" onchange="showCalendarforUser()" style="display: none;"></select>
+        <div class="page">
+            <div id="calendar-navigation">
+                <h1>Calendar</h1>
+                <a id="prev_button" onclick="calendar.prev();setMonth();" href="#" class="buttons previous round">&#8249;</a>
+                <pre id="actual_month"></pre>
+                <a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
+
+                Select user calendar:
+                <select id="calendar_for_user" size="1" onchange="showCalendarforUser()" style="display: none;"></select>
+
+            </div>
+
+            <div id="calendar" class="section"></div>
+            <input type="hidden" id="logged_user_role" value="">
         </div>
+        <div class="page">
+            <div id="notifications_div" class="section">
+                <h1>Notifications</h1>
 
-        <div id="calendar" class="section"></div>
-        <input type="hidden" id="logged_user_role" value="">
-
-        <div id="userManagement" class="section" style="display: none;">
-            <h1>UserManagement</h1><button onclick="createNewUser()"> Create New User</button>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Role</th>
-                        <th>Firstname</th>
-                        <th>Surname</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="user_management">
-                </tbody>
-            </table>
-        </div>
-
-        <div id="notifications_div" class="section">
-            <h1>Notifications</h1>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Meet. Title</th>
-                        <th>Meet. Description</th>
-                        <th>Meet. From</th>
-                        <th>Meet. Until</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="notifications">
-                </tbody>
-            </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Meet. Title</th>
+                            <th>Meet. Description</th>
+                            <th>Meet. From</th>
+                            <th>Meet. Until</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="notifications">
+                    </tbody>
+                </table>
+            </div>
         </div>
 
 
-    </div>
 
-    <div id="modal_view" style="display: none;">
-        <div class="tui-full-calendar-popup-container">
-            <div class="tui-full-calendar-popup-section">
-                <i class="fa fa-user-circle"></i><span id="owner_man_view" style="font-size: 24px;"></span>
-            </div>
-            <div class="tui-full-calendar-popup-section">
-                <span id="title_man_view" style="font-size: 24px;"></span>
-            </div>
-            <div class="tui-full-calendar-popup-section">
-                <i class="fa fa-calendar"></i><span id="date_time_man_view"></span>
-            </div>
-            <div id="attendees_div_man_view">
-                <div class="tui-full-calendar-popup-section">
-                    <i class="fa fa-users"></i><span id="attendees_man_view"></span>
-                </div>
-            </div>
-            <div class="tui-full-calendar-popup-section">
-                <i class="fa fa-note"></i><span id="description_man_view"></span>
-            </div>
-            <button onclick="hideViewMeeting()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
-            <div id="control_buttons" class="tui-full-calendar-popup-section">
-                <input type="hidden" id="calendar_id_man_view">
-                <input type="hidden" id="meeting_id_man_view">
-                <button class="save_button" onclick="showEditMeeting()"><span>Edit</span></button>
-                <button class="save_button" onclick="deleteMeeting()"><span>Delete</span></button>
-            </div>
-        </div>
-    </div>
-    
-    <div id="modal_edit" style="display: none;">
-        <div class="tui-full-calendar-popup-container">
-            <div class="tui-full-calendar-popup-section">
-                <label for="title_man_edit" class="modal_edit_label">Title:  </label><input id="title_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="Subject" value="Title" type="text">
-            </div>
-            <div class="tui-full-calendar-popup-section">
-                <label for="start_date_man_edit" class="modal_edit_label">Start:  </label><input id="start_date_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="Start date" type="datetime-local" value="">
-            </div>
-            <div class="tui-full-calendar-popup-section">
-                <label for="end_date_man_edit" class="modal_edit_label">End:  </label><input id="end_date_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="End date" type="datetime-local" value="">
-            </div>
-            <div id="div_group_meeting_man_edit">
-                <div class="tui-full-calendar-popup-section" id="group_meeting">
-                    <label for="group_meeting_man_edit" class="modal_edit_label">Group meeting: </label>
-                    <input id="group_meeting_man_edit" class="groupCheck" type="checkbox" onchange="checkGroupMeeting()">
-                    <select name="group_meeting_attendees" id="group_meeting_attendees" style="display: none;" size="3" multiple></select>
-                </div>
-            </div>
-            <div class="tui-full-calendar-popup-section">
-                <label for="description_man_edit" class="modal_edit_label">Description:  </label>
-            </div>
-            <div class="tui-full-calendar-popup-section">
-                <textarea name="description_man_edit" id="description_man_edit" cols="30" rows="3" class="modal_inputs">Description</textarea>
-            </div>
-            <button onclick="hideEditMeeting()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
-            <br>
-            <div class="tui-full-calendar-popup-section">
-                <input type="hidden" id="calendar_id_man_edit">
-                <input type="hidden" id="meeting_id_man_edit">
-                <div id="save_edit">
-                    <button class="save_button" onclick="saveEditMeeting()"><span>Save</span></button>
-                </div>
-                <div id="create_new">
-                    <button class="save_button" onclick="createMeeting()"><span>Create</span></button>
-                </div>
-            </div>
-    
-        </div>
-    </div>
+            <div class="page">
 
-    <div id="create_user_view" style="display: none;">
-        <div class="tui-full-calendar-popup-container">
-            <h3>Create New User</h3>
-            <div class="tui-full-calendar-popup-section">
-                <label for="um_login" class="modal_view_label">Login:  </label><input id="um_login" class="tui-full-calendar-content modal_inputs" placeholder="Login" type="text">
-            </div>
-            <div class="tui-full-calendar-popup-section">
-                <label for="um_password" class="modal_view_label">Password:  </label><input id="um_password" class="tui-full-calendar-content modal_inputs" placeholder="Password" type="text">
-            </div>
-            <div class="tui-full-calendar-popup-section">
-                <label for="um_name" class="modal_view_label">Name:  </label><input id="um_name" class="tui-full-calendar-content modal_inputs" placeholder="User Name" type="text">
-            </div>
-            <div class="tui-full-calendar-popup-section">
-                <label for="um_surname" class="modal_view_label">Surname:  </label><input id="um_surname" class="tui-full-calendar-content modal_inputs" placeholder="User Surname" type="text">
-            </div>
-            <div class="tui-full-calendar-popup-section">
-                <label for="um_date_of_birth" class="modal_view_label">Date of birth:  </label><input id="um_date_of_birth" class="tui-full-calendar-content modal_inputs" type="date">
-            </div>
-            <div id="um_secretary_div">
-                <div class="tui-full-calendar-popup-section" id="group_meeting">
-                    <input id="um_issecretary" class="tui-full-calendar-content modal_inputs" type="checkbox" onchange="checkSecretary()">
-                    <label for="um_issecretary" class="modal_view_label">Secretary</label><br>
-                    <select name="secretary_attendees" id="secretary_attendees" style="display: none;" size="1"></select>
-                </div>
-            </div>
-            <button onclick="hideUser()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
-            <br>
-            <div class="tui-full-calendar-popup-section">
-                <!--<div id="user_view">
-                    <input type="hidden" id="um_user_id">
-                    <button class="save_button" onclick="saveUser()"><span>Save</span></button><button class="save_button" onclick="deleteUser()"><span>Delete</span></button>
-                </div>-->
-                <div id="user_create">
-                    <button class="save_button" onclick="saveNewUser()"><span>Create</span></button>
+                <div id="userManagement" class="section" style="display: none;">
+                    <h1>UserManagement</h1><button onclick="createNewUser()"> Create New User</button>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Role</th>
+                                <th>Firstname</th>
+                                <th>Surname</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="user_management">
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-        </div>
-    </div>
-    <script src="/lib/jquery/dist/jquery.min.js"></script>
+
+            <div id="modal_view" style="display: none;">
+                <div class="tui-full-calendar-popup-container">
+                    <div class="tui-full-calendar-popup-section">
+                        <i class="fa fa-user-circle"></i><span id="owner_man_view" style="font-size: 24px;"></span>
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <span id="title_man_view" style="font-size: 24px;"></span>
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <i class="fa fa-calendar"></i><span id="date_time_man_view"></span>
+                    </div>
+                    <div id="attendees_div_man_view">
+                        <div class="tui-full-calendar-popup-section">
+                            <i class="fa fa-users"></i><span id="attendees_man_view"></span>
+                        </div>
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <i class="fa fa-note"></i><span id="description_man_view"></span>
+                    </div>
+                    <button onclick="hideViewMeeting()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
+                    <div id="control_buttons" class="tui-full-calendar-popup-section">
+                        <input type="hidden" id="calendar_id_man_view">
+                        <input type="hidden" id="meeting_id_man_view">
+                        <button class="save_button" onclick="showEditMeeting()"><span>Edit</span></button>
+                        <button class="save_button" onclick="deleteMeeting()"><span>Delete</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modal_edit" style="display: none;">
+                <div class="tui-full-calendar-popup-container">
+                    <div class="tui-full-calendar-popup-section">
+                        <label for="title_man_edit" class="modal_edit_label">Title:  </label><input id="title_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="Subject" value="Title" type="text">
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <label for="start_date_man_edit" class="modal_edit_label">Start:  </label><input id="start_date_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="Start date" type="datetime-local" value="">
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <label for="end_date_man_edit" class="modal_edit_label">End:  </label><input id="end_date_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="End date" type="datetime-local" value="">
+                    </div>
+                    <div id="div_group_meeting_man_edit">
+                        <div class="tui-full-calendar-popup-section" id="group_meeting">
+                            <label for="group_meeting_man_edit" class="modal_edit_label">Group meeting: </label>
+                            <input id="group_meeting_man_edit" class="groupCheck" type="checkbox" onchange="checkGroupMeeting()">
+                            <select name="group_meeting_attendees" id="group_meeting_attendees" style="display: none;" size="3" multiple></select>
+                        </div>
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <label for="description_man_edit" class="modal_edit_label">Description:  </label>
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <textarea name="description_man_edit" id="description_man_edit" cols="30" rows="3" class="modal_inputs">Description</textarea>
+                    </div>
+                    <button onclick="hideEditMeeting()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
+                    <br>
+                    <div class="tui-full-calendar-popup-section">
+                        <input type="hidden" id="calendar_id_man_edit">
+                        <input type="hidden" id="meeting_id_man_edit">
+                        <div id="save_edit">
+                            <button class="save_button" onclick="saveEditMeeting()"><span>Save</span></button>
+                        </div>
+                        <div id="create_new">
+                            <button class="save_button" onclick="createMeeting()"><span>Create</span></button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="create_user_view" style="display: none;">
+                <div class="tui-full-calendar-popup-container">
+                    <h3>Create New User</h3>
+                    <div class="tui-full-calendar-popup-section">
+                        <label for="um_login" class="modal_view_label">Login:  </label><input id="um_login" class="tui-full-calendar-content modal_inputs" placeholder="Login" type="text">
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <label for="um_password" class="modal_view_label">Password:  </label><input id="um_password" class="tui-full-calendar-content modal_inputs" placeholder="Password" type="text">
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <label for="um_name" class="modal_view_label">Name:  </label><input id="um_name" class="tui-full-calendar-content modal_inputs" placeholder="User Name" type="text">
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <label for="um_surname" class="modal_view_label">Surname:  </label><input id="um_surname" class="tui-full-calendar-content modal_inputs" placeholder="User Surname" type="text">
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <label for="um_date_of_birth" class="modal_view_label">Date of birth:  </label><input id="um_date_of_birth" class="tui-full-calendar-content modal_inputs" type="date">
+                    </div>
+                    <div id="um_secretary_div">
+                        <div class="tui-full-calendar-popup-section" id="group_meeting">
+                            <input id="um_issecretary" class="tui-full-calendar-content modal_inputs" type="checkbox" onchange="checkSecretary()">
+                            <label for="um_issecretary" class="modal_view_label">Secretary</label><br>
+                            <select name="secretary_attendees" id="secretary_attendees" style="display: none;" size="1"></select>
+                        </div>
+                    </div>
+                    <button onclick="hideUser()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
+                    <br>
+                    <div class="tui-full-calendar-popup-section">
+                        <!--<div id="user_view">
+                        <input type="hidden" id="um_user_id">
+                        <button class="save_button" onclick="saveUser()"><span>Save</span></button><button class="save_button" onclick="deleteUser()"><span>Delete</span></button>
+                    </div>-->
+                        <div id="user_create">
+                            <button class="save_button" onclick="saveNewUser()"><span>Create</span></button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <script src="/lib/jquery/dist/jquery.min.js"></script>
 </body>
 </html> 
 <!--<button><i class='fas fa-caret-square-left'></i></button>-->

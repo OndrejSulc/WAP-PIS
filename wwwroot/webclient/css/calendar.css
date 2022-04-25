@@ -1,5 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Raleway);
 a.buttons {
+    color: white;
     text-decoration: none;
     display: inline-block;
     padding: 8px 16px;
@@ -16,6 +17,9 @@ a.buttons {
     height: 60px;
     text-align: center;
     font-size: 45px;
+}
+.page{
+    height: 100vh;
 }
 .tui-full-calendar-weekday-schedule-title {
     color: red !important;
@@ -35,6 +39,13 @@ a.buttons {
 .previous {
     background-color: #696969;
     color: white;
+}
+
+#sign_out {
+    margin: auto;
+    font-size: 0px;
+    padding: 0;
+    cursor: pointer;
 }
 
 .next {
@@ -111,6 +122,7 @@ input#group_meeting_man_view.groupCheck {
     display: inline-block;
     visibility: hidden;
     color: black;
+    z-index: 9;
 }
 
 #mobile_headline_content p {
@@ -124,6 +136,7 @@ input#group_meeting_man_view.groupCheck {
     background-color: grey;
     border-radius: 25px;
     padding: 0px 20px 0 20px;
+    z-index: 1;
 }
 
 #mobile_headline:hover #mobile_headline_content {
@@ -251,12 +264,14 @@ input[type=datetime-local]{
     align-items: center;
     justify-content: space-between;
     padding: 8px 16px;
-    background-color: #696969;
+    /*background-color: #696969;*/
+    background: linear-gradient(to bottom, #5d576b, #eea849);
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-   /* background-image: linear-gradient(to right, BLACK, WHITE);*/
+    border: none;
+    /* background-image: linear-gradient(to right, BLACK, WHITE);*/
 }
 body {
     line-height: 200%;
@@ -274,7 +289,8 @@ body {
     /* scroll-behavior: smooth;*/
     overflow-y: scroll;
     overflow-x: hidden;
-   /* height: 100vh;*/
+    z-index: 0;
+    /* height: 100vh;*/
     width: 80vw;
     margin-right: 0;
     margin-left: 15vw;
@@ -287,14 +303,13 @@ body {
     }
 .section {
     margin-top: 15px;
-
     color: black;
     /*display: flex;*/
     align-content: center;
     /*width: 70%;*/
     /*height: 100vh;*/
     background-size: cover;
-   /* scroll-snap-align: start;*/
+    /* scroll-snap-align: start;*/
 }
 .tui-full-calendar-popup-container {
     text-align: left;
@@ -457,6 +472,10 @@ body {
   }
 }*/
 
+#select_user{
+    display: flex;
+}
+
 @media only screen and (max-width: 1000px) {
     .navbar {
         visibility: hidden;
@@ -479,18 +498,21 @@ body {
     align-items: center;
     justify-content: space-between;
     background-color: #00BAF0;
-    background: linear-gradient(to left, #f46b45, #eea849);
+    background: linear-gradient(to left, #5d576b, #eea849);
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     color: #FFF;
     height: 50px;
-    padding: 1em;
+    /*padding: 1em;*/
     visibility: hidden;
+    z-index: 9;
 }
 
 .menu {
     display: flex;
     flex-direction: row;
     list-style-type: none;
+    text-decoration: none;
+    color: white;
     margin: 0;
     padding: 0;
 }
@@ -583,17 +605,23 @@ body {
         padding: 0;
         border: 0;
         transition: height 400ms cubic-bezier(0.23, 1, 0.32, 1);
+        z-index: 9;
     }
 
     #menu-toggle:checked ~ .menu li {
+        margin: auto;
         border: 1px solid #333;
         height: 2.5em;
         padding: 0.5em;
         transition: height 400ms cubic-bezier(0.23, 1, 0.32, 1);
-        visibility:visible;
+        visibility: visible;
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+        z-index: 9;
     }
-    #menu-toggle:checked ~ .menu {
-        padding-bottom: 1000px;
+    #menu-toggle:checked ~ div.container {
+        padding-top: 1000px;
     }
 
     .menu > li {
