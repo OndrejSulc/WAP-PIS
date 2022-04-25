@@ -5,3 +5,4 @@ TODO:
 	zobrazenie meetingu bez uprav pre zucastneneho uzivatela	
 	responzivny design
 	select pre riaditela - my calendar/all managers 	
+	refresh na user managment po pridat uzivatela

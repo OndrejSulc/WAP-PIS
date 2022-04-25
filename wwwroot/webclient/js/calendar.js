@@ -232,6 +232,8 @@ function showEditMeeting(){
         });
         document.getElementById('group_meeting_attendees').style.display = "block";
     }
+    document.getElementById('create_new').style.display = "none";
+    document.getElementById('save_edit').style.display = "block";
     document.getElementById('modal_edit').style.display = "block";
 }
 
@@ -297,7 +299,7 @@ function saveEditMeeting(){
                 end: new Date(document.getElementById('end_date_man_view').value)
             });
             calendar.render();
-            hideManagerMeeting();
+            hideEditMeeting();
         });
 }
 
@@ -308,35 +310,35 @@ function deleteMeeting(){
     removeMeeting(meetingId).then(result => {
         calendar.deleteSchedule(parseInt(meetingId), calendarId);
         calendar.render();
-        hideManagerMeeting();
+        hideEditMeeting();
     });
 }
 
 function startCreateManagerMeeting(e){
-    document.getElementById('start_date_man_view').value  = changeDatetimeFormat(e.start);
-    document.getElementById('end_date_man_view').value  = changeDatetimeFormat(e.end);
-    document.getElementById('modal_view').style.display = "block";
-    document.getElementById('man_meeting_view').style.display = "none";
-    document.getElementById('man_meeting_create').style.display = "block";
+    document.getElementById('start_date_man_edit').value  = changeDatetimeFormat(e.start);
+    document.getElementById('end_date_man_edit').value  = changeDatetimeFormat(e.end);
+    document.getElementById('create_new').style.display = "block";
+    document.getElementById('save_edit').style.display = "none";
+    document.getElementById('modal_edit').style.display = "block";
 }
 
-function createManagerMeeting(e){
+function createMeeting(e){
 
-    let name = document.getElementById('title_man_view').value.toString();
+    let name = document.getElementById('title_man_edit').value.toString();
     name = name ? name : null
 
-    let description = document.getElementById('description_man_view').value;
+    let description = document.getElementById('description_man_edit').value;
     description = description ? description : null
 
-    let from = new Date(document.getElementById('start_date_man_view').value).toISOString();
+    let from = new Date(document.getElementById('start_date_man_edit').value).toISOString();
     from = from ? from : null
 
-    let until = new Date(document.getElementById('end_date_man_view').value).toISOString();
+    let until = new Date(document.getElementById('end_date_man_edit').value).toISOString();
     until = until ? until : null
 
     //console.log(name,description,from,until);
 
-    if(document.getElementById('group_meeting_man_view').checked == true){
+    if(document.getElementById('group_meeting_man_edit').checked == true){
         var attendees = [];
         for (var option of document.getElementById('group_meeting_attendees').options)
         {
@@ -363,7 +365,7 @@ function createManagerMeeting(e){
                     }
                 ]);
                 calendar.render();
-                hideManagerMeeting();
+                hideEditMeeting();
             });
     }
     else{
@@ -384,7 +386,7 @@ function createManagerMeeting(e){
                     }
                 ]);
                 calendar.render();
-                hideManagerMeeting();
+                hideEditMeeting();
             });
     }
     
@@ -407,7 +409,7 @@ function createManagerMeeting(e){
 }
 
 function checkGroupMeeting(){
-    var group_meeting_checkbox = document.getElementById('group_meeting_man_view');
+    var group_meeting_checkbox = document.getElementById('group_meeting_man_edit');
 
     if(group_meeting_checkbox.checked === true) {
         console.log("Checkbox is checked - boolean value: ", group_meeting_checkbox.checked);
@@ -423,12 +425,12 @@ function checkGroupMeeting(){
 
         document.getElementById('group_meeting_attendees').style.display = "block";
     }
-        /*for (var i = min; i<=max; i++){
-            var opt = document.createElement('option');
-            opt.value = i;
-            opt.innerHTML = i;
-            group_meeting_checkbox.appendChild(opt);
-        }*/
+    /*for (var i = min; i<=max; i++){
+        var opt = document.createElement('option');
+        opt.value = i;
+        opt.innerHTML = i;
+        group_meeting_checkbox.appendChild(opt);
+    }*/
     if(group_meeting_checkbox.checked === false) {
         console.log("Checkbox is not checked - boolean value: ", group_meeting_checkbox.checked)
         document.getElementById('group_meeting_attendees').style.display = "none";

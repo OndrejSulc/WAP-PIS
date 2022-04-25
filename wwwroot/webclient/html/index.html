@@ -250,7 +250,12 @@
             <div class="tui-full-calendar-popup-section">
                 <input type="hidden" id="calendar_id_man_edit">
                 <input type="hidden" id="meeting_id_man_edit">
-                <button class="save_button" onclick="saveEditMeeting()"><span>Save</span></button>
+                <div id="save_edit">
+                    <button class="save_button" onclick="saveEditMeeting()"><span>Save</span></button>
+                </div>
+                <div id="create_new">
+                    <button class="save_button" onclick="createMeeting()"><span>Create</span></button>
+                </div>
             </div>
     
         </div>
