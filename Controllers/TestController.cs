@@ -25,9 +25,9 @@ public class TestController : Controller
 
     [HttpGet]
     public async Task<string> CreateNewUser(
-        string type = "Manager",
+        string type = "CEO",
         string username = "user",
-        string name = "Tester",
+        string name = "CEO jméno",
         string surname = "Testovič",
         string email = "user@email.cz",
         string password = "password")
