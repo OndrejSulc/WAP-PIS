@@ -265,7 +265,7 @@ input[type=datetime-local]{
         font-weight: 800;
         letter-spacing: .05rem;
         text-transform: uppercase;
-        color: black;
+        color: white;
         text-decoration: none;
     }
   .active{
@@ -690,6 +690,56 @@ table {
         .menu > li:not(:last-child) {
             border-bottom: 1px solid #444;
         }
+    .tui-full-calendar-popup-container{ /*modal view needs min widt set so mobile users can fill forms*/
+        min-width: 0;
+    }
+
+    #calendar-navigation select {
+        border-radius: 10px;
+        font-size: 25px;
+        padding: 15px;
+        margin-left: 0px;
+        margin-top: 10px;
+    }
+
+    /* TABLES */
+    table {
+        border: 0;
+    }
+
+   thead {
+      display: none;
+    }
+
+   table tr {
+      margin-bottom: 20px;
+      display: block;
+      border-bottom: 2px solid #ddd;
+	 box-shadow: 2px 2px 1px #dadada;
+
+    }
+
+   table td {
+      display: block;
+      text-align: right;
+      font-size: 13px;
+    }
+
+   table td:last-child {
+      border-bottom: 0;
+    }
+
+    table td::before {
+        content: attr(data-label);
+        float: left;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    tbody {
+        line-height: 0 !important;
+    }
+
 }
 
 /*    PROJEKT KONIEC   */
