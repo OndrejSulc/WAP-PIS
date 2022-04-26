@@ -7,26 +7,34 @@
     </head>
     <body>
         <div class="wrapper">
-          <div id="myForm" class="login">
-        <p class="title">Log in</p>
-        <input type="text" name="login_login" id="login_login" placeholder="Username" autofocus value="user"/>
-        <i class="fa fa-user"></i>
-        <input type="text"  id="login_pw" name="login_pw" placeholder="Password" value="password"/>
-        <i class="fa fa-key"></i>
-        <button onclick="l_login()">
-          <i class="spinner"></i>
-          <span id="sub" class="state">Log in</span>
-        </button>
-    </div>
-      <footer></footer>
-      </p>
-    </div>
+            <div id="myForm" class="login">
+                <p class="title">Log in</p>
+                <input type="text" name="login_login" id="login_login" placeholder="Username" autofocus value="user"/>
+                <i class="fa fa-user"></i>
+                <input type="password"  id="login_pw" name="login_pw" placeholder="Password" value="password"/>
+                <i class="fa fa-key"></i><br>
+                <input type="checkbox" onclick="showPassword()" name="show_password" id="show_password"><label for="show_password">Show password</label>
+                <button id="login_button" onclick="l_login()">
+                    <i class="spinner"></i>
+                    <span id="sub" class="state">Log in</span>
+                </button>
+            </div>
+            <footer></footer>
+        </div>
     </body>
     <script>
         async function l_login()
         {
             var username = document.getElementById("login_login").value;
+            if(username==""){
+                alert("Enter your login!");
+                return;
+            }
             var pw = document.getElementById("login_pw").value;
+            if(pw==""){
+                alert("Enter your password!");
+                return;
+            }
             var response = await login(username,pw);
             if(response.successful_Authentication){
                 window.onload = loginSucced();
@@ -37,5 +45,29 @@
             }
         }
         checkLogin();
+        var input = document.getElementById("login_pw");
+        input.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                document.getElementById("login_button").click();
+            }
+        });
+
+        var input = document.getElementById("login_login");
+        input.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                document.getElementById("login_button").click();
+            }
+        });
+
+        function showPassword() {
+        var x = document.getElementById("login_pw");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
     </script>
 </html> 

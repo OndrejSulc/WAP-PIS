@@ -270,15 +270,32 @@ function saveEditMeeting(){
 
     let name = document.getElementById('title_man_edit').value;
     name = name ? name : null
+    if(name==null){
+        alert("Enter the title!");
+        return;
+    }
 
     let description = document.getElementById('description_man_edit').value;
     description = description ? description : null
+    if(description==null){
+        alert("Enter the description!");
+        return;
+    }
 
+    //console.log("FROM: " + document.getElementById('start_date_man_edit').value);
     let from = document.getElementById('start_date_man_edit').value;
     from = from ? from : null
+    if(from==null){
+        alert("Enter the start!");
+        return;
+    }
 
     let until = document.getElementById('end_date_man_edit').value;
     until = until ? until : null
+    if(until==null){
+        alert("Enter the end!");
+        return;
+    }
 
     let meetingId = document.getElementById('meeting_id_man_edit').value;
     let calendarId = document.getElementById('calendar_id_man_edit').value;
@@ -347,7 +364,7 @@ function startCreateManagerMeeting(e){
 
 async function create_Meeting(){
 
-    let name = document.getElementById('title_man_edit').value.toString();
+    let name = document.getElementById('title_man_edit').value;
     name = name ? name : null
     if(name==null){
         alert("Enter the title!");
@@ -364,9 +381,17 @@ async function create_Meeting(){
     //console.log("FROM: " + document.getElementById('start_date_man_edit').value);
     let from = document.getElementById('start_date_man_edit').value;
     from = from ? from : null
+    if(from==null){
+        alert("Enter the start!");
+        return;
+    }
 
     let until = document.getElementById('end_date_man_edit').value;
     until = until ? until : null
+    if(until==null){
+        alert("Enter the end!");
+        return;
+    }
 
     console.log(name,description,from,until);
 
@@ -777,19 +802,18 @@ function hideNotification(){
 }
 
 function dismiss_notification_for_id(notification_id){
-    console.log(dismissNotification(notification_id));
-    setTimeout(function(){
+    dismissNotification(notification_id).then(data => {
+        console.log(data);
         get_notifications();
-    }, 500);
+    });
 }
 
 function dismiss_notification(){
     var notification_id = document.getElementById('id_notif').value;
-    console.log("Dismiss: "+notification_id);
-    console.log(dismissNotification(notification_id));
-    setTimeout(function(){
+    dismissNotification(notification_id).then(data => {
+        console.log(data);
         get_notifications();
-    }, 500);
+    });
 }
 
 
