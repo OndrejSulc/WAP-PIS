@@ -562,7 +562,7 @@ table {
     color: #FFF;
     height: 50px;
     /*padding: 1em;*/
-    padding-left 10px;
+    padding-left: 10px;
     visibility: hidden;
     z-index: 9;
 }

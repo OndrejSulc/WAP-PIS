@@ -40,7 +40,8 @@ $('a.nav-li-a').on('click', function (e) {
         }, 1000);
     }
 });
-$('a.navbar-href').on('click', function (e) {
+
++$('a.navbar-href').on('click', function (e) {
     if (this.hash !== '') {
         e.preventDefault();
         console.log(this.hash);
@@ -216,10 +217,7 @@ function hideEditMeeting(){
     document.getElementById('end_date_man_edit').value  = "";
     document.getElementById('description_man_edit').value  = "";
     document.getElementById('group_meeting_man_edit').checked = false;
-    let select = document.getElementById('group_meeting_attendees');
-    while (select.firstChild){
-        select.removeChild(select.firstChild);
-    }
+    document.getElementById('group_meeting_attendees').innerHTML = '';
     document.getElementById('modal_edit').style.display = "none";
 }
 
@@ -286,7 +284,7 @@ function getTimeFromDatetime(input_datetime){
     return format;
 }
 
-function saveEditMeeting(){
+async function saveEditMeeting(){
 
     let name = document.getElementById('title_man_edit').value;
     name = name ? name : null
@@ -324,30 +322,77 @@ function saveEditMeeting(){
 
     if(document.getElementById('group_meeting_man_edit').checked == true){
         var attendees = [];
+        var attendees_names = [];
+        var attendees_not_available = [];
         for (var option of document.getElementById('group_meeting_attendees').options)
         {
             if (option.selected) {
                 attendees.push(option.value);
+                attendees_names.push(option.innerHTML);
             }
         }
-        console.log(attendees);
-        updateGroupMeeting(meetingId, name, description, from, until, attendees).then(response => response.json())
+        if(attendees.length==0){
+            alert("This is group meeting, you must choose at least 1 person!");
+            return;
+        }
+        for(let i = 0; i < attendees.length; i++){ 
+            const result = await isUserAvailable(attendees[i],from,until).then(response => response.json())
             .then(data => {
-                let result = JSON.stringify(data, null, 2);
-                let item = JSON.parse(result);
-                calendar.updateSchedule(parseInt(meetingId), calendarId, {
-                    title: name,
-                    body: description,
-                    attendees: attendees,
-                    start: new Date(from),
-                    end: new Date(until)
-                });
-                calendar.render();
-                hideEditMeeting();
+                //console.log(attendees_names[i] + " is: " + data.available + " time: "+ from + " - " + until);
+                if(data.available == false)attendees_not_available.push(attendees_names[i]);
             });
+        } 
+        //console.log("NOT AVAILABLE" + attendees_not_available);
+
+        if(attendees_not_available.length == 0){
+            console.log("All Attendees:"+attendees);
+            updateGroupMeeting(meetingId, name, description, from, until, attendees).then(response => response.json())
+                .then(data => {
+                    let result = JSON.stringify(data, null, 2);
+                    let item = JSON.parse(result);
+                    calendar.updateSchedule(parseInt(meetingId), calendarId, {
+                        title: name,
+                        body: description,
+                        attendees: attendees,
+                        start: new Date(from),
+                        end: new Date(until)
+                    });
+                    calendar.render();
+                    hideEditMeeting();
+                });
+        }
+        else{
+            alert("These users are not available: "+attendees_not_available.join(", "));
+        }
     }
     else{
-        updateMeeting(meetingId, name, description, from, until).then(response => response.json())
+        var logged = document.getElementById('logged_user_role').value;
+        if(logged === "Manager" || logged === "Secretary"){
+            isCeoAvailable(from, until).then(response => response.json())
+            .then(data => {
+                console.log(data.available);
+                if(data.available == false){
+                    alert("CEO is not available!");
+                }
+                else{
+                    updateMeeting(meetingId, name, description, from, until).then(response => response.json())
+                    .then(data => {
+                        console.log(JSON.stringify(data, null, 2));
+                        calendar.updateSchedule(parseInt(meetingId), calendarId, {
+                            title: name,
+                            body: description,
+                            attendees:[],
+                            start: new Date(from),
+                            end: new Date(until)
+                        });
+                        calendar.render();
+                        hideEditMeeting();
+                    });
+                }
+            });
+        }
+        else{
+            updateMeeting(meetingId, name, description, from, until).then(response => response.json())
             .then(data => {
                 console.log(JSON.stringify(data, null, 2));
                 calendar.updateSchedule(parseInt(meetingId), calendarId, {
@@ -360,6 +405,7 @@ function saveEditMeeting(){
                 calendar.render();
                 hideEditMeeting();
             });
+        }
     }
 }
 
@@ -562,6 +608,11 @@ function checkGroupMeeting(){
     if(group_meeting_checkbox.checked === false) {
         console.log("Checkbox is not checked - boolean value: ", group_meeting_checkbox.checked)
         document.getElementById('group_meeting_attendees').style.display = "none";
+        var select = document.getElementById("group_meeting_attendees");
+        var length = select.length;
+        for (i = 0; i < length; i++) {
+            select.remove(0);
+        }
     }
 }
 
@@ -705,8 +756,8 @@ function saveNewUser(){
 
 //Function called when signalR receives net notification
 function onNotification(notification) {
-    console.log(JSON.stringify(notification, null, 2))
-    let result = JSON.stringify(notification, null, 2);
+    //console.log(JSON.stringify(notification, null, 2))
+    /*let result = JSON.stringify(notification, null, 2);
     let item = JSON.parse(result);
     var table = document.getElementById("notifications");
     var i = table.rows.length;
@@ -717,10 +768,10 @@ function onNotification(notification) {
     var view = row.insertCell(3);
     var dismiss = row.insertCell(4);
     title.innerHTML = notification.Meeting.Title;
-    from.innerHTML = notification.Meeting.From;
-    until.innerHTML = notification.Meeting.Until;
+    from.innerHTML = notification.Meeting.From.replace("T"," ");
+    until.innerHTML = notification.Meeting.Until.replace("T"," ");
     view.innerHTML = "<button  class=\"btn\" onclick=\"showNotification('" + notification.ID + "')\"><i class=\"fa fa-pencil\"></i></button>";
-    dismiss.innerHTML = "<button  class=\"btn\" onclick=\"dismiss_notification_for_id('" + notification.ID + "')\"><i class=\"fa fa-times\"></i></button>";
+    dismiss.innerHTML = "<button  class=\"btn\" onclick=\"dismiss_notification_for_id('" + notification.ID + "')\"><i class=\"fa fa-times\"></i></button>";*/
     alert(notification.Text);
     get_notifications();
     calendar.clear();
@@ -730,14 +781,14 @@ function onNotification(notification) {
 function startSignalRNotifications() {
     //Starts signalR receiver with callback for new notification
     startSignalR(onNotification);
-    console.log("SignalR started");
+    //console.log("SignalR started");
 }
 
-function get_notifications() {
+async function get_notifications() {
     var table = document.getElementById("notifications");
     table.innerHTML = '';
     getNotifications().then(response => response.json()).then(data => {
-        console.log(data.notifications);
+        //console.log(data.notifications);
         var count = 0;
         for(notification of data.notifications){
             var i = table.rows.length;
@@ -748,24 +799,22 @@ function get_notifications() {
             var view = row.insertCell(3);
             var dismiss = row.insertCell(4);
             title.innerHTML = notification.meeting.title;
-            from.innerHTML = notification.meeting.from;
-            until.innerHTML = notification.meeting.until;
+            from.innerHTML = notification.meeting.from.replace("T"," ");
+            until.innerHTML = notification.meeting.until.replace("T"," ");
             view.innerHTML = "<button  class=\"btn\" onclick=\"showNotification('" + notification.id + "')\"><i class=\"fa fa-pencil\"></i></button>";
             dismiss.innerHTML = "<button  class=\"btn\" onclick=\"dismiss_notification_for_id('" + notification.id + "')\"><i class=\"fa fa-times\"></i></button>";
             count++;
         }
         if(count>0){
             document.getElementById('notification_nav').innerHTML = "Notifications(" + count + ")";
-            //document.getElementById('notification_nav').style.color = "red";
         }
         else{
             document.getElementById('notification_nav').innerHTML = "Notifications";
-            //document.getElementById('notification_nav').style.color = "black";
         }
     });
 }
 
-function showNotification(notification_id){
+async function showNotification(notification_id){
     getNotifications().then(response => response.json()).then(data => {
         for(notification of data.notifications){
             if(notification_id != notification.id)continue;
@@ -821,14 +870,14 @@ function hideNotification(){
     document.getElementById('attendees_div_notif').style.display = "none"; 
 }
 
-function dismiss_notification_for_id(notification_id){
+async function dismiss_notification_for_id(notification_id){
     dismissNotification(notification_id).then(data => {
         console.log(data);
         get_notifications();
     });
 }
 
-function dismiss_notification(){
+async function dismiss_notification(){
     var notification_id = document.getElementById('id_notif').value;
     dismissNotification(notification_id).then(data => {
         console.log(data);
