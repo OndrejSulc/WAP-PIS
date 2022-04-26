@@ -187,8 +187,9 @@
                 <pre id="actual_month"></pre>
                 <a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
 
-                Select user calendar:
-                <select id="calendar_for_user" size="1" onchange="showCalendarforUser(logged_user_id)" style="display: none;"></select>
+                <select id="calendar_for_user" size="1" onchange="showCalendarforUser(logged_user_id)" style="display: none;">
+                    <option selected disabled hidden>Choose user calendar</option>
+                </select>
 
             </div>
 

@@ -18,12 +18,16 @@ a.buttons {
     text-align: center;
     font-size: 45px;
 }
-.page{
-    height: 100vh;
+.page {
+    /*height: 100vh;*/
+    min-height: 100vh;
+    /*padding-top: 200px;
+    padding-bottom: 200px;*/
+    scroll-snap-type: y proximity;
 }
 .tui-full-calendar-weekday-schedule-title {
-    color: red !important;
     text-align: center !important;
+    background-color: lightgrey;
 }
 .tui-full-calendar-weekday-schedule-bullet {
     color: red !important;
@@ -36,6 +40,16 @@ a.buttons {
     border: 2px solid #ccc;
     border-radius: 6px;
 }
+
+#calendar-navigation select {
+    border-radius: 10px;
+    font-size: 25px;
+    padding: 15px;
+    margin-left: 50px;
+
+}
+
+
 .previous {
     background-color: #696969;
     color: white;
@@ -69,8 +83,13 @@ pre{
     border: none!important;
 }
 
-.modal_inputs{
-    font-size: 22px!important;
+.modal_inputs {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 25px;
+    font-size: 22px !important;
 }
 
 input#group_meeting_man_view.groupCheck {
@@ -182,6 +201,7 @@ input[type=datetime-local]{
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
+        padding-left: 0;
     }
         #nav-menu h2 {
             display: table;
@@ -190,15 +210,18 @@ input[type=datetime-local]{
             #nav-menu h2:hover {
                 cursor: pointer;
             }
+  ul.nav-ul{
+      padding-left: 0px;
+  }
   #nav-menu .navbar-href{
   	display: flex;
     margin-top: 20vh;
-    padding: 10px;
     font-size: 40px;
     width: 120px;
     height: 100px;
     line-height: inherit;
     white-space: nowrap;
+    text-align: center;
   }
   .profile-img{
   	max-width: 120px;
@@ -216,7 +239,7 @@ input[type=datetime-local]{
   }
     /* The navigation menu links */
     .nav-menu a {
-        padding: 8px 8px 8px 32px;
+        padding: 8px 8px 8px 8px;
         text-decoration: none;
         font-size: 25px;
         color: #818181;
@@ -263,7 +286,7 @@ input[type=datetime-local]{
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 16px;
+    padding-top: 8px;
     /*background-color: #696969;*/
     background: linear-gradient(to bottom, #5d576b, #eea849);
     position: fixed;
@@ -278,13 +301,43 @@ body {
     /*overflow-x: hidden;*/
     margin: 0;
     background-color: white;
-    /*padding-left: 10%;*/
     font-family: "Helvetica", Helvetica, serif;
     text-align: left;
     margin: 0 0 0 0;
     color: black;
     font-size: 20px;
 }
+
+table {
+    border-collapse: collapse;
+    font-family: Tahoma, Geneva, sans-serif;
+}
+
+    table td {
+        padding: 15px;
+    }
+
+    table thead td {
+        background-color: #54585d;
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 13px;
+        border: 1px solid #54585d;
+    }
+
+    table tbody td {
+        color: #636363;
+        border: 1px solid #dddfe1;
+    }
+
+    table tbody tr {
+        background-color: #f9fafb;
+    }
+
+        table tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
 .container {
     /* scroll-behavior: smooth;*/
     overflow-y: scroll;
