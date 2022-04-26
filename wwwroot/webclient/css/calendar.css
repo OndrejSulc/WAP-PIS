@@ -23,7 +23,7 @@ a.buttons {
     min-height: 100vh;
     /*padding-top: 200px;
     padding-bottom: 200px;*/
-    scroll-snap-type: y proximity;
+    scroll-snap-align: start;
 }
 .tui-full-calendar-weekday-schedule-title {
     text-align: center !important;
@@ -169,8 +169,12 @@ input[type=datetime-local]{
   line-height: inherit;
 }
 
-#group_meeting_attendees,#secretary_attendees{
-  width: 150px;
+#group_meeting_attendees, #secretary_attendees {
+    width: 150px;
+    text-align: center;
+    margin: auto;
+    margin-top: auto;
+    margin-top: 10px;
 }
 
 #group_meeting_attendees option, #secretary_attendees option{
@@ -309,6 +313,7 @@ body {
 }
 
 table {
+    padding-top: 15px;
     border-collapse: collapse;
     font-family: Tahoma, Geneva, sans-serif;
 }
@@ -340,8 +345,8 @@ table {
 
 .container {
     /* scroll-behavior: smooth;*/
-    overflow-y: scroll;
     overflow-x: hidden;
+    overflow-y: scroll;
     z-index: 0;
     /* height: 100vh;*/
     width: 80vw;
@@ -350,6 +355,7 @@ table {
     /*scroll-snap-type: y mandatory;*/
     -ms-overflow-style: none; /* Internet Explorer 10+ */
     scrollbar-width: none; /* Firefox */
+    scroll-snap-type: y proximity;
 }
     .container::-webkit-scrollbar {
         display: none; /* Safari and Chrome */
@@ -362,7 +368,7 @@ table {
     /*width: 70%;*/
     /*height: 100vh;*/
     background-size: cover;
-    /* scroll-snap-align: start;*/
+    scroll-snap-align: start;
 }
 .tui-full-calendar-popup-container {
     text-align: left;
@@ -380,7 +386,7 @@ table {
     color: #5e5e5e;
     font-weight: normal;
 }
-#about{
+/*#about{
   height: 60vh;
   padding-top: 25vh;
 }
@@ -438,7 +444,7 @@ table {
   color:red;
   font-size:22px;
   font-weight: 600;
-}
+}*/
 /*@media (max-width: 999px){
 	.profile-img{
   	display: none!important;
@@ -556,6 +562,7 @@ table {
     color: #FFF;
     height: 50px;
     /*padding: 1em;*/
+    padding-left 10px;
     visibility: hidden;
     z-index: 9;
 }
@@ -568,11 +575,18 @@ table {
     color: white;
     margin: 0;
     padding: 0;
+/*    display: flex;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;*/
 }
 
-    .menu > li {
-        margin: 0 1rem;
-    }
+.menu > li {
+    margin: 0 1rem;
+    text-align: center;
+}
 
 .menu-button-container {
     display: none;
@@ -588,6 +602,10 @@ table {
     display: none;
 }
 
+.show {
+    display: block;
+}
+
 .menu-button,
 .menu-button::before,
 .menu-button::after {
@@ -600,15 +618,15 @@ table {
     border-radius: 2px;
 }
 
-    .menu-button::before {
-        content: '';
-        margin-top: -8px;
-    }
+.menu-button::before {
+    content: '';
+    margin-top: -8px;
+}
 
-    .menu-button::after {
-        content: '';
-        margin-top: 8px;
-    }
+.menu-button::after {
+    content: '';
+    margin-top: 8px;
+}
 
 #menu-toggle:checked + .menu-button-container .menu-button::before {
     margin-top: 0px;
@@ -619,22 +637,23 @@ table {
     background: rgba(255, 255, 255, 0);
 }
 
-    #menu-toggle:checked + .menu-button-container .menu-button::after {
-        margin-top: 0px;
-        transform: rotate(-405deg);
-    }
+#menu-toggle:checked + .menu-button-container .menu-button::after {
+    margin-top: 0px;
+    transform: rotate(-405deg);
+}
 
 @media (max-width: 1000px) {
     .top-nav {
-        visibility:visible;
+        visibility: visible;
         position: fixed;
         width: 100vw;
         padding-right: 2em;
+        padding-left: 15px;
     }
     .nav-li{
         visibility: hidden;
     }
-        .menu-button-container {
+    .menu-button-container {
         display: flex;
     }
     #calendar-navigation{
@@ -659,6 +678,7 @@ table {
         border: 0;
         transition: height 400ms cubic-bezier(0.23, 1, 0.32, 1);
         z-index: 9;
+        text-decoration: none;
     }
 
     #menu-toggle:checked ~ .menu li {
@@ -668,7 +688,8 @@ table {
         padding: 0.5em;
         transition: height 400ms cubic-bezier(0.23, 1, 0.32, 1);
         visibility: visible;
-        color: white;
+        text-decoration: none;
+        color: white !important;
         text-decoration: none;
         cursor: pointer;
         z-index: 9;
@@ -677,6 +698,8 @@ table {
         padding-top: 1000px;
     }
 
+
+
     .menu > li {
         display: flex;
         justify-content: center;
@@ -684,13 +707,14 @@ table {
         padding: 0.5em 0;
         width: 100%;
         color: white;
+        text-decoration: none;
         background-color: #222;
     }
 
-        .menu > li:not(:last-child) {
-            border-bottom: 1px solid #444;
-        }
-    .tui-full-calendar-popup-container{ /*modal view needs min widt set so mobile users can fill forms*/
+    .menu > li:not(:last-child) {
+        border-bottom: 1px solid #444;
+}
+    .tui-full-calendar-popup-container{ /*modal view needs min width set so mobile users can fill forms*/
         min-width: 0;
     }
 
@@ -704,29 +728,29 @@ table {
 
     /* TABLES */
     table {
+        padding-top: 15px;
         border: 0;
     }
 
    thead {
-      display: none;
+        display: none;
     }
 
    table tr {
-      margin-bottom: 20px;
-      display: block;
-      border-bottom: 2px solid #ddd;
-	 box-shadow: 2px 2px 1px #dadada;
-
+        margin-bottom: 20px;
+        display: block;
+        border-bottom: 2px solid #ddd;
+ 	    box-shadow: 2px 2px 1px #dadada;
     }
 
    table td {
-      display: block;
-      text-align: right;
-      font-size: 13px;
+        display: block;
+        text-align: right;
+        font-size: 13px;
     }
 
    table td:last-child {
-      border-bottom: 0;
+        border-bottom: 0;
     }
 
     table td::before {
@@ -739,7 +763,6 @@ table {
     tbody {
         line-height: 0 !important;
     }
-
 }
 
 /*    PROJEKT KONIEC   */

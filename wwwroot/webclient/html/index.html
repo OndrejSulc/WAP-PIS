@@ -114,12 +114,12 @@
     </script>
 
     <nav class="navbar" id="nav-menu">
-        <div class="navbar-href">
+        <a class="navbar-href" href="#calendar-navigation">
             <span class="span-name">Calendar</span>
             <span>
                 <i class="fa fa-calendar profile-img" style="font-size: 100px;color: white;"></i>
             </span>
-        </div>
+        </a>
         <button class="nav-button" type="button" onclick="showMenu()" id="menu-button">
         </button>
         <div id="main-menu">
@@ -141,23 +141,25 @@
     </nav>
 
     <section class="top-nav">
-        <div style="padding-left: 10px;">Manager Calendar</div>
-        <input id="menu-toggle" type="checkbox"/>
+        <div>
+            Management Calendar
+        </div>
+        <input id="menu-toggle" type="checkbox" />
         <label class='menu-button-container' for="menu-toggle">
             <div class='menu-button'></div>
         </label>
-        <ul class="menu">
+        <ul class="menu" for="menu-toggle">
             <li class="nav-li">
-                <a class="nav-li-a active" href="#calendar-navigation" id="li-about">Calendar</a>
+                <a class="nav-li-a active" for="menu-toggle" href="#calendar-navigation" id="li-about" onclick="closeMenu()">Calendar</a>
             </li>
             <li class="nav-li">
-                <a class="nav-li-a" href="#notifications_div" id="li-int">Notifications</a>
+                <a class="nav-li-a" for="menu-toggle" href="#notifications_div" id="li-int" onclick="closeMenu()">Notifications</a>
             </li>
-            <li id="user_top_nav" class="nav-li"  style="display: none;"> 
-                <a class="nav-li-a" href="#userManagement" id="li-int">User Management</a>
+            <li id="user_top_nav" class="nav-li" style="display: none;">
+                <a class="nav-li-a" for="menu-toggle" href="#userManagement" id="li-int" onclick="closeMenu()">User Management</a>
             </li>
             <li class="nav-li">
-                <a id="sign_out" onclick="logout();" class="nav-li-a buttons"><i class="fas fa-sign-out-alt" style="color: white;font-size: 20px;"></i></a>
+                <a id="sign_out" onclick="logout(); closeMenu()" for="menu-toggle" class="nav-li-a buttons"><i class="fas fa-sign-out-alt" style="color: white;font-size: 20px;"></i></a>
             </li>
         </ul>
     </section>

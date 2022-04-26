@@ -40,6 +40,26 @@ $('a.nav-li-a').on('click', function (e) {
         }, 1000);
     }
 });
+$('a.navbar-href').on('click', function (e) {
+    if (this.hash !== '') {
+        e.preventDefault();
+        console.log(this.hash);
+
+        const hash = this.hash;
+        var targetOffset = $(this.hash).offset().top;
+        console.log(targetOffset);
+
+        $("html, body").animate({
+            scrollTop: targetOffset - 80
+        }, 1000);
+    }
+});
+
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+function closeMenu() {
+    document.getElementById("menu-toggle").checked = false;
+}
 
 function setMonth(){
     var month = calendar.getDate().getMonth()+1;
