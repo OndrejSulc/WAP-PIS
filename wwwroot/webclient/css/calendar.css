@@ -78,7 +78,7 @@ input#group_meeting_man_view.groupCheck {
     height: 22px;
 }
 
-#modal_view,#modal_edit,#create_user_view{
+#modal_view,#modal_edit,#notification_view,#create_user_view{
     position: fixed;
     font-weight: 2.5;
     box-shadow: 0 2px 6px 0 rgb(0 0 0 / 10%);

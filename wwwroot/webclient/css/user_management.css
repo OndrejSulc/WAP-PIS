@@ -7,6 +7,7 @@ table td,table th{
   }
   table th {
     font-weight: 600;
+    padding-right: 8px;
   }
   table input{
     width: 95%;
@@ -40,6 +41,9 @@ table td,table th{
     }
     table{
       font-size: 26px;
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
     }
     h3{
       font-size: 32px;

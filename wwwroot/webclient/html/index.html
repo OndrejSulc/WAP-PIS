@@ -20,7 +20,7 @@
     <link rel="stylesheet" type="text/css" href="/webclient/js/tui.calendar-1.15.3/tui-calendar.css" />
     <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
     <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/webclient/css/calendar.css" />
     <link rel="stylesheet" type="text/css" href="/webclient/css/user_management.css" />
@@ -37,12 +37,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.0.13/chance.min.js"></script>
     <script src="/webclient/js/tui.calendar-1.15.3/tui-calendar.js"></script>
     <script src="/webclient/js/calendar.js" defer></script>
+    <style>
+        .btn {
+            background-color: #696969;
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 20px;
+            margin-bottom: 2px;
+            margin-right: 2px;
+        }
+
+        /* Darker background on mouse-over */
+        .btn:hover {
+            background-color: white;
+            color: #696969;
+            border: 1px solid #696969;
+        }
+    </style>
 </head>
 <body>
 
 
     <script>
-        var logged_user_result, logger_user;
+         var logged_user_result;
         logged_user_result = checkLogout();
         var logged_user_id;
         logged_user_result.then(function (result) {
@@ -56,8 +76,8 @@
                         var opt = document.createElement('option');
                         opt.value = item.id;
                         opt.innerHTML = item.name + " " + item.surname;
-                        console.log("ITEM ID:" + item.id);
-                        console.log("LOGGED ID:" + logged_user_id);
+                        //console.log("ITEM ID:" + item.id);
+                        //console.log("LOGGED ID:" + logged_user_id);
                         opt.selected = item.id == logged_user_id;
                         document.getElementById('calendar_for_user').appendChild(opt);
                     }
@@ -65,9 +85,25 @@
                 if(result.role == "Ceo"){
                     document.getElementById('userManagement').style.display = "block";
                 }
+                calendar.on({
+                    'beforeCreateSchedule': function(e) {
+                        //console.log('beforeCreateSchedule', e);
+                        startCreateManagerMeeting(e);
+                        e.guide.clearGuideElement();
+                    }
+                });
+                load_manager_meetings(calendar);
             }
             else {
                 document.getElementById('div_group_meeting_man_edit').style.display = "none";
+                calendar.on({
+                    'beforeCreateSchedule': function(e) {
+                        //console.log('beforeCreateSchedule', e);
+                        startCreateManagerMeeting(e);
+                        e.guide.clearGuideElement();
+                    }
+                });
+                load_manager_meetings(calendar);
             }
             document.getElementById('logged_user_role').value = result.role;
         });
@@ -79,7 +115,7 @@
         <a class="navbar-href" href="index.html">
             <span class="span-name">Calendar</span>
             <span>
-                <i class="fa fa-hospital-o profile-img" style="font-size: 100px;color: white;"></i>
+                <i class="fa fa-calendar profile-img" style="font-size: 100px;color: white;"></i>
             </span>
         </a>
         <button class="nav-button" type="button" onclick="showMenu()" id="menu-button">
@@ -90,7 +126,7 @@
                     <a class="nav-li-a active" href="#calendar-navigation" id="li-about">Calendar</a>
                 </li>
                 <li class="nav-li">
-                    <a class="nav-li-a" href="#notifications_div" id="li-int">Notification</a>
+                    <a class="nav-li-a" href="#notifications_div" id="notification_nav">Notification</a>
                 </li>
                 <li class="nav-li">
                     <a class="nav-li-a" href="#userManagement" id="li-int">User Management</a>
@@ -104,7 +140,7 @@
 
     <section class="top-nav">
         <div>
-            Logo Here
+            Management Calendar
         </div>
         <input id="menu-toggle" type="checkbox" />
         <label class='menu-button-container' for="menu-toggle">
@@ -118,7 +154,7 @@
                 <a class="nav-li-a" href="#notifications_div" id="li-int">Notification</a>
             </li>
             <li class="nav-li">
-                <a class="nav-li-a" href="#userManagement" id="li-int">User Management</a>
+                <a class="nav-li-a" href="#userManagement" id="li-int" >User Management</a>
             </li>
             <li class="nav-li">
                 <a id="sign_out" onclick="logout();" class="nav-li-a buttons"><i class="fas fa-sign-out-alt" style="color: white;font-size: 20px;"></i></a>
@@ -150,7 +186,7 @@
                 <a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
 
                 Select user calendar:
-                <select id="calendar_for_user" size="1" onchange="showCalendarforUser()" style="display: none;"></select>
+                <select id="calendar_for_user" size="1" onchange="showCalendarforUser(logged_user_id)" style="display: none;"></select>
 
             </div>
 
@@ -160,15 +196,13 @@
         <div class="page">
             <div id="notifications_div" class="section">
                 <h1>Notifications</h1>
-
                 <table>
                     <thead>
                         <tr>
                             <th>Title</th>
-                            <th>Meet. Title</th>
-                            <th>Meet. Description</th>
-                            <th>Meet. From</th>
-                            <th>Meet. Until</th>
+                            <th>From</th>
+                            <th>Until</th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -183,7 +217,7 @@
             <div class="page">
 
                 <div id="userManagement" class="section" style="display: none;">
-                    <h1>UserManagement</h1><button onclick="createNewUser()"> Create New User</button>
+                    <h1>UserManagement</h1><button class="btn" onclick="createNewUser()"> Create New User</button>
 
                     <table>
                         <thead>
@@ -224,8 +258,8 @@
                     <div id="control_buttons" class="tui-full-calendar-popup-section">
                         <input type="hidden" id="calendar_id_man_view">
                         <input type="hidden" id="meeting_id_man_view">
-                        <button class="save_button" onclick="showEditMeeting()"><span>Edit</span></button>
-                        <button class="save_button" onclick="deleteMeeting()"><span>Delete</span></button>
+                        <button class="btn save_button" onclick="showEditMeeting()"><span>Edit</span></button>
+                        <button class="btn save_button" onclick="deleteMeeting()"><span>Delete</span></button>
                     </div>
                 </div>
             </div>
@@ -263,12 +297,43 @@
                             <button class="save_button" onclick="saveEditMeeting()"><span>Save</span></button>
                         </div>
                         <div id="create_new">
-                            <button class="save_button" onclick="createMeeting()"><span>Create</span></button>
+                            <button class="btn save_button" onclick="create_Meeting()"><span>Create</span></button>
                         </div>
                     </div>
 
                 </div>
             </div>
+
+            <div id="notification_view" style="display: none;">
+                <div class="tui-full-calendar-popup-container">
+                    <div class="tui-full-calendar-popup-section">
+                        </i><span id="title_notif" style="font-size: 26px;"></span>
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <i class="fa fa-user-circle"></i><span id="owner_notif" style="font-size: 24px;"></span>
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <span id="title_meet_notif" style="font-size: 24px;"></span>
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <i class="fa fa-calendar"></i><span id="date_time_notif"></span>
+                    </div>
+                    <div id="attendees_div_notif">
+                        <div class="tui-full-calendar-popup-section">
+                            <i class="fa fa-users"></i><span id="attendees_notif"></span>
+                        </div>
+                    </div>
+                    <div class="tui-full-calendar-popup-section">
+                        <i class="fa fa-note"></i><span id="description_notif"></span>
+                    </div>
+                    <button onclick="hideNotification();" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
+                    <div class="tui-full-calendar-popup-section">
+                        <input type="hidden" id="id_notif">
+                        <button class="save_button" onclick="dismiss_notification();hideNotification();"><span>Dismiss!</span></button>
+                    </div>
+                </div>
+            </div>
+
 
             <div id="create_user_view" style="display: none;">
                 <div class="tui-full-calendar-popup-container">
@@ -303,7 +368,7 @@
                         <button class="save_button" onclick="saveUser()"><span>Save</span></button><button class="save_button" onclick="deleteUser()"><span>Delete</span></button>
                     </div>-->
                         <div id="user_create">
-                            <button class="save_button" onclick="saveNewUser()"><span>Create</span></button>
+                            <button class="btn save_button" onclick="saveNewUser()"><span>Create</span></button>
                         </div>
                     </div>
 

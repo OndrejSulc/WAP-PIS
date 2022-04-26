@@ -3,7 +3,7 @@ function load_manager_meetings(calendar){
     meetings
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            //console.log(data);
             for(item of data.meetings) {
                 calendar.createSchedules([
                     {
@@ -24,8 +24,6 @@ function load_manager_meetings(calendar){
     calendar.render();
     calendar.toggleScheduleView(true);
 }
-
-
 
 // Option 2 - jQuery Smooth Scrolling
 $('a.nav-li-a').on('click', function (e) {
@@ -75,7 +73,6 @@ var calendar = new Calendar('#calendar', {
         }
     ],
 });
-load_manager_meetings(calendar);
 document.getElementById('prev_button').addEventListener("click", calendar.prev());
 document.getElementById('next_button').addEventListener("click", calendar.next());
 setMonth();
@@ -86,42 +83,20 @@ let actual_meeting;
 // event handlers
 calendar.on({
     'clickSchedule': function(e) {
-
-        console.log('clickSchedule', e);
+        //console.log('clickSchedule', e);
         showViewMeeting(e);
         actual_meeting = e;
-    },
-    'beforeCreateSchedule': function(e) {
-        console.log('beforeCreateSchedule', e);
-        startCreateManagerMeeting(e);
-        // open a creation popup
-
-        // If you dont' want to show any popup, just use `e.guide.clearGuideElement()`
-
-        // then close guide element(blue box from dragging or clicking days)
-        e.guide.clearGuideElement();
-    },
-    //UPRAVIT NA UPDATE MEETING
-    /*'beforeUpdateSchedule': function(e) {
-        console.log('beforeUpdateSchedule', e);
-        e.schedule.start = e.start;
-        e.schedule.end = e.end;
-        cal.updateSchedule(e.schedule.id, e.schedule.calendarId, e.schedule);
-    },
-    'beforeDeleteSchedule': function(e) {
-        console.log('beforeDeleteSchedule', e);
-        cal.deleteSchedule(e.schedule.id, e.schedule.calendarId);
-    }*/
+    }
 });
 
-function showCalendarforUser(){
+function showCalendarforUser(logged_user_id){
     let actual_user_id = document.getElementById('calendar_for_user').value;
     calendar.clear();
     let meetings = getMeetingsForUser(actual_user_id);
     meetings
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            //console.log(data);
             for(item of data.meetings) {
                 calendar.createSchedules([
                     {
@@ -141,6 +116,26 @@ function showCalendarforUser(){
         });
     calendar.render();
     calendar.toggleScheduleView(true);
+    if(logged_user_id == actual_user_id){
+        document.getElementById('control_buttons').style.display = "block";
+        calendar.on({
+            'beforeCreateSchedule': function(e) {
+                //console.log('beforeCreateSchedule', e);
+                startCreateManagerMeeting(e);
+                e.guide.clearGuideElement();
+            }
+        });
+    }
+    else{
+        document.getElementById('control_buttons').style.display = "none";
+        calendar.on({
+            'beforeCreateSchedule': function(e) {
+                //console.log('beforeCreateSchedule', e);
+                hideEditMeeting();
+                e.guide.clearGuideElement();
+            }
+        });
+    }
 }
 
 function hideViewMeeting(){
@@ -151,12 +146,11 @@ function hideViewMeeting(){
     document.getElementById('date_time_man_view').innerHTML  = "";
     document.getElementById('attendees_man_view').innerHTML  = "";
     document.getElementById('description_man_view').innerHTML  = "";
-    document.getElementById('control_buttons').style.display = "none";
     document.getElementById('modal_view').style.display = "none";
 }
 
 function showViewMeeting(e){
-    console.log(e);
+    //console.log(e);
     document.getElementById('calendar_id_man_view').value  = e.schedule.calendarId;
     document.getElementById('meeting_id_man_view').value  = e.schedule.id;
     var user = e.schedule.raw.split(",");
@@ -174,16 +168,17 @@ function showViewMeeting(e){
                 for(item of data.managers) {
                     if(e.schedule.attendees.includes(item.id)){
                         var manager = item.name + " " + item.surname;
+                        //console.log("ONE MAN:" +manager);
                         managers.push(manager);
+                        //console.log("ONE MAN:" +manager);
                     }
                 }
+                //console.log("Managers"+managers);
+                document.getElementById('attendees_man_view').innerHTML = managers.join(', ');
             });
-            document.getElementById('attendees_man_view').innerHTML = managers.join(', ');
-            document.getElementById('control_buttons').style.display = "block";    
         }
         else{
             document.getElementById('attendees_man_view').innerHTML = e.schedule.attendees.length;
-            document.getElementById('control_buttons').style.display = "none";
         }
         document.getElementById('attendees_div_man_view').style.display = "block";        
     }
@@ -212,7 +207,7 @@ function hideEditMeeting(){
 function showEditMeeting(){
     hideViewMeeting();
     document.getElementById('calendar_id_man_edit').value  = actual_meeting.schedule.calendarId;
-    document.getElementById('meeting_id_man_edit').value  = actual_meeting.schedule.calendarId;
+    document.getElementById('meeting_id_man_edit').value  = actual_meeting.schedule.id;
     document.getElementById('title_man_edit').value  = actual_meeting.schedule.title;
     document.getElementById('start_date_man_edit').value  = changeDatetimeFormat(actual_meeting.schedule.start);
     document.getElementById('end_date_man_edit').value  = changeDatetimeFormat(actual_meeting.schedule.end);
@@ -273,20 +268,20 @@ function getTimeFromDatetime(input_datetime){
 
 function saveEditMeeting(){
 
-    let name = document.getElementById('title_man_view').value.toString();
+    let name = document.getElementById('title_man_edit').value;
     name = name ? name : null
 
-    let description = document.getElementById('description_man_view').value;
+    let description = document.getElementById('description_man_edit').value;
     description = description ? description : null
 
-    let from = document.getElementById('start_date_man_view').value;
+    let from = document.getElementById('start_date_man_edit').value;
     from = from ? from : null
 
-    let until = document.getElementById('end_date_man_view').value;
+    let until = document.getElementById('end_date_man_edit').value;
     until = until ? until : null
 
-    let meetingId = document.getElementById('meeting_id_man_view').value;
-    let calendarId = document.getElementById('calendar_id_man_view').value;
+    let meetingId = document.getElementById('meeting_id_man_edit').value;
+    let calendarId = document.getElementById('calendar_id_man_edit').value;
     console.log(meetingId, name, description, from, until);
     // Calls create meeting endpoint on server
     updateMeeting(meetingId, name, description, from, until).then(response => response.json())
@@ -295,8 +290,8 @@ function saveEditMeeting(){
             calendar.updateSchedule(parseInt(meetingId), calendarId, {
                 title: name,
                 body: description,
-                start: new Date(document.getElementById('start_date_man_view').value),
-                end: new Date(document.getElementById('end_date_man_view').value)
+                start: new Date(document.getElementById('start_date_man_edit').value),
+                end: new Date(document.getElementById('end_date_man_edit').value)
             });
             calendar.render();
             hideEditMeeting();
@@ -310,7 +305,7 @@ function deleteMeeting(){
     removeMeeting(meetingId).then(result => {
         calendar.deleteSchedule(parseInt(meetingId), calendarId);
         calendar.render();
-        hideEditMeeting();
+        hideViewMeeting();
     });
 }
 
@@ -322,7 +317,7 @@ function startCreateManagerMeeting(e){
     document.getElementById('modal_edit').style.display = "block";
 }
 
-function createMeeting(e){
+function create_Meeting(){
 
     let name = document.getElementById('title_man_edit').value.toString();
     name = name ? name : null
@@ -336,7 +331,7 @@ function createMeeting(e){
     let until = new Date(document.getElementById('end_date_man_edit').value).toISOString();
     until = until ? until : null
 
-    //console.log(name,description,from,until);
+    console.log(name,description,from,until);
 
     if(document.getElementById('group_meeting_man_edit').checked == true){
         var attendees = [];
@@ -361,7 +356,8 @@ function createMeeting(e){
                     category: 'time',
                     dueDateClass: '',
                     start: new Date(item.from),
-                    end: new Date(item.until)
+                    end: new Date(item.until),
+                    raw: item.owner.id + "," + item.owner.name + " " + item.owner.surname
                     }
                 ]);
                 calendar.render();
@@ -381,8 +377,9 @@ function createMeeting(e){
                     body: item.description,
                     category: 'time',
                     dueDateClass: '',
-                    start: new Date(item.from),
-                    end: new Date(item.until)
+                    start: item.from,
+                    end: item.until,
+                    raw: item.owner.id + "," + item.owner.name + " " + item.owner.surname
                     }
                 ]);
                 calendar.render();
@@ -472,7 +469,7 @@ function fill_table_of_users(list,type){
         name.innerHTML = item.name;
         surname.innerHTML = item.surname;
         //edit.innerHTML = "<button onclick=\"showUser('"+ item.id +"');\"> Edit!</button>";
-        delete_button.innerHTML = "<button onclick=\"delete_user('" + item.id + "')\"> Delete!</button>";
+        delete_button.innerHTML = "<button class=\"btn\" onclick=\"delete_user('" + item.id + "')\"> Delete!</button>";
         i = i + 1;
     }
 }
@@ -551,7 +548,7 @@ function checkSecretary(){
 }
 
 function saveNewUser(){
-
+    
     var login = document.getElementById("um_login").value;
     var password = document.getElementById("um_password").value;
     var name = document.getElementById("um_name").value;
@@ -559,12 +556,13 @@ function saveNewUser(){
     var date_of_birth = document.getElementById("um_date_of_birth").value;
     var is_secretary = document.getElementById("um_issecretary").checked;
     var manager_id = document.getElementById("secretary_attendees").value;
-
+    hideUser();
     createUser(login, password, name, surname, date_of_birth, is_secretary, manager_id).then(response => {
         console.log(response);
     });
-    load_users();
-    hideUser();
+    setTimeout(function(){
+        load_users();
+      }, 500);
 }
 
 //NOTIFICATIONS
@@ -577,8 +575,7 @@ function onNotification(notification) {
     var table = document.getElementById("notifications");
     var i = table.rows.length;
     var row = table.insertRow(i);
-    var notification_title = row.insertCell(0);
-    var title = row.insertCell(1);
+    var title = row.insertCell(0);
     var description = row.insertCell(2);
     var from = row.insertCell(3);
     var until = row.insertCell(4);
@@ -587,7 +584,8 @@ function onNotification(notification) {
     description.innerHTML = notification.Meeting.Description;
     from.innerHTML = notification.Meeting.From;
     until.innerHTML = notification.Meeting.Until;
-    //dismiss_button.innerHTML = "<button onclick=\"dismiss_notification('" + notification.ID + "')\"> Dismiss!</button>";
+    alert(notification.Text);
+    //dismiss_button.innerHTML = "<button class="btn" onclick=\"dismiss_notification('" + notification.ID + "')\"> Dismiss!</button>";
 }
 
 function startSignalRNotifications() {
@@ -600,32 +598,104 @@ function get_notifications() {
     var table = document.getElementById("notifications");
     table.innerHTML = '';
     getNotifications().then(response => response.json()).then(data => {
-        //console.log(data.notifications);
-    
+        console.log(data.notifications);
+        var count = 0;
         for(notification of data.notifications){
             var i = table.rows.length;
             var row = table.insertRow(i);
-            var notification_title = row.insertCell(0);
-            var title = row.insertCell(1);
-            var description = row.insertCell(2);
-            var from = row.insertCell(3);
-            var until = row.insertCell(4);
-            var dismiss = row.insertCell(5);
-            notification_title.innerHTML = notification.title;
+            var title = row.insertCell(0);
+            var from = row.insertCell(1);
+            var until = row.insertCell(2);
+            var view = row.insertCell(3);
+            var dismiss = row.insertCell(4);
             title.innerHTML = notification.meeting.title;
-            description.innerHTML = notification.meeting.description;
             from.innerHTML = notification.meeting.from;
             until.innerHTML = notification.meeting.until;
-            dismiss.innerHTML = "<button onclick=\"dismiss_notification('" + notification.id + "')\"> Dismiss!</button>";
+            view.innerHTML = "<button  class=\"btn\" onclick=\"showNotification('" + notification.id + "')\"><i class=\"fa fa-pencil\"></i></button>";
+            dismiss.innerHTML = "<button  class=\"btn\" onclick=\"dismiss_notification_for_id('" + notification.id + "')\"><i class=\"fa fa-times\"></i></button>";
+            count++;
+        }
+        if(count>0){
+            document.getElementById('notification_nav').innerHTML = "Notifications(" + count + ")";
+            //document.getElementById('notification_nav').style.color = "red";
+        }
+        else{
+            document.getElementById('notification_nav').innerHTML = "Notifications";
+            //document.getElementById('notification_nav').style.color = "black";
         }
     });
 }
 
-function dismiss_notification(notification_id){
+function showNotification(notification_id){
+    getNotifications().then(response => response.json()).then(data => {
+        for(notification of data.notifications){
+            if(notification_id != notification.id)continue;
+
+            document.getElementById('id_notif').value  = notification.id;
+            document.getElementById('title_notif').innerHTML  = notification.title;
+            document.getElementById('owner_notif').innerHTML  = notification.meeting.owner.name + " " + notification.meeting.owner.surname;
+            document.getElementById('title_meet_notif').innerHTML  = notification.meeting.title;
+            var start_datetime = changeDatetimeFormat(notification.meeting.from);
+            document.getElementById('date_time_notif').innerHTML  = start_datetime.replace("T", " ") + " - " + getTimeFromDatetime(notification.meeting.until);
+            document.getElementById('description_notif').innerHTML  = notification.meeting.description;
+            if(notification.meeting.attendees.length !== 0){
+                var logged = document.getElementById('logged_user_role').value;
+                if(logged === "Ceo" || logged === "CeoSecretary"){
+                    let managers = [];
+                    getAllUsers().then(data => {
+                    
+                        for(item of data.managers) {
+                            if(notification.meeting.attendees.includes(item.id)){
+                                var manager = item.name + " " + item.surname;
+                                //console.log("ONE MAN:" +manager);
+                                managers.push(manager);
+                                //console.log("ONE MAN:" +manager);
+                            }
+                        }
+                        //console.log("Managers"+managers);
+                        document.getElementById('attendees_notif').innerHTML = managers.join(', ');
+                    });
+                }
+                else{
+                    document.getElementById('attendees_notif').innerHTML = notification.meeting.attendees.length;
+                }
+                document.getElementById('attendees_div_notif').style.display = "block";        
+            }
+            else{
+                document.getElementById('attendees_div_notif').style.display = "none";     
+            }
+            document.getElementById('notification_view').style.display = "block";
+            break;
+        }
+    });
+}
+
+function hideNotification(){
+    document.getElementById('notification_view').style.display = "none";
+    document.getElementById('id_notif').value  = "";
+    document.getElementById('title_notif').innerHTML  = "";
+    document.getElementById('owner_notif').innerHTML  = "";
+    document.getElementById('title_meet_notif').innerHTML  = "";
+    document.getElementById('date_time_notif').innerHTML  = "";
+    document.getElementById('description_notif').innerHTML  = "";
+    document.getElementById('attendees_notif').innerHTML = "";
+    document.getElementById('attendees_div_notif').style.display = "none"; 
+}
+
+function dismiss_notification_for_id(notification_id){
     console.log(dismissNotification(notification_id));
     setTimeout(function(){
         get_notifications();
-      }, 500);
+    }, 500);
+}
+
+function dismiss_notification(){
+    var notification_id = document.getElementById('id_notif').value;
+    console.log("Dismiss: "+notification_id);
+    console.log(dismissNotification(notification_id));
+    setTimeout(function(){
+        get_notifications();
+    }, 500);
 }
 
 
