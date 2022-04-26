@@ -302,8 +302,8 @@ function saveEditMeeting(){
                     title: name,
                     body: description,
                     attendees: attendees,
-                    start: new Date(document.getElementById('start_date_man_edit').value),
-                    end: new Date(document.getElementById('end_date_man_edit').value)
+                    start: new Date(from),
+                    end: new Date(until)
                 });
                 calendar.render();
                 hideEditMeeting();
@@ -317,8 +317,8 @@ function saveEditMeeting(){
                     title: name,
                     body: description,
                     attendees:[],
-                    start: new Date(document.getElementById('start_date_man_edit').value),
-                    end: new Date(document.getElementById('end_date_man_edit').value)
+                    start: new Date(from),
+                    end: new Date(until)
                 });
                 calendar.render();
                 hideEditMeeting();
@@ -345,74 +345,125 @@ function startCreateManagerMeeting(e){
     document.getElementById('modal_edit').style.display = "block";
 }
 
-function create_Meeting(){
+async function create_Meeting(){
 
     let name = document.getElementById('title_man_edit').value.toString();
     name = name ? name : null
 
     let description = document.getElementById('description_man_edit').value;
     description = description ? description : null
-
-    let from = new Date(document.getElementById('start_date_man_edit').value).toISOString();
+    //console.log("FROM: " + document.getElementById('start_date_man_edit').value);
+    let from = document.getElementById('start_date_man_edit').value;
     from = from ? from : null
 
-    let until = new Date(document.getElementById('end_date_man_edit').value).toISOString();
+    let until = document.getElementById('end_date_man_edit').value;
     until = until ? until : null
 
     console.log(name,description,from,until);
 
     if(document.getElementById('group_meeting_man_edit').checked == true){
         var attendees = [];
+        var attendees_names = [];
+        var attendees_not_available = [];
         for (var option of document.getElementById('group_meeting_attendees').options)
         {
             if (option.selected) {
                 attendees.push(option.value);
+                attendees_names.push(option.innerHTML);
             }
         }
-        console.log(attendees);
-        createGroupMeeting(name, description, from, until, attendees).then(response => response.json())
+        for(let i = 0; i < attendees.length; i++){ 
+            const result = await isUserAvailable(attendees[i],from,until).then(response => response.json())
             .then(data => {
-                let result = JSON.stringify(data, null, 2);
-                let item = JSON.parse(result);
-                calendar.createSchedules([
-                    {
-                    id: item.id,
-                    calendarId: '1',
-                    title: item.title,
-                    body: item.description,
-                    attendees: item.attendees,
-                    category: 'time',
-                    dueDateClass: '',
-                    start: new Date(item.from),
-                    end: new Date(item.until),
-                    raw: item.owner.id + "," + item.owner.name + " " + item.owner.surname
-                    }
-                ]);
-                calendar.render();
-                hideEditMeeting();
+                //console.log(attendees_names[i] + " is: " + data.available + " time: "+ from + " - " + until);
+                if(data.available == false)attendees_not_available.push(attendees_names[i]);
             });
+        } 
+        //console.log("NOT AVAILABLE" + attendees_not_available);
+
+        if(attendees_not_available.length == 0){
+            console.log("All Attendees:"+attendees);
+            createGroupMeeting(name, description, from, until, attendees).then(response => response.json())
+                .then(data => {
+                    let result = JSON.stringify(data, null, 2);
+                    let item = JSON.parse(result);
+                    calendar.createSchedules([
+                        {
+                        id: item.id,
+                        calendarId: '1',
+                        title: item.title,
+                        body: item.description,
+                        attendees: item.attendees,
+                        category: 'time',
+                        dueDateClass: '',
+                        start: new Date(item.from),
+                        end: new Date(item.until),
+                        raw: item.owner.id + "," + item.owner.name + " " + item.owner.surname
+                        }
+                    ]);
+                    calendar.render();
+                    hideEditMeeting();
+                });
+        }
+        else{
+            alert("These users are not available: "+attendees_not_available.join(", "));
+        }
     }
     else{
-        createMeeting(name, description, from, until).then(response => response.json())
+        var logged = document.getElementById('logged_user_role').value;
+        if(logged === "Manager" || logged === "Secretary"){
+            isCeoAvailable(from, until).then(response => response.json())
             .then(data => {
-                let result = JSON.stringify(data, null, 2);
-                let item = JSON.parse(result);
-                calendar.createSchedules([
-                    {
-                    id: item.id,
-                    calendarId: '1',
-                    title: item.title,
-                    body: item.description,
-                    category: 'time',
-                    dueDateClass: '',
-                    start: item.from,
-                    end: item.until,
-                    raw: item.owner.id + "," + item.owner.name + " " + item.owner.surname
-                    }
-                ]);
-                calendar.render();
-                hideEditMeeting();
+                console.log(data.available);
+                if(data.available == false){
+                    alert("CEO is not available!");
+                }
+                else{
+                    createMeeting(name, description, from, until).then(response => response.json())
+                        .then(data => {
+                            let result = JSON.stringify(data, null, 2);
+                            let item = JSON.parse(result);
+                            calendar.createSchedules([
+                                {
+                                id: item.id,
+                                calendarId: '1',
+                                title: item.title,
+                                body: item.description,
+                                category: 'time',
+                                dueDateClass: '',
+                                start: item.from,
+                                end: item.until,
+                                raw: item.owner.id + "," + item.owner.name + " " + item.owner.surname
+                                }
+                            ]);
+                            calendar.render();
+                            hideEditMeeting();
+                        });
+                }
             });
+        }
+        else{
+            createMeeting(name, description, from, until).then(response => response.json())
+                .then(data => {
+                    let result = JSON.stringify(data, null, 2);
+                    let item = JSON.parse(result);
+                    calendar.createSchedules([
+                        {
+                        id: item.id,
+                        calendarId: '1',
+                        title: item.title,
+                        body: item.description,
+                        category: 'time',
+                        dueDateClass: '',
+                        start: item.from,
+                        end: item.until,
+                        raw: item.owner.id + "," + item.owner.name + " " + item.owner.surname
+                        }
+                    ]);
+                    calendar.render();
+                    hideEditMeeting();
+                });
+        }
     }
     
 
@@ -450,12 +501,6 @@ function checkGroupMeeting(){
 
         document.getElementById('group_meeting_attendees').style.display = "block";
     }
-    /*for (var i = min; i<=max; i++){
-        var opt = document.createElement('option');
-        opt.value = i;
-        opt.innerHTML = i;
-        group_meeting_checkbox.appendChild(opt);
-    }*/
     if(group_meeting_checkbox.checked === false) {
         console.log("Checkbox is not checked - boolean value: ", group_meeting_checkbox.checked)
         document.getElementById('group_meeting_attendees').style.display = "none";
