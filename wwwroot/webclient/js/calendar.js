@@ -349,9 +349,18 @@ async function create_Meeting(){
 
     let name = document.getElementById('title_man_edit').value.toString();
     name = name ? name : null
+    if(name==null){
+        alert("Enter the title!");
+        return;
+    }
 
     let description = document.getElementById('description_man_edit').value;
     description = description ? description : null
+    if(description==null){
+        alert("Enter the description!");
+        return;
+    }
+
     //console.log("FROM: " + document.getElementById('start_date_man_edit').value);
     let from = document.getElementById('start_date_man_edit').value;
     from = from ? from : null
@@ -371,6 +380,10 @@ async function create_Meeting(){
                 attendees.push(option.value);
                 attendees_names.push(option.innerHTML);
             }
+        }
+        if(attendees.length==0){
+            alert("This is group meeting, you must choose at least 1 person!");
+            return;
         }
         for(let i = 0; i < attendees.length; i++){ 
             const result = await isUserAvailable(attendees[i],from,until).then(response => response.json())
@@ -617,6 +630,11 @@ function checkSecretary(){
     if(secretary_checkbox.checked === false) {
         console.log("Checkbox is not checked - boolean value: ", secretary_checkbox.checked)
         document.getElementById('secretary_attendees').style.display = "none";
+        var select = document.getElementById("secretary_attendees");
+        var length = select.length;
+        for (i = 0; i < length; i++) {
+            select.remove(0);
+        }
     }
 }
 

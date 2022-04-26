@@ -114,12 +114,12 @@
     </script>
 
     <nav class="navbar" id="nav-menu">
-        <a class="navbar-href" href="index.html">
+        <div class="navbar-href">
             <span class="span-name">Calendar</span>
             <span>
                 <i class="fa fa-calendar profile-img" style="font-size: 100px;color: white;"></i>
             </span>
-        </a>
+        </div>
         <button class="nav-button" type="button" onclick="showMenu()" id="menu-button">
         </button>
         <div id="main-menu">
@@ -266,43 +266,45 @@
             </div>
 
             <div id="modal_edit" style="display: none;">
-                <div class="tui-full-calendar-popup-container">
-                    <div class="tui-full-calendar-popup-section">
-                        <label for="title_man_edit" class="modal_edit_label">Title:  </label><input id="title_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="Subject" value="Title" type="text">
-                    </div>
-                    <div class="tui-full-calendar-popup-section">
-                        <label for="start_date_man_edit" class="modal_edit_label">Start:  </label><input id="start_date_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="Start date" type="datetime-local" value="">
-                    </div>
-                    <div class="tui-full-calendar-popup-section">
-                        <label for="end_date_man_edit" class="modal_edit_label">End:  </label><input id="end_date_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="End date" type="datetime-local" value="">
-                    </div>
-                    <div id="div_group_meeting_man_edit">
-                        <div class="tui-full-calendar-popup-section" id="group_meeting">
-                            <label for="group_meeting_man_edit" class="modal_edit_label">Group meeting: </label>
-                            <input id="group_meeting_man_edit" class="groupCheck" type="checkbox" onchange="checkGroupMeeting()">
-                            <select name="group_meeting_attendees" id="group_meeting_attendees" style="display: none;" size="3" multiple></select>
+                <form name="modal_edit_form" action="" method="GET">
+                    <div class="tui-full-calendar-popup-container">
+                        <div class="tui-full-calendar-popup-section">
+                            <label for="title_man_edit" class="modal_edit_label">Title:  </label><input id="title_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="Title" type="text">
                         </div>
-                    </div>
-                    <div class="tui-full-calendar-popup-section">
-                        <label for="description_man_edit" class="modal_edit_label">Description:  </label>
-                    </div>
-                    <div class="tui-full-calendar-popup-section">
-                        <textarea id="description_man_edit" cols="30" rows="3" class="modal_inputs">Description</textarea>
-                    </div>
-                    <button onclick="hideEditMeeting()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
-                    <br>
-                    <div class="tui-full-calendar-popup-section">
-                        <input type="hidden" id="calendar_id_man_edit">
-                        <input type="hidden" id="meeting_id_man_edit">
-                        <div id="save_edit">
-                            <button class="save_button" onclick="saveEditMeeting()"><span>Save</span></button>
+                        <div class="tui-full-calendar-popup-section">
+                            <label for="start_date_man_edit" class="modal_edit_label">Start:  </label><input id="start_date_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="Start date" type="datetime-local" value="">
                         </div>
-                        <div id="create_new">
-                            <button class="btn save_button" onclick="create_Meeting()"><span>Create</span></button>
+                        <div class="tui-full-calendar-popup-section">
+                            <label for="end_date_man_edit" class="modal_edit_label">End:  </label><input id="end_date_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="End date" type="datetime-local" value="">
                         </div>
-                    </div>
+                        <div id="div_group_meeting_man_edit">
+                            <div class="tui-full-calendar-popup-section" id="group_meeting">
+                                <label for="group_meeting_man_edit" class="modal_edit_label">Group meeting: </label>
+                                <input id="group_meeting_man_edit" class="groupCheck" type="checkbox" onchange="checkGroupMeeting()">
+                                <select name="group_meeting_attendees" id="group_meeting_attendees" style="display: none;" size="3" multiple></select>
+                            </div>
+                        </div>
+                        <div class="tui-full-calendar-popup-section">
+                            <label for="description_man_edit" class="modal_edit_label">Description:  </label>
+                        </div>
+                        <div class="tui-full-calendar-popup-section">
+                            <textarea id="description_man_edit" cols="30" rows="3" class="modal_inputs"></textarea>
+                        </div>
+                        <button onclick="hideEditMeeting()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
+                        <br>
+                        <div class="tui-full-calendar-popup-section">
+                            <input type="hidden" id="calendar_id_man_edit">
+                            <input type="hidden" id="meeting_id_man_edit">
+                            <div id="save_edit">
+                                <button type="button" class="save_button" onclick="saveEditMeeting()"><span>Save</span></button>
+                            </div>
+                            <div id="create_new">
+                                <button type="button" class="btn save_button" onclick="create_Meeting()"><span>Create</span></button>
+                            </div>
+                        </div>
 
-                </div>
+                    </div>
+                </form>
             </div>
 
             <div id="notification_view" style="display: none;">
