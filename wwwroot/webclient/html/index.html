@@ -85,7 +85,7 @@
                 if(result.role == "Ceo"){
                     document.getElementById('user_management_page').style.display = "block";
                     document.getElementById('user_main_menu').style.display = "block";
-                    document.getElementById('user_top_nav').style.display = "block";
+                    document.getElementById('user_top_nav').style.display = "flex";
                 }
                 calendar.on({
                     'beforeCreateSchedule': function(e) {
@@ -141,10 +141,8 @@
     </nav>
 
     <section class="top-nav">
-        <div>
-            Management Calendar
-        </div>
-        <input id="menu-toggle" type="checkbox" />
+        <div style="padding-left: 10px;">Manager Calendar</div>
+        <input id="menu-toggle" type="checkbox"/>
         <label class='menu-button-container' for="menu-toggle">
             <div class='menu-button'></div>
         </label>

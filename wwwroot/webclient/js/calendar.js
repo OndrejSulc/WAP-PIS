@@ -1,4 +1,4 @@
-function load_manager_meetings(calendar){
+async function load_manager_meetings(calendar){
     let meetings = getMeetings();
     meetings
         .then(response => response.json())
@@ -659,6 +659,9 @@ function onNotification(notification) {
     view.innerHTML = "<button  class=\"btn\" onclick=\"showNotification('" + notification.ID + "')\"><i class=\"fa fa-pencil\"></i></button>";
     dismiss.innerHTML = "<button  class=\"btn\" onclick=\"dismiss_notification_for_id('" + notification.ID + "')\"><i class=\"fa fa-times\"></i></button>";
     alert(notification.Text);
+    get_notifications();
+    calendar.clear();
+    load_manager_meetings(calendar);
 }
 
 function startSignalRNotifications() {
