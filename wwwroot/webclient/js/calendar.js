@@ -218,6 +218,7 @@ function hideEditMeeting(){
     document.getElementById('description_man_edit').value  = "";
     document.getElementById('group_meeting_man_edit').checked = false;
     document.getElementById('group_meeting_attendees').innerHTML = '';
+    document.getElementById('group_meeting_attendees').style.display = "none";
     document.getElementById('modal_edit').style.display = "none";
 }
 
@@ -234,6 +235,7 @@ function showEditMeeting(){
         document.getElementById('group_meeting_man_edit').checked = true; 
         getAllUsers().then(data => {
             for(item of data.managers) {
+                if(item.isCeo == true)continue;
                 var opt = document.createElement('option');
                 opt.value = item.id;
                 opt.innerHTML = item.name + " " + item.surname;
@@ -596,6 +598,7 @@ function checkGroupMeeting(){
 
         getAllUsers().then(data => {
             for(item of data.managers) {
+                if(item.isCeo == true)continue;
                 var opt = document.createElement('option');
                 opt.value = item.id;
                 opt.innerHTML = item.name + " " + item.surname;
