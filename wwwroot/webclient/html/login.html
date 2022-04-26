@@ -30,12 +30,12 @@
                 alert("Enter your login!");
                 return;
             }
-            var pw = document.getElementById("login_pw").value;
-            if(pw==""){
+            var password = document.getElementById("login_pw").value;
+            if(password==""){
                 alert("Enter your password!");
                 return;
             }
-            var response = await login(username,pw);
+            var response = await login(username,password);
             if(response.successful_Authentication){
                 window.onload = loginSucced();
             }
@@ -45,16 +45,16 @@
             }
         }
         checkLogin();
-        var input = document.getElementById("login_pw");
-        input.addEventListener("keypress", function(event) {
+        var password = document.getElementById("login_pw");
+        password.addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
                 event.preventDefault();
                 document.getElementById("login_button").click();
             }
         });
 
-        var input = document.getElementById("login_login");
-        input.addEventListener("keypress", function(event) {
+        var username = document.getElementById("login_login");
+        username.addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
                 event.preventDefault();
                 document.getElementById("login_button").click();
@@ -62,11 +62,11 @@
         });
 
         function showPassword() {
-        var x = document.getElementById("login_pw");
-            if (x.type === "password") {
-                x.type = "text";
+        var password = document.getElementById("login_pw");
+            if (password.type === "password") {
+                password.type = "text";
             } else {
-                x.type = "password";
+                password.type = "password";
             }
         }
     </script>
