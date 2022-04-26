@@ -56,12 +56,12 @@ public class MeetingController : ControllerBase
             return Unauthorized("You do not have permissions for this action.");
         }
 
-        foreach (var manager in meeting.Attendees)
-        {
-            await NotifyUser(manager, "Meeting cancelled", "Meeting, which you attend was cancelled", meeting);
-        }
-
-        //Todo: Notification is deleted when deleting meeting. This is probably wrong
+        // foreach (var manager in meeting.Attendees)
+        // {
+        //     await NotifyUser(manager, "Meeting cancelled", "Meeting, which you attend was cancelled", meeting);
+        // }
+        //
+        // //Todo: Notification is deleted when deleting meeting. This is probably wrong
         appDbContext.Meeting.Remove(meeting);
         await appDbContext.SaveChangesAsync();
         return Ok();
@@ -95,6 +95,10 @@ public class MeetingController : ControllerBase
 
         appDbContext.Update(meeting);
         await appDbContext.SaveChangesAsync();
+        if (user is Secretary secretary)
+        {
+            await NotifyUser(secretary.Manager, "Meeting changed", "Meeting was changed by your secretary", meeting);
+        }
         return meeting.ToViewModel();
     }
 
@@ -152,13 +156,14 @@ public class MeetingController : ControllerBase
             Owner = owner,
         };
 
+        var dbEntry = appDbContext.Meeting.Add(meetingDb);
+        await appDbContext.SaveChangesAsync();
+
         if (user is Secretary s)
         {
             await NotifyUser(s.Manager, "Meeting created", "Meeting was created for you by your secretary", meetingDb);
         }
-
-        var dbEntry = appDbContext.Meeting.Add(meetingDb);
-        await appDbContext.SaveChangesAsync();
+        
         return dbEntry.Entity.ToViewModel();
     }
 
@@ -237,6 +242,9 @@ public class MeetingController : ControllerBase
             Attendees = attendees.ToList()
         };
 
+        var dbEntry = appDbContext.Meeting.Add(meetingDb);
+        await appDbContext.SaveChangesAsync();
+        
         if (user is Secretary s)
         {
             await NotifyUser(s.Manager, "Meeting created", "Meeting was created for you by your secretary", meetingDb);
@@ -248,8 +256,6 @@ public class MeetingController : ControllerBase
         }
 
 
-        var dbEntry = appDbContext.Meeting.Add(meetingDb);
-        await appDbContext.SaveChangesAsync();
         return dbEntry.Entity.ToViewModel();
     }
 
@@ -287,19 +293,22 @@ public class MeetingController : ControllerBase
         meeting.From = updateMeeting.From ?? meeting.From;
         meeting.Until = updateMeeting.Until ?? meeting.Until;
 
-        foreach (var manager in meeting.Attendees)
+        var originalAttendees = meeting.Attendees;
+        meeting.Attendees = updateMeeting.Attendees == null ? meeting.Attendees : attendees;
+        
+        appDbContext.Update(meeting);
+        await appDbContext.SaveChangesAsync();
+        
+        foreach (var manager in originalAttendees)
         {
             await NotifyUser(manager, "Updated meeting", "Meeting you participate in has been updated.", meeting);
         }
 
-        foreach (var manager in attendees.Except(meeting.Attendees))
+        foreach (var manager in attendees.Except(originalAttendees))
         {
             await NotifyUser(manager, "New meeting", "You were added to meeting", meeting);
         }
-        meeting.Attendees = updateMeeting.Attendees == null ? meeting.Attendees : attendees;
-
-        appDbContext.Update(meeting);
-        await appDbContext.SaveChangesAsync();
+        
         return meeting.ToViewModel();
     }
 
@@ -317,6 +326,8 @@ public class MeetingController : ControllerBase
             Title = title,
         };
 
+        appDbContext.Notification.Add(notification);
+        await appDbContext.SaveChangesAsync();
 
         if (NotificationHub.ConnectedUsers.TryGetValue(user.Id, out var signalRConnectionId))
         {
@@ -324,7 +335,6 @@ public class MeetingController : ControllerBase
                 .SendAsync("NotificationAdded", JsonSerializer.Serialize(notification.ToViewModel()));
         }
 
-        appDbContext.Notification.Add(notification);
     }
 
     private bool CheckModificationPermission(Account? user, Meeting meeting)
