@@ -83,7 +83,9 @@
                     }
                 });
                 if(result.role == "Ceo"){
-                    document.getElementById('userManagement').style.display = "block";
+                    document.getElementById('user_management_page').style.display = "block";
+                    document.getElementById('user_main_menu').style.display = "block";
+                    document.getElementById('user_top_nav').style.display = "block";
                 }
                 calendar.on({
                     'beforeCreateSchedule': function(e) {
@@ -126,9 +128,9 @@
                     <a class="nav-li-a active" href="#calendar-navigation" id="li-about">Calendar</a>
                 </li>
                 <li class="nav-li">
-                    <a class="nav-li-a" href="#notifications_div" id="notification_nav">Notification</a>
+                    <a class="nav-li-a" href="#notifications_div" id="notification_nav">Notifications</a>
                 </li>
-                <li class="nav-li">
+                <li id="user_main_menu" class="nav-li" style="display: none;">
                     <a class="nav-li-a" href="#userManagement" id="li-int">User Management</a>
                 </li>
                 <li class="nav-li">
@@ -151,10 +153,10 @@
                 <a class="nav-li-a active" href="#calendar-navigation" id="li-about">Calendar</a>
             </li>
             <li class="nav-li">
-                <a class="nav-li-a" href="#notifications_div" id="li-int">Notification</a>
+                <a class="nav-li-a" href="#notifications_div" id="li-int">Notifications</a>
             </li>
-            <li class="nav-li">
-                <a class="nav-li-a" href="#userManagement" id="li-int" >User Management</a>
+            <li id="user_top_nav" class="nav-li"  style="display: none;"> 
+                <a class="nav-li-a" href="#userManagement" id="li-int">User Management</a>
             </li>
             <li class="nav-li">
                 <a id="sign_out" onclick="logout();" class="nav-li-a buttons"><i class="fas fa-sign-out-alt" style="color: white;font-size: 20px;"></i></a>
@@ -214,9 +216,9 @@
 
 
 
-            <div class="page">
+            <div class="page" id="user_management_page" style="display: none;">
 
-                <div id="userManagement" class="section" style="display: none;">
+                <div id="userManagement" class="section">
                     <h1>UserManagement</h1><button class="btn" onclick="createNewUser()"> Create New User</button>
 
                     <table>

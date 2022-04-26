@@ -282,20 +282,48 @@ function saveEditMeeting(){
 
     let meetingId = document.getElementById('meeting_id_man_edit').value;
     let calendarId = document.getElementById('calendar_id_man_edit').value;
-    console.log(meetingId, name, description, from, until);
-    // Calls create meeting endpoint on server
-    updateMeeting(meetingId, name, description, from, until).then(response => response.json())
-        .then(data => {
-            console.log(JSON.stringify(data, null, 2));
-            calendar.updateSchedule(parseInt(meetingId), calendarId, {
-                title: name,
-                body: description,
-                start: new Date(document.getElementById('start_date_man_edit').value),
-                end: new Date(document.getElementById('end_date_man_edit').value)
+
+    //console.log(meetingId, name, description, from, until);
+
+    if(document.getElementById('group_meeting_man_edit').checked == true){
+        var attendees = [];
+        for (var option of document.getElementById('group_meeting_attendees').options)
+        {
+            if (option.selected) {
+                attendees.push(option.value);
+            }
+        }
+        console.log(attendees);
+        updateGroupMeeting(meetingId, name, description, from, until, attendees).then(response => response.json())
+            .then(data => {
+                let result = JSON.stringify(data, null, 2);
+                let item = JSON.parse(result);
+                calendar.updateSchedule(parseInt(meetingId), calendarId, {
+                    title: name,
+                    body: description,
+                    attendees: attendees,
+                    start: new Date(document.getElementById('start_date_man_edit').value),
+                    end: new Date(document.getElementById('end_date_man_edit').value)
+                });
+                calendar.render();
+                hideEditMeeting();
             });
-            calendar.render();
-            hideEditMeeting();
-        });
+    }
+    else{
+        updateMeeting(meetingId, name, description, from, until).then(response => response.json())
+            .then(data => {
+                console.log(JSON.stringify(data, null, 2));
+                calendar.updateSchedule(parseInt(meetingId), calendarId, {
+                    title: name,
+                    body: description,
+                    attendees:[],
+                    start: new Date(document.getElementById('start_date_man_edit').value),
+                    end: new Date(document.getElementById('end_date_man_edit').value)
+                });
+                calendar.render();
+                hideEditMeeting();
+            });
+    }
 }
 
 function deleteMeeting(){
@@ -305,7 +333,7 @@ function deleteMeeting(){
     removeMeeting(meetingId).then(result => {
         calendar.deleteSchedule(parseInt(meetingId), calendarId);
         calendar.render();
-        hideViewMeeting();
+        hideViewMeeting(); 
     });
 }
 
@@ -576,16 +604,16 @@ function onNotification(notification) {
     var i = table.rows.length;
     var row = table.insertRow(i);
     var title = row.insertCell(0);
-    var description = row.insertCell(2);
-    var from = row.insertCell(3);
-    var until = row.insertCell(4);
-    notification_title.innerHTML = notification.Title;
+    var from = row.insertCell(1);
+    var until = row.insertCell(2);
+    var view = row.insertCell(3);
+    var dismiss = row.insertCell(4);
     title.innerHTML = notification.Meeting.Title;
-    description.innerHTML = notification.Meeting.Description;
     from.innerHTML = notification.Meeting.From;
     until.innerHTML = notification.Meeting.Until;
+    view.innerHTML = "<button  class=\"btn\" onclick=\"showNotification('" + notification.ID + "')\"><i class=\"fa fa-pencil\"></i></button>";
+    dismiss.innerHTML = "<button  class=\"btn\" onclick=\"dismiss_notification_for_id('" + notification.ID + "')\"><i class=\"fa fa-times\"></i></button>";
     alert(notification.Text);
-    //dismiss_button.innerHTML = "<button class="btn" onclick=\"dismiss_notification('" + notification.ID + "')\"> Dismiss!</button>";
 }
 
 function startSignalRNotifications() {
