@@ -1,9 +1,14 @@
-async function isUserAvailable(userId, from, to) {
-    return fetch("/UserAvailability/isAvailable?" + new URLSearchParams({
+async function isUserAvailable(userId, from, to, ignoreMeeting = null) {
+    let urlParams = new URLSearchParams({
         user: userId,
         from: from,
-        to: to
-    }))
+        to: to,
+    });
+    if(ignoreMeeting !== null) {
+        urlParams.append("ignoreMeeting", ignoreMeeting);
+    }
+    
+    return fetch("/UserAvailability/isAvailable?" + urlParams);
 }
 
 async function isCeoAvailable(from, to) {
