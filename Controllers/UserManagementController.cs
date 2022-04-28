@@ -82,6 +82,13 @@ public class UserManagementController : ControllerBase
 
         if (userToDelete is Manager managerToDelete)
         {
+            if(managerToDelete.IsCEO == true)
+            {
+                umvm.Status = false;
+                umvm.Status_Message = "Cannot delete CEO.";
+                return umvm;
+            }
+
             if (managerToDelete.Secretary != null)
             {
                 var his_secretaries = _db.Secretary.Where(s => s.Manager == managerToDelete);
