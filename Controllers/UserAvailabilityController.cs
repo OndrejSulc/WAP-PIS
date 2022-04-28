@@ -21,16 +21,18 @@ public class UserAvailabilityController : ControllerBase
     }
     
     [HttpGet]
-    public ActionResult<UserAvailabilityResultViewModel> IsAvailable(string user, DateTime from, DateTime to)
+    [Authorize("CEO")]
+    public ActionResult<UserAvailabilityResultViewModel> IsAvailable(string user, DateTime from, DateTime to, int? ignoreMeeting = null)
     {
         if (dbContext.Account.SingleOrDefault(account => account.Id == user) == null) //Check if user with specified id exists
         {
             return NotFound($"User with id {user} not found.");
         }
-    
+        
         var overlappingMeetings = dbContext.Meeting
             .Include(meeting => meeting.Attendees)
             .Where(meeting => meeting.Owner.Id == user || meeting.Attendees.Select(manager => manager.Id).Contains(user))
+            .Where(meeting => meeting.ID != ignoreMeeting)
             .Where(meeting => meeting.From < to && from < meeting.Until);
         return new UserAvailabilityResultViewModel
         {
