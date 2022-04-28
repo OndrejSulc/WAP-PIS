@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Projekt PIS</title>
+    <style type="text/css">
+    	table { border-collapse: collapse; }
+    	td, th { border: 1px solid black; padding: 0.3em 0.5em; text-align: left; }
+    	dt { font-weight: bold; margin-top: 0.5em; }
+    </style>
+</head>
+<body>
+
+<!-- Nahraďte prosím názvem tématu -->
+<h1>Manažerský kalendář</h1>
+
+<!-- Editujte jména a maily autorů a jejich činnost -->
+<dl>
+	<dt>Autoři</dt>
+	<dd>První autor (nahraďte)
+	    <a href="mailto:xautor01@stud.fit.vutbr.cz">xautor01@stud.fit.vutbr.cz</a> -
+		správa uživatelů a uživatelské rozhraní
+	</dd>
+	<dd>Druhý autor  (nahraďte)
+	    <a href="mailto:xautor02@stud.fit.vutbr.cz">xautor02@stud.fit.vutbr.cz</a> - 
+		databázový subsystém
+	</dd>
+</dl>
+
+<!-- uživatelské účty -->
+<h2>Uživatelé systému pro testování</h2>
+<table>
+<tbody><tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
+<tr><td>ceo</td><td>password</td><td>CEO</td></tr>
+<tr><td>man1</td><td>password</td><td>Manažer</td></tr>
+<tr><td>man2</td><td>password</td><td>Manažer</td></tr>
+
+<tr><td>sec1</td><td>password</td><td>Sekretářka Manažera</td></tr>
+<tr><td>sec2</td><td>password</td><td>Sekretářka Manažera</td></tr>
+<tr><td>secceo</td><td>password</td><td>Sekretářka CEO</td></tr>
+</tbody></table>
+
+<h2>Postup instalace a spuštění</h2>
+<p>
+	<ol>
+		<li>ASP.NET Core runtime (námi testování na v6.0.201)</li>
+		<li>SQL databáze (ideálně využít přidaný docker-compose.yml pomocí příkazu "docker-compose up" - je potřeba mít nainstalovaný )</li>
+		<li>Nastavit správnou cestu k databází v souborech ./appsettings.Development.json a ./appsettings.json (aktuální hodnoty odpovídají databázi přes docker)</li>
+		<li>Spustit aplikace pomocí příkazu "dotnet run"</li>
+		<li>Přejít na adresu <a href="https://localhost:7223/Test/CreateTestingUsers">https://localhost:7223/Test/CreateTestingUsers</a> (případně pozor na port)</li>
+		<li>Přejít na výchozí adresu <a href="https://localhost:7223/">https://localhost:7223/</a> </li>
+	</ol>
+</p>
+
+
+
+</body></html>

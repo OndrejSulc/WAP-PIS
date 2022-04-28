@@ -77,6 +77,84 @@ public class TestController : Controller
 
     }
 
+
+    [HttpGet]
+    public async Task<string> CreateTestingUsers()
+    {
+        var ceo = new Manager()
+        {
+            UserName = "ceo",
+            Email = "",
+            Name = "I.M.",
+            Surname = "Tired",
+            IsCEO = true
+        };
+
+        var man1 = new Manager()
+        {
+            UserName = "man1",
+            Email = "",
+            Name = "Man1 Anita",
+            Surname = "Hugh"
+        };
+
+        var man2 = new Manager()
+        {
+            UserName = "man2",
+            Email = "",
+            Name = "Man2 Mr.",
+            Surname = "Blue Sky"
+        };
+
+        var sec1 = new Secretary()
+        {
+            UserName = "sec1",
+            Email = "",
+            Name = "Sec1 Hugh",
+            Surname = "N. Cry",
+            Manager = man1
+        };
+
+        var sec2 = new Secretary()
+        {
+            UserName = "sec2",
+            Email = "",
+            Name = "Sec2 Electra",
+            Surname = "Orchestra",
+            Manager = man2
+        };
+
+         var secceo = new Secretary()
+        {
+            UserName = "secceo",
+            Email = "",
+            Name = "SecCeo Ivana",
+            Surname = "B. Withew",
+            Manager = ceo
+        };
+
+        var password = "password";
+
+        var result0 = await _um.CreateAsync(ceo, password);
+        var result1 = await _um.CreateAsync(man1, password);
+        var result2 = await _um.CreateAsync(man2, password);
+        var result3 = await _um.CreateAsync(sec1, password);
+        var result4 = await _um.CreateAsync(sec2, password);
+        var result5 = await _um.CreateAsync(secceo, password);
+
+        if (result0.Succeeded &&
+            result1.Succeeded &&
+            result2.Succeeded &&
+            result3.Succeeded &&
+            result4.Succeeded &&
+            result5.Succeeded)
+        {
+            return "Test users created.";
+
+        }
+        return "FAILED to create test users";
+    }
+
     [HttpGet]
     public async Task<string> GetClaims()
     {
