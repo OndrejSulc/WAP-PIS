@@ -71,13 +71,13 @@
         <div id="main-menu">
             <ul class="nav-ul" style="list-style: none;">
                 <li class="nav-li">
-                    <a class="nav-li-a active" href="#calendar-navigation" id="li-about">Calendar</a>
+                    <a class="nav-li-a active" href="#calendar-navigation">Calendar</a>
                 </li>
                 <li id="notif_main_menu" class="nav-li">
                     <a class="nav-li-a" href="#notifications_div" id="notification_nav">Notifications</a>
                 </li>
                 <li id="user_main_menu" class="nav-li" style="display: none;">
-                    <a class="nav-li-a" href="#userManagement" id="li-int">User Management</a>
+                    <a class="nav-li-a" href="#userManagement">User Management</a>
                 </li>
                 <li class="nav-li">
                     <a id="sign_out" onclick="logout();" class="nav-li-a buttons"><i class="fas fa-sign-out-alt" style="color: white;font-size: 20px;"></i></a>
@@ -96,13 +96,13 @@
         </label>
         <ul class="menu" for="menu-toggle">
             <li class="nav-li">
-                <a class="nav-li-a active" for="menu-toggle" href="#calendar-navigation" id="li-about" onclick="closeMenu()">Calendar</a>
+                <a class="nav-li-a active" for="menu-toggle" href="#calendar-navigation" onclick="closeMenu()">Calendar</a>
             </li>
             <li id="notif_top_nav" class="nav-li">
-                <a class="nav-li-a" for="menu-toggle" href="#notifications_div" id="li-int" onclick="closeMenu()">Notifications</a>
+                <a class="nav-li-a" for="menu-toggle" href="#notifications_div" onclick="closeMenu()">Notifications</a>
             </li>
             <li id="user_top_nav" class="nav-li" style="display: none;">
-                <a class="nav-li-a" for="menu-toggle" href="#userManagement" id="li-int" onclick="closeMenu()">User Management</a>
+                <a class="nav-li-a" for="menu-toggle" href="#userManagement" onclick="closeMenu()">User Management</a>
             </li>
             <li class="nav-li">
                 <a id="sign_out" onclick="logout(); closeMenu()" for="menu-toggle" class="nav-li-a buttons"><i class="fas fa-sign-out-alt" style="color: white;font-size: 20px;"></i></a>
@@ -203,13 +203,13 @@
                             <label for="title_man_edit" class="modal_edit_label">Title:  </label><input id="title_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="Title" type="text">
                         </div>
                         <div class="tui-full-calendar-popup-section">
-                            <label for="start_date_man_edit" class="modal_edit_label">Start:  </label><input id="start_date_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="Start date" type="datetime-local" value="">
+                            <label for="start_date_man_edit" class="modal_edit_label">Start:  </label><input id="start_date_man_edit" class="tui-full-calendar-content modal_inputs" type="datetime-local" value="">
                         </div>
                         <div class="tui-full-calendar-popup-section">
-                            <label for="end_date_man_edit" class="modal_edit_label">End:  </label><input id="end_date_man_edit" class="tui-full-calendar-content modal_inputs" placeholder="End date" type="datetime-local" value="">
+                            <label for="end_date_man_edit" class="modal_edit_label">End:  </label><input id="end_date_man_edit" class="tui-full-calendar-content modal_inputs" type="datetime-local" value="">
                         </div>
                         <div id="div_group_meeting_man_edit">
-                            <div class="tui-full-calendar-popup-section" id="group_meeting">
+                            <div class="tui-full-calendar-popup-section" id="group_meeting_edit">
                                 <label for="group_meeting_man_edit" class="modal_edit_label">Group meeting: </label>
                                 <input id="group_meeting_man_edit" class="groupCheck" type="checkbox" onchange="checkGroupMeeting()">
                                 <select name="group_meeting_attendees" id="group_meeting_attendees" style="display: none;" size="3" multiple></select>
@@ -240,7 +240,7 @@
             <div id="notification_view" style="display: none;">
                 <div class="tui-full-calendar-popup-container">
                     <div class="tui-full-calendar-popup-section">
-                        </i><span id="title_notif" style="font-size: 26px;"></span>
+                        <span id="title_notif" style="font-size: 26px;"></span>
                     </div>
                     <div class="tui-full-calendar-popup-section">
                         <i class="fa fa-user-circle"></i><span id="owner_notif" style="font-size: 24px;"></span>
@@ -287,7 +287,7 @@
                         <label for="um_date_of_birth" class="modal_view_label">Date of birth:  </label><input id="um_date_of_birth" class="tui-full-calendar-content modal_inputs" type="date">
                     </div>
                     <div id="um_secretary_div">
-                        <div class="tui-full-calendar-popup-section" id="group_meeting">
+                        <div class="tui-full-calendar-popup-section" id="group_meeting_view">
                             <input id="um_issecretary" class="tui-full-calendar-content modal_inputs" type="checkbox" onchange="checkSecretary()">
                             <label for="um_issecretary" class="modal_view_label">Secretary</label><br>
                             <select name="secretary_attendees" id="secretary_attendees" style="display: none;" size="1"></select>
@@ -303,67 +303,68 @@
 
                 </div>
             </div>
-            <script src="/lib/jquery/dist/jquery.min.js"></script>
-</body>
-<script>
- var logged_user_result;
-logged_user_result = checkLogout();
-var logged_user_id;
+        </div>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
 
-logged_user_result.then(function (result) {
-    document.getElementById('logged_user_role').value = result.role;
-    if (result.role == "Ceo" || result.role == "CeoSecretary") {
-        logged_user_id = result.id;
-        document.getElementById('div_group_meeting_man_edit').style.display = "block";
-        load_users();
-        document.getElementById('calendar_for_user').style.display = "inline-block";
-        getAllUsers().then(data => {
-            for(item of data.managers) {
-                var opt = document.createElement('option');
-                opt.value = item.id;
-                opt.id = item.id;
-                opt.innerHTML = item.name + " " + item.surname;
-                if(item.isCeo == true){
-                    opt.className = "hidden_ceo";
-                    opt.selected = true
+    <script>
+
+    //display requirements for a given user role
+    var logged_user_result;
+    logged_user_result = checkLogout();
+
+    logged_user_result.then(function (result) {
+        document.getElementById('logged_user_role').value = result.role;
+        if (result.role == "Ceo" || result.role == "CeoSecretary") {
+            document.getElementById('div_group_meeting_man_edit').style.display = "block";
+            load_users();
+            document.getElementById('calendar_for_user').style.display = "inline-block";
+            getAllUsers().then(data => {
+                for(item of data.managers) {
+                    var opt = document.createElement('option');
+                    opt.value = item.id;
+                    opt.id = item.id;
+                    opt.innerHTML = item.name + " " + item.surname;
+                    if(item.isCeo == true){
+                        opt.className = "hidden_ceo";
+                        opt.selected = true
+                    }
+                    else{
+                        opt.className = "hidden_man";
+                    }
+                    document.getElementById('calendar_for_user').appendChild(opt);
                 }
-                else{
-                    opt.className = "hidden_man";
-                }
-                //opt.selected = item.id == logged_user_id;
-                document.getElementById('calendar_for_user').appendChild(opt);
+            });
+            if(result.role == "Ceo"){
+                document.getElementById('user_management_page').style.display = "block";
+                document.getElementById('user_main_menu').style.display = "block";
+                document.getElementById('user_top_nav').style.display = "flex";
             }
-        });
-        if(result.role == "Ceo"){
-            document.getElementById('user_management_page').style.display = "block";
-            document.getElementById('user_main_menu').style.display = "block";
-            document.getElementById('user_top_nav').style.display = "flex";
+            calendar.on({
+                'beforeCreateSchedule': function(e) {
+                    //console.log('beforeCreateSchedule', e);
+                    startCreateManagerMeeting(e);
+                    e.guide.clearGuideElement();
+                }
+            });
+            load_manager_meetings(calendar);
         }
-        calendar.on({
-            'beforeCreateSchedule': function(e) {
-                //console.log('beforeCreateSchedule', e);
-                startCreateManagerMeeting(e);
-                e.guide.clearGuideElement();
-            }
-        });
-        load_manager_meetings(calendar);
-    }
-    else {
-        document.getElementById('div_group_meeting_man_edit').style.display = "none";
-        calendar.on({
-            'beforeCreateSchedule': function(e) {
-                //console.log('beforeCreateSchedule', e);
-                startCreateManagerMeeting(e);
-                e.guide.clearGuideElement();
-            }
-        });
-        load_manager_meetings(calendar);   
-    }
-    if (result.role == "Secretary" || result.role == "CeoSecretary") {
-        document.getElementById('notification_page').style.display = "none";
-        document.getElementById('notif_main_menu').style.display = "none";
-        document.getElementById('notif_top_nav').style.display = "none";
-    }
-});
-</script>
+        else {
+            document.getElementById('div_group_meeting_man_edit').style.display = "none";
+            calendar.on({
+                'beforeCreateSchedule': function(e) {
+                    //console.log('beforeCreateSchedule', e);
+                    startCreateManagerMeeting(e);
+                    e.guide.clearGuideElement();
+                }
+            });
+            load_manager_meetings(calendar);   
+        }
+        if (result.role == "Secretary" || result.role == "CeoSecretary") {
+            document.getElementById('notification_page').style.display = "none";
+            document.getElementById('notif_main_menu').style.display = "none";
+            document.getElementById('notif_top_nav').style.display = "none";
+        }
+    });
+    </script>
+</body>
 </html>

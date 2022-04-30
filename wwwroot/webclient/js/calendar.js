@@ -178,6 +178,7 @@ function showCalendarforUser(){
     }
 }
 
+//Function to hide detail of the meeting
 function hideViewMeeting(){
     document.getElementById('calendar_id_man_view').value  = "";
     document.getElementById('meeting_id_man_view').value  = "";
@@ -189,6 +190,7 @@ function hideViewMeeting(){
     document.getElementById('modal_view').style.display = "none";
 }
 
+//Function to show detail of the meeting
 function showViewMeeting(e){
     //console.log(e);
     document.getElementById('calendar_id_man_view').value  = e.schedule.calendarId;
@@ -242,6 +244,7 @@ function showViewMeeting(e){
     document.getElementById('modal_view').style.display = "block";
 }
 
+//Function to hide edit modal box of the meeting
 function hideEditMeeting(){
     document.getElementById('calendar_id_man_edit').value  = "";
     document.getElementById('meeting_id_man_edit').value  = "";
@@ -255,7 +258,7 @@ function hideEditMeeting(){
     document.getElementById('modal_edit').style.display = "none";
 }
 
-
+//Function to show edit modal box of the meeting
 function showEditMeeting(){
     hideViewMeeting();
     document.getElementById('calendar_id_man_edit').value  = actual_meeting.schedule.calendarId;
@@ -285,11 +288,11 @@ function showEditMeeting(){
     document.getElementById('modal_edit').style.display = "block";
 }
 
+//Function to change format of datetime
 function changeDatetimeFormat(input_datetime){
     
     const datetime = new Date(input_datetime);
 
-    //extract the parts of the date
     const day = datetime.getDate();
     const month = datetime.getMonth() + 1;
     const year = datetime.getFullYear();
@@ -306,6 +309,7 @@ function changeDatetimeFormat(input_datetime){
     return format;
 }
 
+//Function to extract time from datetime or group meeting
 function getTimeFromDatetime(input_datetime){
     
     const datetime = new Date(input_datetime);
@@ -319,6 +323,7 @@ function getTimeFromDatetime(input_datetime){
     return format;
 }
 
+//Function to save modified meeting
 async function saveEditMeeting(){
 
     let name = document.getElementById('title_man_edit').value;
@@ -451,6 +456,7 @@ async function saveEditMeeting(){
     }
 }
 
+//Function to delete meeting
 function deleteMeeting(){
     let meetingId = document.getElementById('meeting_id_man_view').value;
     let calendarId = document.getElementById('calendar_id_man_view').value;
@@ -462,6 +468,7 @@ function deleteMeeting(){
     });
 }
 
+//Function to show new modal box to create new meeting/group meeting
 function startCreateManagerMeeting(e){
     document.getElementById('start_date_man_edit').value  = changeDatetimeFormat(e.start);
     document.getElementById('end_date_man_edit').value  = changeDatetimeFormat(e.end);
@@ -470,6 +477,7 @@ function startCreateManagerMeeting(e){
     document.getElementById('modal_edit').style.display = "block";
 }
 
+//Function to save new meeting/group meeting
 async function create_Meeting(){
 
     let name = document.getElementById('title_man_edit').value;
@@ -618,25 +626,9 @@ async function create_Meeting(){
                 });
         }
     }
-    
-
-    //let meetingId = document.getElementById('meeting_id_man_view').value;
-    //let calendarId = document.getElementById('calendar_id_man_view').value;
-
-    /*calendar.createSchedules([
-        {
-        id: item.id,
-        calendarId: '1',
-        title: item.title,
-        body: item.description,
-        category: 'time',
-        dueDateClass: '',
-        start: new Date(item.from),
-        end: new Date(item.until)
-        }
-    ]);*/
 }
 
+//Function to test if meeting is group meeeting
 function checkGroupMeeting(){
     var group_meeting_checkbox = document.getElementById('group_meeting_man_edit');
 
@@ -667,22 +659,21 @@ function checkGroupMeeting(){
 }
 
 //     USER MANAGEMENT
+
+//Function to load users into table
 function fill_table_of_users(list,type){
     var table = document.getElementById("user_management");
     var i = table.rows.length;
 
     for (item of list) {
         if (item.isCeo == true)continue;
-        var row = table.insertRow(i);
 
-        // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+        var row = table.insertRow(i);
         var role = row.insertCell(0);
         var name = row.insertCell(1);
         var surname = row.insertCell(2);
-        //var edit = row.insertCell(3);
         var delete_button = row.insertCell(3);
-        //console.log(item.isCeo);
-        // Add some text to the new cells:
+
         if(type === "managers"){
             if (item.isCeo == true) {
                 role.innerHTML = "Ceo";
@@ -701,12 +692,11 @@ function fill_table_of_users(list,type){
         }
         name.innerHTML = item.name;
         surname.innerHTML = item.surname;
-        //edit.innerHTML = "<button onclick=\"showUser('"+ item.id +"');\"> Edit!</button>";
         delete_button.innerHTML = "<button class=\"btn\" onclick=\"delete_user('" + item.id + "')\"> Delete!</button>";
         i = i + 1;
     }
 }
-
+//Function to load users from database
 function load_users() {
     var i = 0;
     getAllUsers().then(data => {
@@ -717,6 +707,7 @@ function load_users() {
     });
 }
 
+//Function to delete user by ID
 function delete_user(id) {
     console.log(deleteUser(id));
     setTimeout(function(){
@@ -724,6 +715,7 @@ function delete_user(id) {
       }, 500);
 }
 
+//Function to modal box to create new user
 function createNewUser(){
 
     document.getElementById('um_login').value  = "";
@@ -741,6 +733,7 @@ function createNewUser(){
     document.getElementById('create_user_view').style.display = "block";
 }
 
+//Function to hide displayed user
 function hideUser(){
     document.getElementById('um_login').value  = "";
     document.getElementById('um_password').value  = "";
@@ -757,6 +750,7 @@ function hideUser(){
     document.getElementById('create_user_view').style.display = "none";
 }
 
+//Function to test if user is type secretary
 function checkSecretary(){
     var secretary_checkbox = document.getElementById('um_issecretary');
 
@@ -785,6 +779,7 @@ function checkSecretary(){
     }
 }
 
+//Function to save new user
 function saveNewUser(){
     
     var login = document.getElementById("um_login").value;
@@ -807,34 +802,20 @@ function saveNewUser(){
 
 //Function called when signalR receives net notification
 function onNotification(notification) {
-    //console.log(JSON.stringify(notification, null, 2))
-    /*let result = JSON.stringify(notification, null, 2);
-    let item = JSON.parse(result);
-    var table = document.getElementById("notifications");
-    var i = table.rows.length;
-    var row = table.insertRow(i);
-    var title = row.insertCell(0);
-    var from = row.insertCell(1);
-    var until = row.insertCell(2);
-    var view = row.insertCell(3);
-    var dismiss = row.insertCell(4);
-    title.innerHTML = notification.Meeting.Title;
-    from.innerHTML = notification.Meeting.From.replace("T"," ");
-    until.innerHTML = notification.Meeting.Until.replace("T"," ");
-    view.innerHTML = "<button  class=\"btn\" onclick=\"showNotification('" + notification.ID + "')\"><i class=\"fa fa-pencil\"></i></button>";
-    dismiss.innerHTML = "<button  class=\"btn\" onclick=\"dismiss_notification_for_id('" + notification.ID + "')\"><i class=\"fa fa-times\"></i></button>";*/
     alert(notification.Text);
     get_notifications();
     calendar.clear();
     load_manager_meetings(calendar);
 }
 
+//Function communicating with SignalR
 function startSignalRNotifications() {
     //Starts signalR receiver with callback for new notification
     startSignalR(onNotification);
     //console.log("SignalR started");
 }
 
+//Function to get user notifications
 async function get_notifications() {
     var table = document.getElementById("notifications");
     table.innerHTML = '';
@@ -865,6 +846,7 @@ async function get_notifications() {
     });
 }
 
+//Function to show user notifications
 async function showNotification(notification_id){
     getNotifications().then(response => response.json()).then(data => {
         for(notification of data.notifications){
@@ -909,6 +891,7 @@ async function showNotification(notification_id){
     });
 }
 
+//Function to hide detail of notification
 function hideNotification(){
     document.getElementById('notification_view').style.display = "none";
     document.getElementById('id_notif').value  = "";
@@ -921,6 +904,7 @@ function hideNotification(){
     document.getElementById('attendees_div_notif').style.display = "none"; 
 }
 
+//Function to dismiss notification by ID
 async function dismiss_notification_for_id(notification_id){
     dismissNotification(notification_id).then(data => {
         console.log(data);
@@ -928,6 +912,7 @@ async function dismiss_notification_for_id(notification_id){
     });
 }
 
+//Function to dismiss notification
 async function dismiss_notification(){
     var notification_id = document.getElementById('id_notif').value;
     dismissNotification(notification_id).then(data => {
@@ -935,75 +920,3 @@ async function dismiss_notification(){
         get_notifications();
     });
 }
-
-
-/*function showUser(user_id){
-
-    console.log(user_id);
-    getAllUsers().then(data => {
-        var found = false;
-        for(user in data.managers){
-            if(user.id != user_id)continue;
-            document.getElementById('um_user_id').value  = user_id;
-            document.getElementById('um_login').value  = user.login;
-            document.getElementById('um_password').value  = "";
-            document.getElementById('um_name').value  = user.name;
-            document.getElementById('um_surname').value  = user.surname
-            document.getElementById('um_date_of_birth').value  = changeDatetimeFormat(user.);
-            var select = document.getElementById("secretary_attendees");
-            var length = select.length;
-            for (i = 0; i < length; i++) {
-                select.remove(0);
-            }
-            document.getElementById('um_issecretary').checked = false; 
-            document.getElementById('secretary_attendees').style.display = "none";
-            document.getElementById('create_user_view').style.display = "none";
-        }
-    });
-}*/
-    /*document.getElementById('um_login').value  = "";
-    document.getElementById('um_password').value  = "";
-    document.getElementById('um_name').value  = "";
-    document.getElementById('um_surname').value  = "";
-    document.getElementById('um_name').value  = "";
-    var select = document.getElementById("secretary_attendees");
-    var length = select.length;
-    for (i = 0; i < length; i++) {
-        select.remove(0);
-    }
-    document.getElementById('um_issecretary').checked = false; 
-    document.getElementById('secretary_attendees').style.display = "none";
-    document.getElementById('create_user_view').style.display = "block";*/
-
-//const scroll = new SmoothScroll('.navbar a[href*="#"]', {
-//    speed: 500
-//});
-
-//console.log(exampleMeetings.meetings);
-/*
-calendar.createSchedules([
-    {
-    id: '1',
-    calendarId: '1',
-    title: 'my schedule',
-    category: 'time',
-    dueDateClass: '',
-    start: new Date('2022-04-18T07:30:00'),
-    end: new Date('2022-04-18T09:30:00')
-    }
-]);
-for(item of exampleMeetings.meetings) {
-    calendar.createSchedules([
-        {
-        id: item.ID,
-        calendarId: '1',
-        title: item.Title.toString(),
-        category: 'time',
-        dueDateClass: '',
-        start: new Date(item.From),
-        end: new Date(item.Until)
-        }
-    ]);
-    console.log(item.ID,item.Title,item.From,item.Until);
-}*/
-
