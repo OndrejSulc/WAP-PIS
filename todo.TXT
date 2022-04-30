@@ -1,8 +1,0 @@
-
-TODO:
-	norifikacie modalove okno - info o meetingu ktory prichadza
-	ukazat info o meetingu a prekliknut sa k EDIT modu - novy modal view
-	zobrazenie meetingu bez uprav pre zucastneneho uzivatela	
-	responzivny design
-	select pre riaditela - my calendar/all managers 	
-	refresh na user managment po pridat uzivatela
