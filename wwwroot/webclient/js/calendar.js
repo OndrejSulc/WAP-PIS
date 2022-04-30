@@ -317,6 +317,13 @@ async function saveEditMeeting(){
         return;
     }
 
+    var start = new Date(from).getTime();
+    var end = new Date(until).getTime();
+    if(start >= end){
+        alert("The meeting start has to be sooner than the end!");
+        return;
+    }
+
     let meetingId = document.getElementById('meeting_id_man_edit').value;
     let calendarId = document.getElementById('calendar_id_man_edit').value;
 
@@ -338,13 +345,13 @@ async function saveEditMeeting(){
             return;
         }
         for(let i = 0; i < attendees.length; i++){ 
-            const result = await isUserAvailable(attendees[i],from,until).then(response => response.json())
+            const result = await isUserAvailable(attendees[i],from,until,meetingId).then(response => response.json())
             .then(data => {
-                //console.log(attendees_names[i] + " is: " + data.available + " time: "+ from + " - " + until);
+                console.log(attendees_names[i] + " is: " + data.available + " time: "+ from + " - " + until);
                 if(data.available == false)attendees_not_available.push(attendees_names[i]);
             });
         } 
-        //console.log("NOT AVAILABLE" + attendees_not_available);
+        console.log("NOT AVAILABLE" + attendees_not_available);
 
         if(attendees_not_available.length == 0){
             console.log("All Attendees:"+attendees);
@@ -458,6 +465,13 @@ async function create_Meeting(){
     until = until ? until : null
     if(until==null){
         alert("Enter the end!");
+        return;
+    }
+
+    var start = new Date(from).getTime();
+    var end = new Date(until).getTime();
+    if(start >= end){
+        alert("The meeting start has to be sooner than the end!");
         return;
     }
 
