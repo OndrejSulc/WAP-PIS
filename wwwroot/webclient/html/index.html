@@ -59,67 +59,6 @@
     </style>
 </head>
 <body>
-
-
-    <script>
-         var logged_user_result;
-        logged_user_result = checkLogout();
-        var logged_user_id;
-        logged_user_result.then(function (result) {
-            if (result.role == "Ceo" || result.role == "CeoSecretary") {
-                logged_user_id = result.id;
-                document.getElementById('div_group_meeting_man_edit').style.display = "block";
-                load_users();
-                document.getElementById('calendar_for_user').style.display = "inline-block";
-                getAllUsers().then(data => {
-                    for(item of data.managers) {
-                        var opt = document.createElement('option');
-                        opt.value = item.id;
-                        opt.id = item.id;
-                        opt.innerHTML = item.name + " " + item.surname;
-                        if(item.isCeo == true){
-                            opt.className = "hidden_ceo";
-                        }
-                        else{
-                            opt.className = "hidden_man";
-                        }
-                        //console.log("ITEM ID:" + item.id);
-                        //console.log("LOGGED ID:" + logged_user_id);
-                        opt.selected = item.id == logged_user_id;
-                        document.getElementById('calendar_for_user').appendChild(opt);
-                    }
-                });
-                if(result.role == "Ceo"){
-                    document.getElementById('user_management_page').style.display = "block";
-                    document.getElementById('user_main_menu').style.display = "block";
-                    document.getElementById('user_top_nav').style.display = "flex";
-                }
-                calendar.on({
-                    'beforeCreateSchedule': function(e) {
-                        //console.log('beforeCreateSchedule', e);
-                        startCreateManagerMeeting(e);
-                        e.guide.clearGuideElement();
-                    }
-                });
-                load_manager_meetings(calendar);
-            }
-            else {
-                document.getElementById('div_group_meeting_man_edit').style.display = "none";
-                calendar.on({
-                    'beforeCreateSchedule': function(e) {
-                        //console.log('beforeCreateSchedule', e);
-                        startCreateManagerMeeting(e);
-                        e.guide.clearGuideElement();
-                    }
-                });
-                load_manager_meetings(calendar);
-            }
-            document.getElementById('logged_user_role').value = result.role;
-        });
-
-    
-    </script>
-
     <nav class="navbar" id="nav-menu">
         <a class="navbar-href" href="#calendar-navigation">
             <span class="span-name">Calendar</span>
@@ -134,7 +73,7 @@
                 <li class="nav-li">
                     <a class="nav-li-a active" href="#calendar-navigation" id="li-about">Calendar</a>
                 </li>
-                <li class="nav-li">
+                <li id="notif_main_menu" class="nav-li">
                     <a class="nav-li-a" href="#notifications_div" id="notification_nav">Notifications</a>
                 </li>
                 <li id="user_main_menu" class="nav-li" style="display: none;">
@@ -159,7 +98,7 @@
             <li class="nav-li">
                 <a class="nav-li-a active" for="menu-toggle" href="#calendar-navigation" id="li-about" onclick="closeMenu()">Calendar</a>
             </li>
-            <li class="nav-li">
+            <li id="notif_top_nav" class="nav-li">
                 <a class="nav-li-a" for="menu-toggle" href="#notifications_div" id="li-int" onclick="closeMenu()">Notifications</a>
             </li>
             <li id="user_top_nav" class="nav-li" style="display: none;">
@@ -171,20 +110,6 @@
         </ul>
     </section>
 
-    <!--<div id="mobile_headline">
-        <h1>UTest TEXT</h1>
-        <div class='menu-button'></div>
-        <div class="ham"></div>
-        <div class="ham"></div>
-        <div class="ham"></div>
-        <div id="mobile_headline_content">
-            <a class="menu" href="#home"><p>Home</p>&nbsp;&nbsp;</a>
-            <a class="menu" href="#resume"><p>Resume</p>&nbsp;&nbsp;</a>
-            <a class="menu" href="#tvorba"><p>Tvorba</p>&nbsp;&nbsp;</a>
-            <a class="menu" href="#vzdelanie"><p>Vzdelanie</p>&nbsp;&nbsp;</a>
-        </div>
-    </div>-->
-
     <div class="container">
 
         <div class="page">
@@ -194,7 +119,7 @@
                 <pre id="actual_month"></pre>
                 <a id="next_button" onclick="calendar.next();setMonth();" href="#" class="buttons next round">&#8250;</a>
 
-                <select id="calendar_for_user" size="1" onchange="showCalendarforUser(logged_user_id)" style="display: none;">
+                <select id="calendar_for_user" size="1" onchange="showCalendarforUser()" style="display: none;">
                     <option selected disabled hidden>Choose user calendar</option>
                 </select>
 
@@ -203,7 +128,7 @@
             <div id="calendar" class="section"></div>
             <input type="hidden" id="logged_user_role" value="">
         </div>
-        <div class="page">
+        <div class="page" id="notification_page">
             <div id="notifications_div" class="section">
                 <h1>Notifications</h1>
                 <table>
@@ -221,8 +146,6 @@
                 </table>
             </div>
         </div>
-
-
 
             <div class="page" id="user_management_page" style="display: none;">
 
@@ -373,10 +296,6 @@
                     <button onclick="hideUser()" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
                     <br>
                     <div class="tui-full-calendar-popup-section">
-                        <!--<div id="user_view">
-                        <input type="hidden" id="um_user_id">
-                        <button class="save_button" onclick="saveUser()"><span>Save</span></button><button class="save_button" onclick="deleteUser()"><span>Delete</span></button>
-                    </div>-->
                         <div id="user_create">
                             <button type="button" class="btn save_button" onclick="saveNewUser()"><span>Create</span></button>
                         </div>
@@ -386,22 +305,65 @@
             </div>
             <script src="/lib/jquery/dist/jquery.min.js"></script>
 </body>
-</html> 
-<!--<button><i class='fas fa-caret-square-left'></i></button>-->
-<!--const boxes = document.getElementsByClassName('tui-full-calendar-weekday-schedule-title');
+<script>
+ var logged_user_result;
+logged_user_result = checkLogout();
+var logged_user_id;
 
-    boxes.forEach(box => {
-    box.addEventListener('click', function handleClick(event) {
-        console.log('box clicked', event);
-
-        //box.setAttribute('style', 'background-color: yellow;');
-    });
-    });*/
-    /*var spans = document.getElementsByClassName('tui-full-calendar-weekday-schedule-title');
-    for(i=0;i<spans.length;i++)
-        spans[i].onclick=showManagerMeeting();
-    */
-    /*function doSomething() 
-    {
-        console.log('box clicked');
-    }-->
+logged_user_result.then(function (result) {
+    document.getElementById('logged_user_role').value = result.role;
+    if (result.role == "Ceo" || result.role == "CeoSecretary") {
+        logged_user_id = result.id;
+        document.getElementById('div_group_meeting_man_edit').style.display = "block";
+        load_users();
+        document.getElementById('calendar_for_user').style.display = "inline-block";
+        getAllUsers().then(data => {
+            for(item of data.managers) {
+                var opt = document.createElement('option');
+                opt.value = item.id;
+                opt.id = item.id;
+                opt.innerHTML = item.name + " " + item.surname;
+                if(item.isCeo == true){
+                    opt.className = "hidden_ceo";
+                    opt.selected = true
+                }
+                else{
+                    opt.className = "hidden_man";
+                }
+                //opt.selected = item.id == logged_user_id;
+                document.getElementById('calendar_for_user').appendChild(opt);
+            }
+        });
+        if(result.role == "Ceo"){
+            document.getElementById('user_management_page').style.display = "block";
+            document.getElementById('user_main_menu').style.display = "block";
+            document.getElementById('user_top_nav').style.display = "flex";
+        }
+        calendar.on({
+            'beforeCreateSchedule': function(e) {
+                //console.log('beforeCreateSchedule', e);
+                startCreateManagerMeeting(e);
+                e.guide.clearGuideElement();
+            }
+        });
+        load_manager_meetings(calendar);
+    }
+    else {
+        document.getElementById('div_group_meeting_man_edit').style.display = "none";
+        calendar.on({
+            'beforeCreateSchedule': function(e) {
+                //console.log('beforeCreateSchedule', e);
+                startCreateManagerMeeting(e);
+                e.guide.clearGuideElement();
+            }
+        });
+        load_manager_meetings(calendar);   
+    }
+    if (result.role == "Secretary" || result.role == "CeoSecretary") {
+        document.getElementById('notification_page').style.display = "none";
+        document.getElementById('notif_main_menu').style.display = "none";
+        document.getElementById('notif_top_nav').style.display = "none";
+    }
+});
+</script>
+</html>

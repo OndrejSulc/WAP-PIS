@@ -1,29 +1,4 @@
-async function load_manager_meetings(calendar){
-    let meetings = getMeetings();
-    meetings
-        .then(response => response.json())
-        .then(data => {
-            //console.log(data);
-            for(item of data.meetings) {
-                calendar.createSchedules([
-                    {
-                    id: item.id,
-                    calendarId: '1',
-                    title: item.title,
-                    body: item.description,
-                    attendees: item.attendees,
-                    category: 'time',
-                    dueDateClass: '',
-                    start: new Date(item.from),
-                    end: new Date(item.until),
-                    raw: item.owner.id + "," + item.owner.name + " " + item.owner.surname
-                    }
-                ]);
-            }
-        });
-    calendar.render();
-    calendar.toggleScheduleView(true);
-}
+//NAV MENU
 
 // Option 2 - jQuery Smooth Scrolling
 $('a.nav-li-a').on('click', function (e) {
@@ -62,12 +37,9 @@ function closeMenu() {
     document.getElementById("menu-toggle").checked = false;
 }
 
-function setMonth(){
-    var month = calendar.getDate().getMonth()+1;
-    var year = calendar.getDate().getFullYear();
-    document.getElementById('actual_month').innerHTML = year+'/'+month;
-}
+//CALENDAR
 
+//default settings
 var Calendar = tui.Calendar;
 var calendar = new Calendar('#calendar', {
     defaultView: 'month',
@@ -94,13 +66,10 @@ var calendar = new Calendar('#calendar', {
         }
     ],
 });
-document.getElementById('prev_button').addEventListener("click", calendar.prev());
-document.getElementById('next_button').addEventListener("click", calendar.next());
-setMonth();
-startSignalRNotifications();
-get_notifications();
 
+//actual meetting to show
 let actual_meeting;
+
 // event handlers
 calendar.on({
     'clickSchedule': function(e) {
@@ -110,7 +79,51 @@ calendar.on({
     }
 });
 
-function showCalendarforUser(logged_user_id){
+//default setting on the main page
+document.getElementById('prev_button').addEventListener("click", calendar.prev());
+document.getElementById('next_button').addEventListener("click", calendar.next());
+setMonth();
+startSignalRNotifications();
+get_notifications();
+
+//Load manager meetings to calendar
+async function load_manager_meetings(calendar){
+    let meetings = getMeetings();
+    meetings
+        .then(response => response.json())
+        .then(data => {
+            //console.log(data);
+            for(item of data.meetings) {
+                calendar.createSchedules([
+                    {
+                    id: item.id,
+                    calendarId: '1',
+                    title: item.title,
+                    body: item.description,
+                    attendees: item.attendees,
+                    category: 'time',
+                    dueDateClass: '',
+                    start: new Date(item.from),
+                    end: new Date(item.until),
+                    raw: item.owner.id + "," + item.owner.name + " " + item.owner.surname
+                    }
+                ]);
+            }
+        });
+    //render calendar
+    calendar.render();
+    calendar.toggleScheduleView(true);
+}
+
+//Set actual month for calendar
+function setMonth(){
+    var month = calendar.getDate().getMonth()+1;
+    var year = calendar.getDate().getFullYear();
+    document.getElementById('actual_month').innerHTML = year+'/'+month;
+}
+
+//Calendar view for the selected user
+function showCalendarforUser(){
     let actual_user_id = document.getElementById('calendar_for_user').value;
     calendar.clear();
     let meetings = getMeetingsForUser(actual_user_id);
@@ -137,6 +150,8 @@ function showCalendarforUser(logged_user_id){
         });
     calendar.render();
     calendar.toggleScheduleView(true);
+
+    //
     var e = document.getElementById("calendar_for_user");
 	var strUser = e.value;
 	var choosen_user_role = document.getElementById(strUser).className
@@ -182,10 +197,19 @@ function showViewMeeting(e){
     document.getElementById('owner_man_view').innerHTML  = user[1];
     document.getElementById('title_man_view').innerHTML  = e.schedule.title;
     var start_datetime = changeDatetimeFormat(e.schedule.start);
-    document.getElementById('date_time_man_view').innerHTML  = start_datetime.replace("T", " ") + " - " + getTimeFromDatetime(e.schedule.end);
+    var end_datetime = changeDatetimeFormat(e.schedule.end);
+    var show_start = new Date(e.schedule.start);
+    var show_end = new Date(e.schedule.end);
+    console.log("SHOW: ",show_start,show_end);
+    if((show_start.getFullYear() == show_end.getFullYear()) && (show_start.getMonth() == show_end.getMonth()) && (show_start.getDate() == show_end.getDate())){
+        document.getElementById('date_time_man_view').innerHTML  = start_datetime.replace("T", " ") + " - " + getTimeFromDatetime(e.schedule.end);
+    }
+    else{
+        document.getElementById('date_time_man_view').innerHTML  = start_datetime.replace("T", " ") + " - " + end_datetime.replace("T", " ");
+    }
     document.getElementById('description_man_view').innerHTML  = e.schedule.body;
+    var logged = document.getElementById('logged_user_role').value;
     if(e.schedule.attendees.length !== 0){
-        var logged = document.getElementById('logged_user_role').value;
         if(logged === "Ceo" || logged === "CeoSecretary"){
             let managers = [];
             getAllUsers().then(data => {
@@ -204,11 +228,16 @@ function showViewMeeting(e){
         }
         else{
             document.getElementById('attendees_man_view').innerHTML = e.schedule.attendees.length;
+            document.getElementById('control_buttons').style.display = "none";   
         }
         document.getElementById('attendees_div_man_view').style.display = "block";        
     }
     else{
-
+        document.getElementById('attendees_div_man_view').style.display = "none";  
+        if(logged == "Manager" || logged =="Secretary"){
+            console.log("MAN MEETING");
+            document.getElementById('control_buttons').style.display = "block"; 
+        }
     }
     document.getElementById('modal_view').style.display = "block";
 }
@@ -664,10 +693,10 @@ function fill_table_of_users(list,type){
         }
         else{
             if (item.manager.isCeo == true) {
-                role.innerHTML = "CeoSecreteary";
+                role.innerHTML = "CeoSecretary";
             }
             else {
-                role.innerHTML = "Secreteary";
+                role.innerHTML = "Secretary";
             }
         }
         name.innerHTML = item.name;
