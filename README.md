@@ -20,9 +20,26 @@
 > pokud nechcete využít docker databázi a máte něco svého, tak si upravte soubor *appsettings.Development.json* a *appsettings.json* 
 >
 >Testovací endpoint: https://localhost:7223/Test Vytvoří databázovou strukturu pokud není a vytvoří tam nového uživatele s custom údaji
-
-
+>
 >## Postup při spuštění:
 > 1) spustit databázi: *sudo docker-compose up*
 > 2) spustit aplikaci: *dotnet run*
+>
+>## Struktura appsettings
+> appsettings.json
+>```
+>    {
+>    "ConnectionStrings": {
+>        "DefaultConnection": "Server=127.0.0.1;Database=WAP_PIS;User Id=root;Password=example;"
+>    },
+>    "Logging": {
+>        "LogLevel": {
+>        "Default": "Information",
+>        "Microsoft.AspNetCore": "Warning"
+>        }
+>    },
+>    "AllowedHosts": "*"
+>    }
+> ```  
+>
 
