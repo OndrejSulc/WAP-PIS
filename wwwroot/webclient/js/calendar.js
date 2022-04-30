@@ -4,11 +4,11 @@
 $('a.nav-li-a').on('click', function (e) {
     if (this.hash !== '') {
         e.preventDefault();
-        console.log(this.hash);
+        //console.log(this.hash);
 
         const hash = this.hash;
         var targetOffset = $(this.hash).offset().top;
-        console.log(targetOffset);
+        //console.log(targetOffset);
 
         $("html, body").animate({
             scrollTop: targetOffset + "px"
@@ -19,11 +19,11 @@ $('a.nav-li-a').on('click', function (e) {
 +$('a.navbar-href').on('click', function (e) {
     if (this.hash !== '') {
         e.preventDefault();
-        console.log(this.hash);
+        //console.log(this.hash);
 
         const hash = this.hash;
         var targetOffset = $(this.hash).offset().top;
-        console.log(targetOffset);
+        //console.log(targetOffset);
 
         $("html, body").animate({
             scrollTop: targetOffset - 80
@@ -202,7 +202,7 @@ function showViewMeeting(e){
     var end_datetime = changeDatetimeFormat(e.schedule.end);
     var show_start = new Date(e.schedule.start);
     var show_end = new Date(e.schedule.end);
-    console.log("SHOW: ",show_start,show_end);
+    //console.log("SHOW: ",show_start,show_end);
     if((show_start.getFullYear() == show_end.getFullYear()) && (show_start.getMonth() == show_end.getMonth()) && (show_start.getDate() == show_end.getDate())){
         document.getElementById('date_time_man_view').innerHTML  = start_datetime.replace("T", " ") + " - " + getTimeFromDatetime(e.schedule.end);
     }
@@ -237,7 +237,7 @@ function showViewMeeting(e){
     else{
         document.getElementById('attendees_div_man_view').style.display = "none";  
         if(logged == "Manager" || logged =="Secretary"){
-            console.log("MAN MEETING");
+            //console.log("MAN MEETING");
             document.getElementById('control_buttons').style.display = "block"; 
         }
     }
@@ -385,14 +385,14 @@ async function saveEditMeeting(){
         for(let i = 0; i < attendees.length; i++){ 
             const result = await isUserAvailable(attendees[i],from,until,meetingId).then(response => response.json())
             .then(data => {
-                console.log(attendees_names[i] + " is: " + data.available + " time: "+ from + " - " + until);
+                //console.log(attendees_names[i] + " is: " + data.available + " time: "+ from + " - " + until);
                 if(data.available == false)attendees_not_available.push(attendees_names[i]);
             });
         } 
-        console.log("NOT AVAILABLE" + attendees_not_available);
+        //console.log("NOT AVAILABLE" + attendees_not_available);
 
         if(attendees_not_available.length == 0){
-            console.log("All Attendees:"+attendees);
+            //console.log("All Attendees:"+attendees);
             updateGroupMeeting(meetingId, name, description, from, until, attendees).then(response => response.json())
                 .then(data => {
                     let result = JSON.stringify(data, null, 2);
@@ -417,14 +417,14 @@ async function saveEditMeeting(){
         if(logged === "Manager" || logged === "Secretary"){
             isCeoAvailable(from, until).then(response => response.json())
             .then(data => {
-                console.log(data.available);
+                //console.log(data.available);
                 if(data.available == false){
                     alert("CEO is not available!");
                 }
                 else{
                     updateMeeting(meetingId, name, description, from, until).then(response => response.json())
                     .then(data => {
-                        console.log(JSON.stringify(data, null, 2));
+                        //console.log(JSON.stringify(data, null, 2));
                         calendar.updateSchedule(parseInt(meetingId), calendarId, {
                             title: name,
                             body: description,
@@ -441,7 +441,7 @@ async function saveEditMeeting(){
         else{
             updateMeeting(meetingId, name, description, from, until).then(response => response.json())
             .then(data => {
-                console.log(JSON.stringify(data, null, 2));
+                //console.log(JSON.stringify(data, null, 2));
                 calendar.updateSchedule(parseInt(meetingId), calendarId, {
                     title: name,
                     body: description,
@@ -516,7 +516,7 @@ async function create_Meeting(){
         return;
     }
 
-    console.log(name,description,from,until);
+    //console.log(name,description,from,until);
 
     if(document.getElementById('group_meeting_man_edit').checked == true){
         var attendees = [];
@@ -543,7 +543,7 @@ async function create_Meeting(){
         //console.log("NOT AVAILABLE" + attendees_not_available);
 
         if(attendees_not_available.length == 0){
-            console.log("All Attendees:"+attendees);
+            //console.log("All Attendees:"+attendees);
             createGroupMeeting(name, description, from, until, attendees).then(response => response.json())
                 .then(data => {
                     let result = JSON.stringify(data, null, 2);
@@ -575,7 +575,7 @@ async function create_Meeting(){
         if(logged === "Manager" || logged === "Secretary"){
             isCeoAvailable(from, until).then(response => response.json())
             .then(data => {
-                console.log(data.available);
+                //console.log(data.available);
                 if(data.available == false){
                     alert("CEO is not available!");
                 }
@@ -633,7 +633,7 @@ function checkGroupMeeting(){
     var group_meeting_checkbox = document.getElementById('group_meeting_man_edit');
 
     if(group_meeting_checkbox.checked === true) {
-        console.log("Checkbox is checked - boolean value: ", group_meeting_checkbox.checked);
+        //console.log("Checkbox is checked - boolean value: ", group_meeting_checkbox.checked);
 
         getAllUsers().then(data => {
             for(item of data.managers) {
@@ -648,7 +648,7 @@ function checkGroupMeeting(){
         document.getElementById('group_meeting_attendees').style.display = "block";
     }
     if(group_meeting_checkbox.checked === false) {
-        console.log("Checkbox is not checked - boolean value: ", group_meeting_checkbox.checked)
+        //console.log("Checkbox is not checked - boolean value: ", group_meeting_checkbox.checked)
         document.getElementById('group_meeting_attendees').style.display = "none";
         var select = document.getElementById("group_meeting_attendees");
         var length = select.length;
@@ -709,7 +709,7 @@ function load_users() {
 
 //Function to delete user by ID
 function delete_user(id) {
-    console.log(deleteUser(id));
+    //console.log(deleteUser(id));
     setTimeout(function(){
         load_users();
       }, 500);
@@ -755,7 +755,7 @@ function checkSecretary(){
     var secretary_checkbox = document.getElementById('um_issecretary');
 
     if(secretary_checkbox.checked === true) {
-        console.log("Checkbox is checked - boolean value: ", secretary_checkbox.checked);
+        //console.log("Checkbox is checked - boolean value: ", secretary_checkbox.checked);
 
         getAllUsers().then(data => {
             for(item of data.managers) {
@@ -769,7 +769,7 @@ function checkSecretary(){
         document.getElementById('secretary_attendees').style.display = "block";
     }
     if(secretary_checkbox.checked === false) {
-        console.log("Checkbox is not checked - boolean value: ", secretary_checkbox.checked)
+        //console.log("Checkbox is not checked - boolean value: ", secretary_checkbox.checked)
         document.getElementById('secretary_attendees').style.display = "none";
         var select = document.getElementById("secretary_attendees");
         var length = select.length;
@@ -791,7 +791,7 @@ function saveNewUser(){
     var manager_id = document.getElementById("secretary_attendees").value;
     hideUser();
     createUser(login, password, name, surname, date_of_birth, is_secretary, manager_id).then(response => {
-        console.log(response);
+        //console.log(response);
     });
     setTimeout(function(){
         load_users();
@@ -907,7 +907,7 @@ function hideNotification(){
 //Function to dismiss notification by ID
 async function dismiss_notification_for_id(notification_id){
     dismissNotification(notification_id).then(data => {
-        console.log(data);
+        //console.log(data);
         get_notifications();
     });
 }
@@ -916,7 +916,7 @@ async function dismiss_notification_for_id(notification_id){
 async function dismiss_notification(){
     var notification_id = document.getElementById('id_notif').value;
     dismissNotification(notification_id).then(data => {
-        console.log(data);
+        //console.log(data);
         get_notifications();
     });
 }
