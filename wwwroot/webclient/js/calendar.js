@@ -137,7 +137,11 @@ function showCalendarforUser(logged_user_id){
         });
     calendar.render();
     calendar.toggleScheduleView(true);
-    if(logged_user_id == actual_user_id){
+    var e = document.getElementById("calendar_for_user");
+	var strUser = e.value;
+	var choosen_user_role = document.getElementById(strUser).className
+
+    if(choosen_user_role == "hidden_ceo"){
         document.getElementById('control_buttons').style.display = "block";
         calendar.on({
             'beforeCreateSchedule': function(e) {
@@ -639,6 +643,7 @@ function fill_table_of_users(list,type){
     var i = table.rows.length;
 
     for (item of list) {
+        if (item.isCeo == true)continue;
         var row = table.insertRow(i);
 
         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:

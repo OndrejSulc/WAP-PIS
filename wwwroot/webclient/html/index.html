@@ -75,7 +75,14 @@
                     for(item of data.managers) {
                         var opt = document.createElement('option');
                         opt.value = item.id;
+                        opt.id = item.id;
                         opt.innerHTML = item.name + " " + item.surname;
+                        if(item.isCeo == true){
+                            opt.className = "hidden_ceo";
+                        }
+                        else{
+                            opt.className = "hidden_man";
+                        }
                         //console.log("ITEM ID:" + item.id);
                         //console.log("LOGGED ID:" + logged_user_id);
                         opt.selected = item.id == logged_user_id;
