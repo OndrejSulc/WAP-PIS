@@ -215,6 +215,9 @@
                                 <select name="group_meeting_attendees" id="group_meeting_attendees" style="display: none;" size="3" multiple></select>
                             </div>
                         </div>
+                        <div id="ceo_availability_button" class="tui-full-calendar-popup-section" style="display: none;">
+                            <br><button class="btn save_button" onclick="ceo_avalability()" style="width: auto;"><span>Ceo Avalability</span></button>  
+                        </div>
                         <div class="tui-full-calendar-popup-section">
                             <label for="description_man_edit" class="modal_edit_label">Description:  </label>
                         </div>
@@ -222,7 +225,6 @@
                             <textarea id="description_man_edit" cols="30" rows="3" class="modal_inputs"></textarea>
                         </div>
                         <button onclick="hideEditMeeting();" class="tui-full-calendar-button tui-full-calendar-popup-close"><span class="tui-full-calendar-icon tui-full-calendar-ic-close"></span></button>
-                        <br>
                         <div class="tui-full-calendar-popup-section">
                             <input type="hidden" id="calendar_id_man_edit">
                             <input type="hidden" id="meeting_id_man_edit">
@@ -350,6 +352,7 @@
         }
         else {
             document.getElementById('div_group_meeting_man_edit').style.display = "none";
+            document.getElementById('ceo_availability_button').style.display = "block";
             calendar.on({
                 'beforeCreateSchedule': function(e) {
                     //console.log('beforeCreateSchedule', e);

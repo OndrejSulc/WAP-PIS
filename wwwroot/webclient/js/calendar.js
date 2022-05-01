@@ -413,48 +413,56 @@ async function saveEditMeeting(){
         }
     }
     else{
-        var logged = document.getElementById('logged_user_role').value;
-        if(logged === "Manager" || logged === "Secretary"){
-            isCeoAvailable(from, until).then(response => response.json())
-            .then(data => {
-                //console.log(data.available);
-                if(data.available == false){
-                    alert("CEO is not available!");
-                }
-                else{
-                    updateMeeting(meetingId, name, description, from, until).then(response => response.json())
-                    .then(data => {
-                        //console.log(JSON.stringify(data, null, 2));
-                        calendar.updateSchedule(parseInt(meetingId), calendarId, {
-                            title: name,
-                            body: description,
-                            attendees:[],
-                            start: new Date(from),
-                            end: new Date(until)
-                        });
-                        calendar.render();
-                        hideEditMeeting();
-                    });
-                }
+        updateMeeting(meetingId, name, description, from, until).then(response => response.json())
+        .then(data => {
+            //console.log(JSON.stringify(data, null, 2));
+            calendar.updateSchedule(parseInt(meetingId), calendarId, {
+                title: name,
+                body: description,
+                attendees:[],
+                start: new Date(from),
+                end: new Date(until)
             });
-        }
-        else{
-            updateMeeting(meetingId, name, description, from, until).then(response => response.json())
-            .then(data => {
-                //console.log(JSON.stringify(data, null, 2));
-                calendar.updateSchedule(parseInt(meetingId), calendarId, {
-                    title: name,
-                    body: description,
-                    attendees:[],
-                    start: new Date(from),
-                    end: new Date(until)
-                });
-                calendar.render();
-                hideEditMeeting();
-            });
-        }
+            calendar.render();
+            hideEditMeeting();
+        });
     }
 }
+
+function ceo_avalability(){
+    //console.log("FROM: " + document.getElementById('start_date_man_edit').value);
+    let from = document.getElementById('start_date_man_edit').value;
+    from = from ? from : null
+    if(from==null){
+        alert("Enter the start!");
+        return;
+    }
+
+    let until = document.getElementById('end_date_man_edit').value;
+    until = until ? until : null
+    if(until==null){
+        alert("Enter the end!");
+        return;
+    }
+
+    var start = new Date(from).getTime();
+    var end = new Date(until).getTime();
+    if(start >= end){
+        alert("The meeting start has to be sooner than the end!");
+        return;
+    }
+
+    isCeoAvailable(from, until).then(response => response.json())
+    .then(data => {
+        if(data.available == false){
+            alert("CEO is not available!");
+        }
+        else{
+            alert("CEO is available!");
+        }
+    });
+}
+
 
 //Function to delete meeting
 function deleteMeeting(){
@@ -571,60 +579,26 @@ async function create_Meeting(){
         }
     }
     else{
-        var logged = document.getElementById('logged_user_role').value;
-        if(logged === "Manager" || logged === "Secretary"){
-            isCeoAvailable(from, until).then(response => response.json())
-            .then(data => {
-                //console.log(data.available);
-                if(data.available == false){
-                    alert("CEO is not available!");
+        createMeeting(name, description, from, until).then(response => response.json())
+        .then(data => {
+            let result = JSON.stringify(data, null, 2);
+            let item = JSON.parse(result);
+            calendar.createSchedules([
+                {
+                id: item.id,
+                calendarId: '1',
+                title: item.title,
+                body: item.description,
+                category: 'time',
+                dueDateClass: '',
+                start: item.from,
+                end: item.until,
+                raw: item.owner.id + "," + item.owner.name + " " + item.owner.surname
                 }
-                else{
-                    createMeeting(name, description, from, until).then(response => response.json())
-                        .then(data => {
-                            let result = JSON.stringify(data, null, 2);
-                            let item = JSON.parse(result);
-                            calendar.createSchedules([
-                                {
-                                id: item.id,
-                                calendarId: '1',
-                                title: item.title,
-                                body: item.description,
-                                category: 'time',
-                                dueDateClass: '',
-                                start: item.from,
-                                end: item.until,
-                                raw: item.owner.id + "," + item.owner.name + " " + item.owner.surname
-                                }
-                            ]);
-                            calendar.render();
-                            hideEditMeeting();
-                        });
-                }
-            });
-        }
-        else{
-            createMeeting(name, description, from, until).then(response => response.json())
-                .then(data => {
-                    let result = JSON.stringify(data, null, 2);
-                    let item = JSON.parse(result);
-                    calendar.createSchedules([
-                        {
-                        id: item.id,
-                        calendarId: '1',
-                        title: item.title,
-                        body: item.description,
-                        category: 'time',
-                        dueDateClass: '',
-                        start: item.from,
-                        end: item.until,
-                        raw: item.owner.id + "," + item.owner.name + " " + item.owner.surname
-                        }
-                    ]);
-                    calendar.render();
-                    hideEditMeeting();
-                });
-        }
+            ]);
+            calendar.render();
+            hideEditMeeting();
+        });
     }
 }
 
