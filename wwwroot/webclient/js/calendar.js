@@ -710,6 +710,7 @@ function load_users() {
 //Function to delete user by ID
 function delete_user(id) {
     //console.log(deleteUser(id));
+    deleteUser(id);
     setTimeout(function(){
         load_users();
       }, 500);
