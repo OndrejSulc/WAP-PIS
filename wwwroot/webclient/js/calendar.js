@@ -11,7 +11,7 @@ $('a.nav-li-a').on('click', function (e) {
         //console.log(targetOffset);
 
         $("html, body").animate({
-            scrollTop: targetOffset + "px"
+            scrollTop: targetOffset - 80 //offsets 80 so the beggining of the div is not glued to the top of site
         }, 1000);
     }
 });
@@ -26,7 +26,7 @@ $('a.nav-li-a').on('click', function (e) {
         //console.log(targetOffset);
 
         $("html, body").animate({
-            scrollTop: targetOffset - 80
+            scrollTop: targetOffset - 80 //offsets 80 so the beggining of the div is not glued to the top of site
         }, 1000);
     }
 });
